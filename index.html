@@ -938,7 +938,7 @@ body{
 
 <script>
 // ── GAS URL ────────────────────────────────────────────────────
-const GAS_URL = 'YOUR_GAS_WEB_APP_URL_HERE';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbze8pwj7bmVatJgdBHdt6MEkINpD9a_6wnp2-0lSnh_uziTPFQEWD95P_C3Jl0iD1k/exec';
 
 // ── 심리진단 문항 ─────────────────────────────────────────────
 const psychItems = [
@@ -1165,7 +1165,7 @@ async function submitForm(){
   const receipt=`KFIF-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(Math.floor(Math.random()*9000)+1000)}`;
   data['접수번호']=receipt;
   try{
-    if(GAS_URL!=='YOUR_GAS_WEB_APP_URL_HERE'){
+    if(GAS_URL!=='https://script.google.com/macros/s/AKfycbze8pwj7bmVatJgdBHdt6MEkINpD9a_6wnp2-0lSnh_uziTPFQEWD95P_C3Jl0iD1k/exec'){
       await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),mode:'no-cors'});
     }else{console.log('[개발모드] 수집 데이터:',data)}
   }catch(e){console.error(e)}
