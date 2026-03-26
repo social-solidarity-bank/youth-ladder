@@ -44,35 +44,33 @@ body{
 
 /* ── HEADER ─────────────────────────── */
 .site-header{
-  background:linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-mid) 100%);
+  background:linear-gradient(135deg, #00897B 0%, #00ACC1 100%);
   padding:0 24px;
   position:sticky;top:0;z-index:200;
-  border-bottom:3px solid rgba(255,255,255,0.2);
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
 }
 .header-inner{
   max-width:1000px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;
-  height:64px;
+  height:60px;
 }
-.header-logos{display:flex;align-items:center;gap:18px}
-.logo-block{display:flex;align-items:center;gap:10px}
-.logo-mark{
-  width:36px;height:36px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:700;color:var(--navy-dark);
+.header-title{
+  font-family:'Noto Serif KR',serif;
+  font-size:18px;font-weight:700;
+  color:#fff;letter-spacing:-.01em;
 }
-.logo-mark.kfif{background:rgba(255,255,255,0.95); color:var(--navy-dark);}
-.logo-mark.ssb{background:rgba(255,255,255,0.2); color:#fff; border:1px solid rgba(255,255,255,0.4);}
-.logo-text{font-size:13px;font-weight:700;color:#fff;line-height:1.25}
-.logo-sub{font-size:10px;color:rgba(255,255,255,.55);font-weight:400}
-.logo-divider{width:1px;height:28px;background:rgba(255,255,255,.2)}
-.header-tag{
-  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+.header-title span{
+  font-size:11px;font-weight:400;
+  color:rgba(255,255,255,.7);
+  display:block;letter-spacing:.05em;margin-top:1px;
+  font-family:'Noto Sans KR',sans-serif;
+}
+.header-badge{
+  background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.35);
   color:#fff;font-size:11px;font-weight:600;
-  padding:4px 12px;border-radius:20px;letter-spacing:.03em;
-}
-.header-year{
-  color:rgba(255,255,255,0.85);font-size:13px;font-weight:700;
+  padding:5px 14px;border-radius:20px;
+  white-space:nowrap;
 }
 
 /* ── PROGRESS BAR ───────────────────── */
@@ -108,52 +106,83 @@ body{
 .step-dot.done .step-name{color:var(--green)}
 .step-sep{color:var(--border);font-size:18px;margin:0 2px;flex-shrink:0}
 
-/* ── HERO ───────────────────────────── */
+/* ── HERO ─────────────────────────── */
 .hero{
-  background:linear-gradient(160deg,var(--navy-dark) 0%,var(--navy) 50%,var(--navy-mid) 100%);
-  padding:56px 24px 52px;
-  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#00796B 0%,#0097A7 55%,#00ACC1 100%);
+  padding:0 24px 0;
+  position:relative;overflow:hidden;min-height:340px;
+  display:flex;align-items:stretch;
 }
-.hero::before{
-  content:'';position:absolute;right:-80px;top:-80px;
-  width:380px;height:380px;border-radius:50%;
-  background:rgba(255,255,255,.04);
+.hero-inner{
+  max-width:1000px;margin:0 auto;position:relative;z-index:1;
+  display:grid;grid-template-columns:1fr 340px;
+  align-items:center;gap:32px;width:100%;
+  padding:48px 0 40px;
 }
-.hero::after{
-  content:'';position:absolute;left:40%;bottom:-60px;
-  width:260px;height:260px;border-radius:50%;
-  background:rgba(0,163,181,.08);
-}
-.hero-inner{max-width:1000px;margin:0 auto;position:relative;z-index:1}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
-  color:#fff;font-size:12px;font-weight:700;
-  padding:5px 14px;border-radius:20px;margin-bottom:20px;
-  letter-spacing:.04em;
+.hero-copy{ display:flex;flex-direction:column;gap:14px; }
+.hero-eyebrow{
+  font-size:12px;font-weight:600;color:rgba(255,255,255,.85);
+  letter-spacing:.08em;text-transform:uppercase;
 }
 .hero h1{
   font-family:'Noto Serif KR',serif;
-  font-size:36px;font-weight:700;color:#fff;
-  line-height:1.3;margin-bottom:14px;
+  font-size:clamp(26px,4vw,40px);font-weight:700;color:#fff;
+  line-height:1.25;letter-spacing:-.02em;
 }
-.hero h1 em{color:rgba(255,255,255,0.9);font-style:normal;border-bottom:2px solid rgba(255,255,255,0.5);}
-.hero p{
-  font-size:15px;color:rgba(255,255,255,.78);
-  line-height:1.8;max-width:560px;margin-bottom:28px;
+.hero h1 em{
+  color:#FFE57F;font-style:normal;
+  text-shadow:0 2px 12px rgba(0,0,0,.15);
+}
+.hero-sub{
+  font-size:14px;color:rgba(255,255,255,.85);
+  line-height:1.85;max-width:480px;
+}
+.hero-chips{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;
+}
+.hero-chip{
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+  color:#fff;font-size:12px;font-weight:600;
+  padding:5px 14px;border-radius:20px;
+}
+.hero-chip.highlight{
+  background:#FFE57F;border-color:#FFD740;
+  color:#00574B;
+}
+.hero-illust{
+  display:flex;align-items:flex-end;justify-content:center;
+  height:100%;padding-top:16px;
 }
 .hero-stats{
-  display:flex;gap:32px;flex-wrap:wrap;
+  display:flex;gap:0;background:rgba(255,255,255,.12);
+  border-top:1px solid rgba(255,255,255,.15);
+  max-width:1000px;margin:0 auto;width:100%;
 }
 .stat-item{
+  flex:1;padding:14px 20px;
+  border-right:1px solid rgba(255,255,255,.15);
   display:flex;flex-direction:column;gap:2px;
 }
-.stat-num{font-size:22px;font-weight:700;color:#fff}
-.stat-num span{font-size:13px;font-weight:400;color:rgba(255,255,255,.6);margin-left:4px}
-.stat-label{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.04em}
-.hero-divider{
-  width:1px;height:48px;background:rgba(255,255,255,.15);
-  align-self:center;
+.stat-item:last-child{border-right:none;}
+.stat-num{font-size:20px;font-weight:700;color:#FFE57F}
+.stat-num span{font-size:12px;font-weight:400;color:rgba(255,255,255,.7);margin-left:3px}
+.stat-label{font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.04em}
+.hero-wrap{
+  background:linear-gradient(160deg,#00796B 0%,#0097A7 55%,#00ACC1 100%);
+  overflow:hidden;
+}
+.hero-stats-row{
+  background:rgba(0,0,0,.08);
+  padding:0 24px;
+}
+.hero-stats-inner{
+  max-width:1000px;margin:0 auto;
+  display:flex;
+}
+@media(max-width:700px){
+  .hero-inner{grid-template-columns:1fr;padding-bottom:0;}
+  .hero-illust{display:none;}
+  .hero h1{font-size:26px;}
 }
 
 /* ── MAIN CONTAINER ──────────────────── */
@@ -428,52 +457,91 @@ body{
 <!-- ────── HEADER ────── -->
 <header class="site-header">
   <div class="header-inner">
-    <div class="header-logos">
-      <div class="logo-block">
-        <div class="logo-mark kfif">금</div>
-        <div>
-          <div class="logo-text">금융산업공익재단</div>
-          <div class="logo-sub">Korea Financial Industry Foundation</div>
-        </div>
-      </div>
-      <div class="logo-divider"></div>
-      <div class="logo-block">
-        <div class="logo-mark ssb" style="color:#fff">함</div>
-        <div>
-          <div class="logo-text">사회연대은행</div>
-          <div class="logo-sub">함께만드는세상</div>
-        </div>
-      </div>
+    <div class="header-title">
+      청년 희망사다리 금융지원사업
+      <span></span>
     </div>
-    <span class="header-tag">2026 청년 희망사다리 금융지원사업</span>
+    <span class="header-badge">2026 수시모집 중</span>
   </div>
 </header>
 
 <!-- ────── HERO ────── -->
-<div class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge">🤝 금융산업공익재단 × 사회연대은행 공동지원사업</div>
-    <h1>청년의 내일을 잇는<br><em>희망사다리 금융지원</em></h1>
-    <p>고금리 다중채무로 어려움을 겪고 있는 만 19~39세 청년에게<br>연 1% 고정금리, 최대 500만 원을 지원합니다.</p>
-    <div class="hero-stats">
+<div class="hero-wrap">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-eyebrow">금융산업공익재단 · 사회연대은행</div>
+        <h1>청년의 내일을 잇는<br><em>희망사다리 금융지원</em><br></h1>
+        <p class="hero-sub">고금리 다중채무로 어려움을 겪고 있는 만 19~39세 청년에게<br>연 1% 고정금리, 최대 500만 원을 지원합니다.</p>
+        <div class="hero-chips">
+          <span class="hero-chip highlight">연 1% 고정금리</span>
+          <span class="hero-chip">최대 500만 원</span>
+          <span class="hero-chip">만 19~39세</span>
+        </div>
+      </div>
+      <div class="hero-illust">
+        <svg width="300" height="260" viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 배경 원 장식 -->
+          <circle cx="240" cy="40" r="55" fill="rgba(255,255,255,0.07)"/>
+          <circle cx="30" cy="200" r="35" fill="rgba(255,255,255,0.05)"/>
+          <!-- 무지개 -->
+          <path d="M30 220 Q150 60 270 220" stroke="rgba(255,255,255,0.18)" stroke-width="32" fill="none" stroke-linecap="round"/>
+          <path d="M45 220 Q150 80 255 220" stroke="#FF8A65" stroke-width="22" fill="none" stroke-linecap="round" opacity="0.85"/>
+          <path d="M58 220 Q150 97 242 220" stroke="#FFD54F" stroke-width="22" fill="none" stroke-linecap="round" opacity="0.85"/>
+          <path d="M71 220 Q150 113 229 220" stroke="#81C784" stroke-width="22" fill="none" stroke-linecap="round" opacity="0.85"/>
+          <path d="M84 220 Q150 128 216 220" stroke="#4FC3F7" stroke-width="22" fill="none" stroke-linecap="round" opacity="0.85"/>
+          <!-- 사다리 -->
+          <rect x="127" y="90" width="46" height="130" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+          <line x1="127" y1="115" x2="173" y2="115" stroke="rgba(255,255,255,0.5)" stroke-width="2.5"/>
+          <line x1="127" y1="138" x2="173" y2="138" stroke="rgba(255,255,255,0.5)" stroke-width="2.5"/>
+          <line x1="127" y1="161" x2="173" y2="161" stroke="rgba(255,255,255,0.5)" stroke-width="2.5"/>
+          <line x1="127" y1="184" x2="173" y2="184" stroke="rgba(255,255,255,0.5)" stroke-width="2.5"/>
+          <!-- 사람 1 (사다리 위) -->
+          <circle cx="150" cy="72" r="16" fill="#FFCC80"/>
+          <ellipse cx="150" cy="96" rx="13" ry="10" fill="#FFE0B2"/>
+          <path d="M137 86 Q130 100 135 108" stroke="#FFB74D" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M163 86 Q170 98 165 107" stroke="#FFB74D" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- 사람 2 (사다리 중간) -->
+          <circle cx="196" cy="148" r="13" fill="#FFAB91"/>
+          <ellipse cx="196" cy="168" rx="10" ry="8" fill="#FFCCBC"/>
+          <!-- 사람 3 (아래) -->
+          <circle cx="105" cy="175" r="13" fill="#CE93D8"/>
+          <ellipse cx="105" cy="194" rx="10" ry="8" fill="#E1BEE7"/>
+          <!-- 별 장식 -->
+          <text x="60" y="70" font-size="18" fill="#FFE57F" opacity="0.9">✦</text>
+          <text x="225" y="100" font-size="14" fill="#fff" opacity="0.7">✦</text>
+          <text x="240" y="175" font-size="10" fill="#FFE57F" opacity="0.8">✦</text>
+          <text x="45" y="140" font-size="12" fill="#fff" opacity="0.6">✦</text>
+          <!-- 하트 -->
+          <text x="155" y="48" font-size="16" fill="#FF8A80" opacity="0.9">♥</text>
+          <!-- 폭죽 효과 -->
+          <circle cx="72" cy="52" r="3" fill="#FFE57F"/>
+          <circle cx="85" cy="40" r="2" fill="#FF8A65"/>
+          <circle cx="60" cy="38" r="2.5" fill="#81C784"/>
+          <circle cx="235" cy="55" r="3" fill="#4FC3F7"/>
+          <circle cx="248" cy="68" r="2" fill="#FFD54F"/>
+          <circle cx="222" cy="68" r="2.5" fill="#FF8A65"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats-row">
+    <div class="hero-stats-inner">
       <div class="stat-item">
         <div class="stat-num">연 1%<span>고정금리</span></div>
         <div class="stat-label">시중 대비 파격 금리</div>
       </div>
-      <div class="hero-divider"></div>
       <div class="stat-item">
         <div class="stat-num">최대 500<span>만 원</span></div>
         <div class="stat-label">대출 지원금액</div>
       </div>
-      <div class="hero-divider"></div>
       <div class="stat-item">
         <div class="stat-num">2년<span>분할상환</span></div>
         <div class="stat-label">원리금 균등 방식</div>
       </div>
-      <div class="hero-divider"></div>
       <div class="stat-item">
-        <div class="stat-num">2026.03.30<span></span></div>
-        <div class="stat-label">수시 모집 시작</div>
+        <div class="stat-num"><span>수시모집</span></div>
+        <div class="stat-label">2026년 수시 접수</div>
       </div>
     </div>
   </div>
@@ -503,69 +571,69 @@ body{
 ══════════════════════════════════ -->
 <div class="page active" id="page0">
   <div class="elig-hero">
-    <div style="font-size:11px;font-weight:700;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#fff;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:14px;letter-spacing:.05em">2026 청년 희망사다리 금융지원 × KFIF</div>
-    <h2>신청 전 자격요건을 먼저 확인하세요</h2>
-    <p>금융산업공익재단과 사회연대은행이 함께하는 고금리 다중채무 청년 자립 지원사업입니다.<br>아래 5개 항목을 모두 충족해야 신청이 가능합니다.</p>
+    <div style="font-size:11px;font-weight:700;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#fff;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:14px;letter-spacing:.05em">📋 신청 전 먼저 확인해요</div>
+    <h2>나도 신청할 수 있을까요?</h2>
+    <p>아래 5가지 항목을 확인해보세요.<br>모두 해당된다면 바로 신청하실 수 있어요!</p>
   </div>
 
   <div class="card">
     <div class="card-header">
       <div class="card-icon" style="background:var(--navy-light)">✅</div>
       <div>
-        <div class="card-title">자격요건 자가진단</div>
-        <div class="card-desc">5개 항목 모두 '예'인 경우에만 신청 가능합니다</div>
+        <div class="card-title">자격 확인 체크리스트</div>
+        <div class="card-desc">5가지 모두 해당되면 신청 가능해요 ✅</div>
       </div>
     </div>
     <div class="card-body">
 
       <div class="elig-q" id="eq1">
-        <div class="elig-q-label"><span class="elig-num">1</span> 만 19세 ~ 39세 청년입니까?</div>
+        <div class="elig-q-label"><span class="elig-num">1</span> 만 19세 이상 39세 이하 청년인가요?</div>
         <div class="radio-group">
-          <label class="radio-btn" onclick="eligCheck(this,'eq1','pass')"><input type="radio" name="eq1"><div class="radio-dot"></div>예</label>
-          <label class="radio-btn" onclick="eligCheck(this,'eq1','fail')"><input type="radio" name="eq1"><div class="radio-dot"></div>아니오</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq1','pass')"><input type="radio" name="eq1"><div class="radio-dot"></div>네, 해당돼요</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq1','fail')"><input type="radio" name="eq1"><div class="radio-dot"></div>아니요</label>
         </div>
-        <div class="stop-msg" id="eq1-stop" style="display:none"><h4>⚠ 연령 기준 미충족</h4><p>만 19~39세 청년을 대상으로 합니다.</p></div>
+        <div class="stop-msg" id="eq1-stop" style="display:none"><h4>⚠ 연령 기준이 맞지 않아요</h4><p>이 사업은 만 19~39세 청년을 대상으로 해요.</p></div>
       </div>
 
       <div class="elig-q" id="eq2">
-        <div class="elig-q-label"><span class="elig-num">2</span> 현재 소득이 있습니까? (근로·사업·기타 포함)</div>
+        <div class="elig-q-label"><span class="elig-num">2</span> 현재 어느 정도든 소득이 있으신가요? (근로·사업·기타 포함)</div>
         <div class="radio-group">
-          <label class="radio-btn" onclick="eligCheck(this,'eq2','pass')"><input type="radio" name="eq2"><div class="radio-dot"></div>예, 소득 있음</label>
-          <label class="radio-btn" onclick="eligCheck(this,'eq2','fail')"><input type="radio" name="eq2"><div class="radio-dot"></div>아니오</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq2','pass')"><input type="radio" name="eq2"><div class="radio-dot"></div>네, 소득이 있어요</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq2','fail')"><input type="radio" name="eq2"><div class="radio-dot"></div>아니요, 지금은 없어요</label>
         </div>
-        <div class="stop-msg" id="eq2-stop" style="display:none"><h4>⚠ 소득 없음</h4><p>소득이 있는 분만 신청 가능합니다.</p></div>
+        <div class="stop-msg" id="eq2-stop" style="display:none"><h4>⚠ 소득이 필요해요</h4><p>소득이 있어야 상환이 가능하기 때문에, 소득이 있는 분만 신청 가능해요.</p></div>
       </div>
 
       <div class="elig-q" id="eq3">
-        <div class="elig-q-label"><span class="elig-num">3</span> 신용점수가 낮거나 금융이력이 부족하여 일반 금융기관 대출이 어려운 상황입니까?</div>
+        <div class="elig-q-label"><span class="elig-num">3</span> 신용점수가 낮거나, 은행·저축은행에서 대출이 어려우신가요?</div>
         <div class="radio-group">
-          <label class="radio-btn" onclick="eligCheck(this,'eq3','pass')"><input type="radio" name="eq3"><div class="radio-dot"></div>예</label>
-          <label class="radio-btn" onclick="eligCheck(this,'eq3','fail')"><input type="radio" name="eq3"><div class="radio-dot"></div>아니오 (일반 대출 이용 가능)</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq3','pass')"><input type="radio" name="eq3"><div class="radio-dot"></div>네, 대출이 잘 안 돼요</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq3','fail')"><input type="radio" name="eq3"><div class="radio-dot"></div>아니요, 일반 대출 이용 가능해요</label>
         </div>
-        <div class="stop-msg" id="eq3-stop" style="display:none"><h4>⚠ 일반 금융기관 이용 권장</h4><p>신용등급이 양호한 경우 일반 금융기관을 이용하시기 바랍니다.</p></div>
+        <div class="stop-msg" id="eq3-stop" style="display:none"><h4>⚠ 일반 금융기관을 먼저 이용해보세요</h4><p>신용등급이 양호하다면 일반 금융기관에서 더 좋은 조건으로 대출받으실 수 있어요.</p></div>
       </div>
 
       <div class="elig-q" id="eq4">
-        <div class="elig-q-label"><span class="elig-num">4</span> 현재 금융기관 연체 또는 채무불이행 상태가 아닙니까?</div>
+        <div class="elig-q-label"><span class="elig-num">4</span> 현재 금융기관 연체나 채무불이행 상태가 아닌가요?</div>
         <div class="radio-group">
-          <label class="radio-btn" onclick="eligCheck(this,'eq4','pass')"><input type="radio" name="eq4"><div class="radio-dot"></div>맞습니다 (연체·채무불이행 없음)</label>
-          <label class="radio-btn" onclick="eligCheck(this,'eq4','fail')"><input type="radio" name="eq4"><div class="radio-dot"></div>현재 연체 또는 채무불이행 중</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq4','pass')"><input type="radio" name="eq4"><div class="radio-dot"></div>네, 연체 없어요</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq4','fail')"><input type="radio" name="eq4"><div class="radio-dot"></div>현재 연체 중이에요</label>
         </div>
-        <div class="stop-msg" id="eq4-stop" style="display:none"><h4>⚠ 현재 연체·채무불이행 상태</h4><p>연체 해소 후 재신청 가능합니다.</p></div>
+        <div class="stop-msg" id="eq4-stop" style="display:none"><h4>⚠ 연체 해소 후 다시 신청해주세요</h4><p>연체가 해소된 이후에 신청 가능해요. 어려우시면 담당자와 먼저 상담해보세요.</p></div>
       </div>
 
       <div class="elig-q" id="eq5">
-        <div class="elig-q-label"><span class="elig-num">5</span> 국세체납 또는 압류 처분이 없습니까?</div>
+        <div class="elig-q-label"><span class="elig-num">5</span> 국세 체납이나 압류 처분이 없으신가요?</div>
         <div class="radio-group">
-          <label class="radio-btn" onclick="eligCheck(this,'eq5','pass')"><input type="radio" name="eq5"><div class="radio-dot"></div>없습니다</label>
-          <label class="radio-btn" onclick="eligCheck(this,'eq5','fail')"><input type="radio" name="eq5"><div class="radio-dot"></div>있습니다</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq5','pass')"><input type="radio" name="eq5"><div class="radio-dot"></div>네, 없어요</label>
+          <label class="radio-btn" onclick="eligCheck(this,'eq5','fail')"><input type="radio" name="eq5"><div class="radio-dot"></div>있어요</label>
         </div>
-        <div class="stop-msg" id="eq5-stop" style="display:none"><h4>⚠ 국세체납·압류 처분 있음</h4><p>해당 사항 해소 후 재신청 바랍니다.</p></div>
+        <div class="stop-msg" id="eq5-stop" style="display:none"><h4>⚠ 해당 사항 해소 후 신청해주세요</h4><p>국세 체납·압류가 있는 경우 신청이 어려워요.</p></div>
       </div>
 
       <div class="pass-msg" id="elig-pass" style="display:none">
-        <h4>🎉 자격요건을 모두 충족합니다!</h4>
-        <p>기본정보 입력으로 이동합니다.</p>
+        <h4>🎉 신청하실 수 있어요!</h4>
+        <p>모든 항목이 확인됐어요. 아래 버튼을 눌러 기본 정보를 입력해주세요.</p>
       </div>
 
       <div class="btn-group">
@@ -685,7 +753,7 @@ body{
   <div class="card">
     <div class="card-header">
       <div class="card-icon" style="background:var(--navy-light);font-size:18px">💰</div>
-      <div><div class="card-title">소득 및 재무현황</div><div class="card-desc">소득·지출·부채 현황을 입력해 주세요. 정확할수록 심사에 유리합니다.</div></div>
+      <div><div class="card-title">소득 및 재무 현황</div><div class="card-desc">정확하게 입력해주실수록 심사에 도움이 돼요. 대략적인 금액도 괜찮아요.</div></div>
     </div>
     <div class="card-body">
 
@@ -765,7 +833,7 @@ body{
   <div class="card">
     <div class="card-header">
       <div class="card-icon" style="background:var(--green-light);font-size:18px">🌱</div>
-      <div><div class="card-title">취약성 지표 및 대출 목적</div><div class="card-desc">지원 우선순위 결정과 맞춤 심사를 위해 사용됩니다</div></div>
+      <div><div class="card-title">현재 상황과 신청 이유</div><div class="card-desc">솔직하게 적어주실수록 더 잘 도와드릴 수 있어요.</div></div>
     </div>
     <div class="card-body">
 
@@ -880,12 +948,12 @@ body{
   <div class="card">
     <div class="card-header">
       <div class="card-icon" style="background:var(--navy-light);font-size:18px">🧠</div>
-      <div><div class="card-title">심리·행동 진단</div><div class="card-desc">재무 행동 성향을 파악하는 진단입니다. 정답이 없으니 솔직하게 응답해 주세요.</div></div>
+      <div><div class="card-title">간단한 성향 질문</div><div class="card-desc">정답이 없어요. 평소 생각과 가장 가까운 답을 골라주세요.</div></div>
     </div>
     <div class="card-body">
 
       <div class="info-box" style="margin-bottom:20px">
-        <span>💡</span><span>아래 문항은 대출 심사의 보조 자료로 활용됩니다. 1(전혀 그렇지 않다) ~ 5(매우 그렇다)로 응답해 주세요.</span>
+        <span>💡</span><span>아래 문항은 심사에 직접 반영되지 않아요. 더 나은 지원을 위한 참고 자료로만 활용됩니다. 1(전혀 그렇지 않다) ~ 5(매우 그렇다)로 편하게 답해주세요.</span>
       </div>
 
       <div id="psych-questions"></div>
@@ -893,19 +961,19 @@ body{
       <div style="margin-top:32px">
         <p class="sec-title">최종 확인 및 동의</p>
         <div style="background:var(--bg);border-radius:var(--radius);padding:20px;margin-bottom:16px;font-size:13px;color:var(--text-mid);line-height:1.8">
-          본인은 위 기재 사항이 사실임을 확인하며, 허위 기재 시 지원이 취소될 수 있음에 동의합니다.
-          수집된 정보는 포용금융 지원사업 심사 목적으로만 사용됩니다.
-          심사를 위한 추가 서류 요청 및 유선 상담에 응할 것에 동의합니다.
+          입력하신 내용이 모두 사실임을 확인해주세요.
+          수집된 정보는 청년 희망사다리 금융지원 심사 목적으로만 사용돼요.
+          심사를 위해 추가 서류 요청이나 담당자 유선 연락이 있을 수 있어요.
         </div>
         <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:var(--text)">
           <input type="checkbox" id="final-agree" style="margin-top:3px;accent-color:var(--navy);width:16px;height:16px">
-          <span>위 내용을 모두 확인하였으며, 개인정보 수집·이용에 동의합니다.</span>
+          <span>네, 모두 확인했어요. 개인정보 수집·이용에 동의합니다.</span>
         </label>
       </div>
 
       <div class="btn-group">
         <button class="btn-back" onclick="goStep(3)">← 이전</button>
-        <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">✉ 신청서 최종 제출</button>
+        <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">✉ 신청서 제출하기</button>
       </div>
     </div>
   </div>
@@ -917,17 +985,17 @@ body{
 <div class="page" id="page5">
   <div class="card">
     <div class="complete-wrap">
-      <div class="complete-icon">✅</div>
-      <h2>신청이 완료되었습니다</h2>
-      <p>금융산업공익재단 × 사회연대은행 청년 희망사다리 금융지원사업에 신청해 주셔서 감사합니다.</p>
+      <div class="complete-icon">🎉</div>
+      <h2>신청이 완료됐어요!</h2>
+      <p>용기 내어 신청해주셔서 감사해요.<br>담당자가 꼼꼼히 검토할게요.</p>
       <div class="receipt-box">
         <div class="receipt-label">접수번호</div>
         <div class="receipt-num" id="receipt-display">—</div>
       </div>
       <p style="margin-top:0;color:var(--text-muted)">
-        담당자가 <strong style="color:var(--navy)">영업일 기준 7일 이내</strong> 등록하신 연락처로 연락드립니다.<br>
-        유선 상담 및 추가 서류 확인 후 최종 심사가 진행됩니다.<br><br>
-        <span style="color:var(--navy-mid);font-size:13px">📋 소득증빙 서류는 담당자 안내 시 제출해 주세요.</span>
+        담당자가 <strong style="color:var(--navy)">영업일 기준 7일 이내</strong> 등록하신 연락처로 연락드려요.<br>
+        유선 상담과 추가 서류 확인 후 최종 심사가 진행돼요.<br><br>
+        <span style="color:var(--navy-mid);font-size:13px">📋 소득증빙 서류는 담당자 안내 시 제출해 주시면 돼요.</span>
       </p>
       <button class="btn btn-primary" style="max-width:200px;margin:28px auto 0" onclick="location.reload()">처음으로</button>
     </div>
