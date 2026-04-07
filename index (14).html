@@ -1,0 +1,4950 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      청년 희망사다리 금융지원 신청 — 금융산업공익재단 × 사회연대은행
+    </title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #006b77;
+        --primary-light: #008a98;
+        --primary-pale: #e6f5f7;
+        --primary-dark: #004d58;
+        --accent: #d97706;
+        --success: #1a7a5e;
+        --success-light: #e6f5f0;
+        --warning: #92400e;
+        --warning-light: #fffbeb;
+        --danger: #991b1b;
+        --danger-light: #fef2f2;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-700: #374151;
+        --gray-900: #111827;
+        --text: #111827;
+        --text-mid: #374151;
+        --text-muted: #6b7280;
+        --border: #d1d5db;
+        --border-light: #e5e7eb;
+        --white: #ffffff;
+        --bg: #f8f9fb;
+        --radius: 10px;
+        --radius-sm: 7px;
+        --radius-lg: 16px;
+        --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.05);
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Noto Sans KR", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      /* ── 헤더 ─────────────────────────────────── */
+      .site-header {
+        background: linear-gradient(
+          135deg,
+          #004e58 0%,
+          #006b77 55%,
+          #008a98 100%
+        );
+        padding: 0 24px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+      }
+      .header-inner {
+        max-width: 960px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 62px;
+      }
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .header-logo-mark {
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1.5px solid rgba(255, 255, 255, 0.35);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #fff;
+        font-weight: 700;
+        font-family: "Noto Serif KR", serif;
+      }
+      .header-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.01em;
+      }
+      .header-sub {
+        font-size: 11px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.68);
+        display: block;
+        letter-spacing: 0.04em;
+        margin-top: 1px;
+        font-family: "Noto Sans KR", sans-serif;
+      }
+      .header-badge {
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 20px;
+        white-space: nowrap;
+        letter-spacing: 0.04em;
+      }
+
+      /* ── 진행 단계 바 ─────────────────────────── */
+      .progress-wrap {
+        background: #fff;
+        border-bottom: 1px solid var(--border-light);
+        box-shadow: 0 2px 8px rgba(0, 107, 119, 0.06);
+      }
+      .progress-inner {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .steps-row {
+        display: flex;
+        align-items: center;
+        padding: 14px 0;
+      }
+      .step-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: var(--radius);
+        cursor: default;
+        transition: background 0.2s;
+      }
+      .step-item.active {
+        background: var(--primary-pale);
+      }
+      .step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        flex-shrink: 0;
+        background: var(--gray-200);
+        color: var(--gray-500);
+        transition: all 0.3s;
+      }
+      .step-item.active .step-num {
+        background: var(--primary);
+        color: #fff;
+      }
+      .step-item.done .step-num {
+        background: var(--success);
+        color: #fff;
+      }
+      .step-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+      .step-item.active .step-label {
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .step-item.done .step-label {
+        color: var(--success);
+      }
+      .step-arrow {
+        color: var(--border);
+        font-size: 18px;
+        margin: 0 2px;
+        flex-shrink: 0;
+      }
+
+      /* ── 히어로 ───────────────────────────────── */
+      .hero-wrap {
+        background: linear-gradient(
+          160deg,
+          #003d46 0%,
+          #006b77 55%,
+          #0097a7 100%
+        );
+        overflow: hidden;
+      }
+      .hero {
+        padding: 0 24px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-inner {
+        max-width: 960px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        align-items: center;
+        gap: 32px;
+        width: 100%;
+        padding: 48px 0 40px;
+        position: relative;
+        z-index: 1;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        right: -60px;
+        top: -80px;
+        width: 360px;
+        height: 360px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+        pointer-events: none;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: 80px;
+        bottom: -60px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .hero-eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.75);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: clamp(24px, 3.8vw, 40px);
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+      }
+      .hero h1 em {
+        color: #ffe57f;
+        font-style: normal;
+      }
+      .hero-sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.85;
+        max-width: 480px;
+      }
+      .hero-chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .hero-chip {
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 20px;
+      }
+      .hero-chip.hl {
+        background: rgba(255, 229, 127, 0.9);
+        border-color: #ffd740;
+        color: #004d58;
+      }
+      .hero-illust {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        height: 100%;
+        padding-top: 16px;
+      }
+      .hero-stats-row {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 0 24px;
+      }
+      .hero-stats-inner {
+        max-width: 960px;
+        margin: 0 auto;
+        display: flex;
+      }
+      .stat-item {
+        flex: 1;
+        padding: 14px 20px;
+        border-right: 1px solid rgba(255, 255, 255, 0.14);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .stat-item:last-child {
+        border-right: none;
+      }
+      .stat-num {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffe57f;
+      }
+      .stat-num span {
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.65);
+        margin-left: 3px;
+      }
+      .stat-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 0.04em;
+      }
+
+      /* ── 메인 컨테이너 ────────────────────────── */
+      .main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px 24px 80px;
+      }
+
+      /* ── 페이지 ───────────────────────────────── */
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+        animation: fadeUp 0.32s ease;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── 카드 ─────────────────────────────────── */
+      .card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .card-header {
+        padding: 20px 28px 16px;
+        border-bottom: 1px solid var(--gray-100);
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .card-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .card-desc {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 4px;
+        line-height: 1.5;
+      }
+      .card-body {
+        padding: 24px 28px;
+      }
+
+      /* ── CAT 헤더 ─────────────────────────────── */
+      .cat-header {
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark),
+          var(--primary-light)
+        );
+      }
+      .cat-num {
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.22);
+        padding: 3px 8px;
+        border-radius: 10px;
+        letter-spacing: 0.06em;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .cat-title-text {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .cat-sub {
+        font-size: 12px;
+        opacity: 0.78;
+        margin-top: 2px;
+        color: #fff;
+      }
+
+      /* ── 섹션 타이틀 ──────────────────────────── */
+      .sec-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary);
+        border-left: 3px solid var(--primary);
+        padding-left: 10px;
+        margin: 28px 0 14px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sec-title:first-child {
+        margin-top: 0;
+      }
+      .sec-title.red {
+        color: var(--danger);
+        border-left-color: var(--danger);
+      }
+      .sec-title.green {
+        color: var(--success);
+        border-left-color: var(--success);
+      }
+
+      /* ── 폼 요소 ──────────────────────────────── */
+      .form-row {
+        margin-bottom: 18px;
+      }
+      .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 7px;
+      }
+      .form-label .req {
+        color: #c0392b;
+        margin-left: 2px;
+      }
+      .form-label .opt {
+        color: var(--gray-400);
+        font-size: 11px;
+        font-weight: 400;
+        margin-left: 4px;
+      }
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--text);
+        background: #fff;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(0, 107, 119, 0.1);
+      }
+      .form-input::placeholder {
+        color: var(--gray-300);
+      }
+      .form-textarea {
+        resize: vertical;
+        min-height: 90px;
+        line-height: 1.65;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* ── 라디오 / 체크박스 ─────────────────────── */
+      .radio-group,
+      .check-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .radio-btn,
+      .check-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 24px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-mid);
+        background: #fff;
+        transition: all 0.2s;
+        user-select: none;
+        font-family: inherit;
+      }
+      .radio-btn:hover,
+      .check-btn:hover {
+        border-color: var(--primary-light);
+        background: var(--primary-pale);
+      }
+      .radio-btn input,
+      .check-btn input {
+        display: none;
+      }
+      .radio-btn.selected,
+      .check-btn.selected {
+        border-color: var(--primary);
+        background: var(--primary-pale);
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .radio-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid var(--gray-300);
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .radio-btn.selected .radio-dot {
+        border-color: var(--primary);
+        background: var(--primary);
+      }
+      .check-mark {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 2px solid var(--gray-300);
+        transition: all 0.2s;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .check-btn.selected .check-mark {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: #fff;
+        font-size: 9px;
+        font-weight: 700;
+      }
+      .check-btn.selected .check-mark::after {
+        content: "✓";
+      }
+
+      /* ── 조건부 표시 ──────────────────────────── */
+      .cond {
+        display: none;
+        margin-top: 12px;
+        padding: 16px 18px;
+        background: var(--gray-50);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--gray-200);
+      }
+      .cond.show {
+        display: block;
+        animation: fadeUp 0.22s ease;
+      }
+
+      /* ── 인포 박스 ────────────────────────────── */
+      .info-box {
+        background: var(--primary-pale);
+        border: 1px solid #bdd8dc;
+        border-radius: var(--radius-sm);
+        padding: 13px 16px;
+        font-size: 13px;
+        color: var(--primary);
+        margin-bottom: 16px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+      }
+      .warn-box {
+        background: var(--warning-light);
+        border: 1px solid #f5d06a;
+        border-radius: var(--radius-sm);
+        padding: 13px 16px;
+        font-size: 13px;
+        color: var(--warning);
+        margin-bottom: 16px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+      }
+      .success-box {
+        background: var(--success-light);
+        border: 1px solid #a8d5b8;
+        border-radius: var(--radius-sm);
+        padding: 13px 16px;
+        font-size: 13px;
+        color: var(--success);
+        margin-bottom: 16px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+      }
+
+      /* ── 자격확인 ─────────────────────────────── */
+      .elig-hero {
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark) 0%,
+          var(--primary-light) 100%
+        );
+        border-radius: var(--radius-lg);
+        padding: 36px 32px;
+        margin-bottom: 24px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+      }
+      .elig-hero::before {
+        content: "";
+        position: absolute;
+        right: -40px;
+        top: -40px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .elig-hero h2 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+      }
+      .elig-hero p {
+        font-size: 13px;
+        opacity: 0.82;
+        line-height: 1.75;
+        max-width: 500px;
+        position: relative;
+        z-index: 1;
+      }
+      .elig-q {
+        padding: 18px 0;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .elig-q:last-child {
+        border-bottom: none;
+      }
+      .elig-q-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .elig-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        background: var(--primary-pale);
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .stop-msg {
+        background: var(--danger-light);
+        border: 1.5px solid #fecaca;
+        border-radius: var(--radius-sm);
+        padding: 14px 18px;
+        margin-top: 12px;
+        animation: fadeUp 0.25s ease;
+      }
+      .stop-msg h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--danger);
+        margin-bottom: 4px;
+      }
+      .stop-msg p {
+        font-size: 13px;
+        color: #7f1d1d;
+        line-height: 1.55;
+      }
+      .pass-msg {
+        background: var(--success-light);
+        border: 1.5px solid #a8d5b8;
+        border-radius: var(--radius-sm);
+        padding: 16px 20px;
+        margin-top: 16px;
+        text-align: center;
+        animation: fadeUp 0.25s ease;
+      }
+      .pass-msg h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--success);
+        margin-bottom: 4px;
+      }
+      .pass-msg p {
+        font-size: 13px;
+        color: #14532d;
+      }
+
+      /* ── 부채 테이블 ──────────────────────────── */
+      .debt-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      .debt-table th {
+        background: var(--gray-50);
+        color: var(--text-muted);
+        font-size: 10px;
+        font-weight: 700;
+        padding: 8px 8px;
+        border: 1px solid var(--border);
+        text-align: center;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+      }
+      .debt-table td {
+        padding: 6px 5px;
+        border: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      .debt-table .form-input,
+      .debt-table .form-select {
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+      .add-row-btn {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--primary);
+        background: var(--primary-pale);
+        border: 1.5px dashed #bdd8dc;
+        border-radius: var(--radius-sm);
+        padding: 8px 14px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: inherit;
+      }
+      .add-row-btn:hover {
+        background: #c8e8ec;
+      }
+
+      /* ── 소득·지출 레이아웃 ───────────────────── */
+      .income-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1px solid var(--gray-200);
+        border-top: none;
+      }
+      .income-row:last-child {
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      }
+      .income-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--gray-700);
+        flex: 1;
+        margin: 0;
+      }
+      .income-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .income-input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .income-input-wrap input {
+        width: 105px;
+        padding: 8px 10px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-family: inherit;
+        text-align: right;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .income-input-wrap input:focus {
+        border-color: var(--primary);
+      }
+      .income-unit {
+        font-size: 13px;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+      .income-section-header {
+        background: var(--gray-50);
+        padding: 8px 14px;
+        border: 1px solid var(--gray-200);
+        border-bottom: none;
+      }
+      .income-section-header:first-of-type {
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      }
+      .income-section-tag {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* ── 순가처분소득 계산 박스 ───────────────── */
+      .calc-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark) 0%,
+          var(--primary) 100%
+        );
+        border-radius: var(--radius);
+        padding: 20px 22px;
+        color: #fff;
+        margin-top: 16px;
+      }
+      .calc-title {
+        font-size: 11px;
+        opacity: 0.68;
+        margin-bottom: 10px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .calc-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 3px 0;
+        opacity: 0.88;
+      }
+      .calc-total {
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        margin-top: 8px;
+        padding-top: 8px;
+      }
+      .calc-total .calc-row {
+        font-weight: 700;
+        font-size: 16px;
+        opacity: 1;
+      }
+
+      /* ── 위기 대응 그리드 ─────────────────────── */
+      .buffer-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .buffer-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-sm);
+      }
+      .buffer-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .buffer-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-700);
+        flex: 1;
+      }
+      .buffer-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      /* ── 리커트 척도 ──────────────────────────── */
+      .likert-q {
+        margin-bottom: 18px;
+      }
+      .likert-factor {
+        font-size: 11px;
+        color: var(--primary);
+        font-weight: 700;
+        background: var(--primary-pale);
+        padding: 2px 7px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        display: inline-block;
+        letter-spacing: 0.03em;
+      }
+      .likert-text {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 9px;
+        color: var(--text);
+        line-height: 1.55;
+      }
+      .likert-scale {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .likert-label {
+        font-size: 10px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+        max-width: 52px;
+        text-align: center;
+        white-space: pre-line;
+      }
+      .likert-opts {
+        display: flex;
+        gap: 6px;
+        flex: 1;
+        justify-content: center;
+      }
+      .likert-opt {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-400);
+        transition: all 0.2s;
+        background: #fff;
+        font-family: inherit;
+      }
+      .likert-opt:hover {
+        border-color: var(--primary-light);
+        color: var(--primary);
+      }
+      .likert-opt.selected {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+
+      /* ── 신청서 진행 바 ───────────────────────── */
+      .survey-progress {
+        position: sticky;
+        top: 62px;
+        z-index: 90;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 10px 24px;
+        box-shadow: 0 2px 8px rgba(0, 107, 119, 0.06);
+        display: none;
+      }
+      .survey-progress-inner {
+        max-width: 960px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .survey-progress-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .survey-progress-label strong {
+        color: var(--primary);
+      }
+      .survey-progress-track {
+        flex: 1;
+        height: 6px;
+        background: var(--gray-100);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .survey-progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        border-radius: 3px;
+        transition: width 0.4s ease;
+      }
+      .survey-progress-pct {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary);
+        flex-shrink: 0;
+        min-width: 36px;
+        text-align: right;
+      }
+
+      /* ── 유효성 검사 ──────────────────────────── */
+      .form-input.error,
+      .form-textarea.error {
+        border-color: #c0392b !important;
+        box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+      }
+      .error-msg {
+        font-size: 12px;
+        color: #c0392b;
+        margin-top: 5px;
+        min-height: 16px;
+        display: none;
+      }
+      .error-msg.show {
+        display: block;
+      }
+      .char-counter {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: 4px;
+      }
+      .char-counter.warn {
+        color: #e65100;
+      }
+      .char-counter.over {
+        color: #c0392b;
+        font-weight: 700;
+      }
+
+      /* ── 버튼 ─────────────────────────────────── */
+      .btn {
+        padding: 14px 32px;
+        border-radius: var(--radius);
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        justify-content: center;
+        width: 100%;
+      }
+      .btn-primary:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(0, 107, 119, 0.3);
+      }
+      .btn-primary:disabled {
+        background: var(--gray-300);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        opacity: 0.55;
+        transform: none;
+        box-shadow: none;
+      }
+      .btn-back {
+        background: none;
+        border: 1.5px solid var(--gray-300);
+        color: var(--gray-500);
+        padding: 13px 22px;
+        border-radius: var(--radius);
+        font-size: 14px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s;
+      }
+      .btn-back:hover {
+        border-color: var(--gray-500);
+        color: var(--gray-700);
+      }
+      .btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .btn-group .btn-primary {
+        flex: 1;
+      }
+
+      /* ── 완료 화면 ────────────────────────────── */
+      .complete-wrap {
+        text-align: center;
+        padding: 56px 28px;
+      }
+      .complete-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--success-light);
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+      }
+      .complete-wrap h2 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 12px;
+      }
+      .complete-wrap p {
+        font-size: 14px;
+        color: var(--text-mid);
+        line-height: 1.85;
+      }
+      .receipt-box {
+        background: var(--primary-pale);
+        border: 1.5px solid #bdd8dc;
+        border-radius: var(--radius);
+        padding: 18px 24px;
+        margin: 24px auto;
+        max-width: 380px;
+      }
+      .receipt-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        margin-bottom: 4px;
+      }
+      .receipt-num {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 0.04em;
+        font-family: "Noto Serif KR", serif;
+      }
+
+      /* ── 중간 제출 카드 ───────────────────────── */
+      .mid-submit-card {
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 2px solid var(--primary);
+        margin-bottom: 20px;
+      }
+      .mid-submit-inner {
+        text-align: center;
+        padding: 28px 24px;
+      }
+
+      /* ── 반응형 ───────────────────────────────── */
+      @media (max-width: 700px) {
+        .hero-inner {
+          grid-template-columns: 1fr;
+        }
+        .hero-illust {
+          display: none;
+        }
+        .hero h1 {
+          font-size: 26px;
+        }
+        .hero-stats-inner {
+          flex-wrap: wrap;
+        }
+        .stat-item {
+          min-width: 50%;
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+      }
+      @media (max-width: 640px) {
+        .grid2,
+        .grid3 {
+          grid-template-columns: 1fr;
+        }
+        .steps-row {
+          overflow-x: auto;
+          gap: 0;
+        }
+        .step-label {
+          display: none;
+        }
+        .card-body,
+        .card-header {
+          padding: 16px 18px;
+        }
+        .main {
+          padding: 20px 16px 60px;
+        }
+        .income-row {
+          flex-wrap: wrap;
+        }
+        .buffer-item {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-logo">
+          <div class="header-logo-mark">희</div>
+          <div class="header-title">
+            청년 희망사다리 금융지원사업<span class="header-sub"
+              >금융산업공익재단 × 사회연대은행</span
+            >
+          </div>
+        </div>
+        <span class="header-badge">2026 수시모집 중</span>
+      </div>
+    </header>
+
+    <!-- 히어로 -->
+    <div class="hero-wrap">
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <div class="hero-eyebrow">금융산업공익재단 · 사회연대은행</div>
+            <h1>청년의 내일을 잇는<br /><em>희망사다리 금융지원</em></h1>
+            <p class="hero-sub">
+              고금리 다중채무로 어려움을 겪고 있는 만 19~39세 청년에게<br />연
+              1% 고정금리, 최대 500만 원을 지원합니다.
+            </p>
+            <div class="hero-chips">
+              <span class="hero-chip hl">연 1% 고정금리</span>
+              <span class="hero-chip">최대 500만 원</span>
+              <span class="hero-chip">만 19~39세</span>
+              <span class="hero-chip">2년 분할상환</span>
+            </div>
+          </div>
+          <div class="hero-illust">
+            <svg
+              width="280"
+              height="240"
+              viewBox="0 0 280 240"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="210" cy="45" r="75" fill="rgba(255,255,255,0.04)" />
+              <circle cx="60" cy="200" r="48" fill="rgba(255,255,255,0.03)" />
+              <rect
+                x="72"
+                y="62"
+                width="124"
+                height="154"
+                rx="10"
+                fill="rgba(255,255,255,0.07)"
+                stroke="rgba(255,255,255,0.18)"
+                stroke-width="1.2"
+              />
+              <rect
+                x="86"
+                y="46"
+                width="124"
+                height="154"
+                rx="10"
+                fill="rgba(255,255,255,0.12)"
+                stroke="rgba(255,255,255,0.26)"
+                stroke-width="1.2"
+              />
+              <rect
+                x="86"
+                y="46"
+                width="124"
+                height="32"
+                rx="10"
+                fill="rgba(255,255,255,0.17)"
+              />
+              <rect
+                x="86"
+                y="64"
+                width="124"
+                height="14"
+                fill="rgba(255,255,255,0.17)"
+              />
+              <rect
+                x="103"
+                y="57"
+                width="52"
+                height="6"
+                rx="3"
+                fill="rgba(255,255,255,0.72)"
+              />
+              <rect
+                x="162"
+                y="57"
+                width="28"
+                height="6"
+                rx="3"
+                fill="rgba(255,229,127,0.82)"
+              />
+              <rect
+                x="103"
+                y="96"
+                width="92"
+                height="4.5"
+                rx="2.2"
+                fill="rgba(255,255,255,0.33)"
+              />
+              <rect
+                x="103"
+                y="108"
+                width="74"
+                height="4.5"
+                rx="2.2"
+                fill="rgba(255,255,255,0.23)"
+              />
+              <rect
+                x="103"
+                y="120"
+                width="84"
+                height="4.5"
+                rx="2.2"
+                fill="rgba(255,255,255,0.23)"
+              />
+              <line
+                x1="103"
+                y1="134"
+                x2="196"
+                y2="134"
+                stroke="rgba(255,255,255,0.17)"
+                stroke-width="1"
+              />
+              <rect
+                x="103"
+                y="144"
+                width="42"
+                height="8"
+                rx="4"
+                fill="rgba(255,229,127,0.22)"
+                stroke="rgba(255,229,127,0.5)"
+                stroke-width="1"
+              />
+              <circle
+                cx="188"
+                cy="178"
+                r="19"
+                fill="rgba(255,255,255,0.15)"
+                stroke="rgba(255,255,255,0.35)"
+                stroke-width="1.5"
+              />
+              <path
+                d="M180 178 L186 184 L198 170"
+                stroke="#FFE566"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <rect
+                x="180"
+                y="38"
+                width="44"
+                height="20"
+                rx="10"
+                fill="rgba(255,229,127,0.92)"
+              />
+              <text
+                x="202"
+                y="52"
+                font-size="10.5"
+                font-weight="700"
+                fill="#004D58"
+                text-anchor="middle"
+                font-family="'Noto Sans KR',sans-serif"
+              >
+                연 1%
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="hero-stats-row">
+        <div class="hero-stats-inner">
+          <div class="stat-item">
+            <div class="stat-num">연 1%<span>고정금리</span></div>
+            <div class="stat-label">시중 대비 파격 금리</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">최대 500<span>만 원</span></div>
+            <div class="stat-label">대출 지원금액</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">2년<span>분할상환</span></div>
+            <div class="stat-label">원리금 균등 방식</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">2026년 수시 접수</div>            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 진행 단계 -->
+    <div class="progress-wrap">
+      <div class="progress-inner">
+        <div class="steps-row">
+          <div class="step-item active" id="si0">
+            <div class="step-num">1</div>
+            <div><div class="step-label">자격확인</div></div>
+          </div>
+          <span class="step-arrow">›</span>
+          <div class="step-item" id="si1">
+            <div class="step-num">2</div>
+            <div><div class="step-label">기본정보</div></div>
+          </div>
+          <span class="step-arrow">›</span>
+          <div class="step-item" id="si2">
+            <div class="step-num">3</div>
+            <div><div class="step-label">재무현황</div></div>
+          </div>
+          <span class="step-arrow">›</span>
+          <div class="step-item" id="si3">
+            <div class="step-num">4</div>
+            <div><div class="step-label">신청배경·계획</div></div>
+          </div>
+          <span class="step-arrow">›</span>
+          <div class="step-item" id="si4">
+            <div class="step-num">5</div>
+            <div><div class="step-label">금융생활·성향</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 신청서 내부 진행 바 (STEP 2, 3, 4 공통) -->
+    <div class="survey-progress" id="survey-progress-bar">
+      <div class="survey-progress-inner">
+        <span class="survey-progress-label"
+          >신청서 진행 <strong id="prog-current">0</strong>/<span
+            id="prog-total"
+            >0</span
+          ></span
+        >
+        <div class="survey-progress-track">
+          <div
+            class="survey-progress-fill"
+            id="prog-fill"
+            style="width: 0%"
+          ></div>
+        </div>
+        <span class="survey-progress-pct" id="prog-pct">0%</span>
+      </div>
+    </div>
+
+    <main class="main">
+      <!-- ════════════════════
+     STEP 0 — 자격확인
+════════════════════ -->
+      <div class="page active" id="page0">
+        <div class="elig-hero">
+          <div
+            style="
+              font-size: 11px;
+              font-weight: 700;
+              background: rgba(255, 255, 255, 0.2);
+              border: 1px solid rgba(255, 255, 255, 0.32);
+              color: #fff;
+              padding: 4px 12px;
+              border-radius: 20px;
+              display: inline-block;
+              margin-bottom: 14px;
+              letter-spacing: 0.05em;
+            "
+          >
+            신청 전 먼저 확인해요
+          </div>
+          <h2>나도 신청할 수 있을까요?</h2>
+          <p>
+            아래 5가지 항목을 확인해보세요. 모두 해당된다면 바로 신청하실 수
+            있어요!
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon" style="background: var(--primary-pale)">
+              ✅
+            </div>
+            <div>
+              <div class="card-title">자격 확인 체크리스트</div>
+              <div class="card-desc">
+                5가지 항목이 모두 해당되면 신청 가능합니다
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="elig-q">
+              <div class="elig-q-label">
+                <span class="elig-num">1</span>만 19세 이상 39세 이하
+                청년인가요?
+              </div>
+              <div class="radio-group">
+                <label class="radio-btn" onclick="eligCheck(this,'eq1','pass')"
+                  ><input type="radio" name="eq1" />
+                  <div class="radio-dot"></div>
+                  네, 해당돼요</label
+                >
+                <label class="radio-btn" onclick="eligCheck(this,'eq1','fail')"
+                  ><input type="radio" name="eq1" />
+                  <div class="radio-dot"></div>
+                  아니요</label
+                >
+              </div>
+              <div class="stop-msg" id="eq1-stop" style="display: none">
+                <h4>⚠ 연령 기준이 맞지 않아요</h4>
+                <p>이 사업은 만 19~39세 청년을 대상으로 합니다.</p>
+              </div>
+            </div>
+
+            <div class="elig-q">
+              <div class="elig-q-label">
+                <span class="elig-num">2</span>신용점수가 낮거나 은행·저축은행
+                대출이 어려우신가요?
+              </div>
+              <div class="radio-group">
+                <label class="radio-btn" onclick="eligCheck(this,'eq3','pass')"
+                  ><input type="radio" name="eq3" />
+                  <div class="radio-dot"></div>
+                  네, 대출이 잘 안 돼요</label
+                >
+                <label class="radio-btn" onclick="eligCheck(this,'eq3','fail')"
+                  ><input type="radio" name="eq3" />
+                  <div class="radio-dot"></div>
+                  아니요, 일반 대출 이용 가능해요</label
+                >
+              </div>
+              <div class="stop-msg" id="eq3-stop" style="display: none">
+                <h4>⚠ 일반 금융기관을 먼저 이용해보세요</h4>
+                <p>
+                  신용등급이 양호하다면 일반 금융기관에서 더 좋은 조건으로
+                  이용하실 수 있어요.
+                </p>
+              </div>
+            </div>
+
+            <div class="elig-q">
+              <div class="elig-q-label">
+                <span class="elig-num">3</span>현재 금융기관 연체나 채무불이행
+                상태가 아닌가요?
+              </div>
+              <div class="radio-group">
+                <label class="radio-btn" onclick="eligCheck(this,'eq4','pass')"
+                  ><input type="radio" name="eq4" />
+                  <div class="radio-dot"></div>
+                  네, 연체 없어요</label
+                >
+                <label class="radio-btn" onclick="eligCheck(this,'eq4','fail')"
+                  ><input type="radio" name="eq4" />
+                  <div class="radio-dot"></div>
+                  현재 연체 중이에요</label
+                >
+              </div>
+              <div class="stop-msg" id="eq4-stop" style="display: none">
+                <h4>⚠ 연체 해소 후 다시 신청해주세요</h4>
+                <p>담당자와 먼저 상담을 통해 안내 받으시기를 권장합니다.</p>
+              </div>
+            </div>
+
+            <div class="elig-q">
+              <div class="elig-q-label">
+                <span class="elig-num">4</span>국세 체납이나 압류 처분이
+                없으신가요?
+              </div>
+              <div class="radio-group">
+                <label class="radio-btn" onclick="eligCheck(this,'eq5','pass')"
+                  ><input type="radio" name="eq5" />
+                  <div class="radio-dot"></div>
+                  네, 없어요</label
+                >
+                <label class="radio-btn" onclick="eligCheck(this,'eq5','fail')"
+                  ><input type="radio" name="eq5" />
+                  <div class="radio-dot"></div>
+                  있어요</label
+                >
+              </div>
+              <div class="stop-msg" id="eq5-stop" style="display: none">
+                <h4>⚠ 해당 사항 해소 후 신청해주세요</h4>
+                <p>국세 체납·압류가 있는 경우 신청이 어렵습니다.</p>
+              </div>
+            </div>
+
+            <div class="pass-msg" id="elig-pass" style="display: none">
+              <h4>신청하실 수 있어요!</h4>
+              <p>모든 항목이 확인됐어요. 기본 정보를 입력해주세요.</p>
+            </div>
+
+            <div class="btn-group">
+              <button
+                class="btn btn-primary"
+                id="elig-next"
+                onclick="goStep(1)"
+                disabled
+              >
+                기본정보 입력 시작 →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+     STEP 1 — 기본정보
+════════════════════ -->
+      <div class="page" id="page1">
+        <div class="card">
+          <div class="cat-header">
+            <span class="cat-num">01</span>
+            <div>
+              <div class="cat-title-text">신청자 기본정보</div>
+              <div class="cat-sub">
+                대출 심사를 위한 인적사항 및 가구 정보를 입력해 주세요
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="sec-title">01-1 · 인적 사항</p>
+            <div class="grid2">
+              <div class="form-row" style="margin-bottom: 0">
+                <label class="form-label">성명<span class="req">*</span></label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="f-name"
+                  placeholder="실명 입력"
+                  oninput="validateRequired(this,'err-name')"
+                />
+                <div class="error-msg" id="err-name">성명을 입력해 주세요.</div>
+              </div>
+              <div class="form-row" style="margin-bottom: 0">
+                <label class="form-label"
+                  >생년월일<span class="req">*</span></label
+                >
+                <input
+                  class="form-input"
+                  type="text"
+                  id="f-birth"
+                  placeholder="예) 19980315"
+                  maxlength="8"
+                  oninput="validateBirth(this)"
+                />
+                <div class="error-msg" id="err-birth"></div>
+              </div>
+            </div>
+            <div class="form-row" style="margin-top: 14px">
+              <label class="form-label">성별<span class="req">*</span></label>
+              <div class="radio-group">
+                <label class="radio-btn" onclick="toggleRadio(this,'gender')"
+                  ><input type="radio" name="gender" value="남" />
+                  <div class="radio-dot"></div>
+                  남성</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'gender')"
+                  ><input type="radio" name="gender" value="여" />
+                  <div class="radio-dot"></div>
+                  여성</label
+                >
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="form-row" style="margin-bottom: 0">
+                <label class="form-label"
+                  >휴대전화<span class="req">*</span></label
+                >
+                <input
+                  class="form-input"
+                  type="tel"
+                  id="f-phone"
+                  placeholder="010-0000-0000"
+                  oninput="validatePhone(this)"
+                />
+                <div class="error-msg" id="err-phone"></div>
+              </div>
+              <div class="form-row" style="margin-bottom: 0">
+                <label class="form-label"
+                  >이메일<span class="req">*</span></label
+                >
+                <input
+                  class="form-input"
+                  type="email"
+                  id="f-email"
+                  placeholder="example@email.com"
+                  oninput="validateEmail(this)"
+                />
+                <div class="error-msg" id="err-email"></div>
+              </div>
+            </div>
+
+            <p class="sec-title">01-2 · 주소 및 거주</p>
+            <div class="form-row">
+              <label class="form-label"
+                >주민등록상 주소<span class="req">*</span></label
+              >
+              <input
+                class="form-input"
+                type="text"
+                id="f-address"
+                placeholder="시 · 구 · 도로명 주소"
+                oninput="validateRequired(this,'err-address')"
+              />
+              <div class="error-msg" id="err-address">
+                주소를 입력해 주세요.
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >실거주지 주소
+                <span class="opt">(주민등록상 주소와 다른 경우)</span></label
+              >
+              <input
+                class="form-input"
+                type="text"
+                id="f-address-real"
+                placeholder="실제 우편 수령 가능한 주소"
+              />
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >거주 형태<span class="req">*</span></label
+              >
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('자가')"
+                  ><input type="radio" name="residence" value="자가" />
+                  <div class="radio-dot"></div>
+                  자가</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('전세')"
+                  ><input type="radio" name="residence" value="전세" />
+                  <div class="radio-dot"></div>
+                  전세</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('월세')"
+                  ><input type="radio" name="residence" value="월세" />
+                  <div class="radio-dot"></div>
+                  월세</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('임대주택')"
+                  ><input type="radio" name="residence" value="임대주택" />
+                  <div class="radio-dot"></div>
+                  임대주택 (LH·SH 등)</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('동거')"
+                  ><input type="radio" name="residence" value="가족동거" />
+                  <div class="radio-dot"></div>
+                  가족·친척 집 동거</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('고시원')"
+                  ><input type="radio" name="residence" value="고시원" />
+                  <div class="radio-dot"></div>
+                  고시원·쉐어하우스</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'residence');updateResidenceCost('기타')"
+                  ><input type="radio" name="residence" value="기타" />
+                  <div class="radio-dot"></div>
+                  기타</label
+                >
+              </div>
+              <div id="residence-cost-wrap" class="cond"></div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >앞으로 6개월 안에 이사 계획이 있으신가요?</label
+              >
+              <div class="radio-group">
+                <label class="radio-btn" onclick="toggleRadio(this,'move-plan')"
+                  ><input type="radio" name="move-plan" value="없음" />
+                  <div class="radio-dot"></div>
+                  없음</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'move-plan')"
+                  ><input type="radio" name="move-plan" value="가능성있음" />
+                  <div class="radio-dot"></div>
+                  가능성 있음</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'move-plan')"
+                  ><input type="radio" name="move-plan" value="거의확실" />
+                  <div class="radio-dot"></div>
+                  거의 확실함</label
+                >
+              </div>
+            </div>
+
+            <p class="sec-title">01-3 · 가구 정보</p>
+            <div class="form-row">
+              <label class="form-label"
+                >가구원 수<span class="req">*</span></label
+              >
+              <div class="radio-group">
+                <label class="radio-btn" onclick="toggleRadio(this,'hh')"
+                  ><input type="radio" name="hh" value="1명" />
+                  <div class="radio-dot"></div>
+                  1명</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'hh')"
+                  ><input type="radio" name="hh" value="2명" />
+                  <div class="radio-dot"></div>
+                  2명</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'hh')"
+                  ><input type="radio" name="hh" value="3명" />
+                  <div class="radio-dot"></div>
+                  3명</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'hh')"
+                  ><input type="radio" name="hh" value="4명" />
+                  <div class="radio-dot"></div>
+                  4명</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'hh')"
+                  ><input type="radio" name="hh" value="5명+" />
+                  <div class="radio-dot"></div>
+                  5명+</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">세대주 여부</label>
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'householder')"
+                  ><input type="radio" name="householder" value="예" />
+                  <div class="radio-dot"></div>
+                  예, 세대주입니다</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'householder')"
+                  ><input type="radio" name="householder" value="아니오" />
+                  <div class="radio-dot"></div>
+                  아니오</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">부양가족</label>
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'dependent');showCond('dep-detail',false)"
+                  ><input type="radio" name="dependent" value="없음" />
+                  <div class="radio-dot"></div>
+                  없음</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'dependent');showCond('dep-detail',true)"
+                  ><input type="radio" name="dependent" value="있음" />
+                  <div class="radio-dot"></div>
+                  있음</label
+                >
+              </div>
+              <div class="cond" id="dep-detail">
+                <input
+                  class="form-input"
+                  type="text"
+                  id="f-dep-detail"
+                  placeholder="예) 자녀 7세, 부모 68세 (관계와 나이를 간략히)"
+                />
+              </div>
+            </div>
+
+            <!-- 가족 동거사항 테이블 -->
+            <div class="form-row">
+              <label class="form-label">가족 및 동거인 현황
+                <span class="opt">(함께 사는 가족이 있으면 입력해 주세요. 없으면 비워두셔도 됩니다)</span>
+              </label>
+              <div style="overflow-x:auto; margin-top:4px">
+                <table class="debt-table" id="family-table" style="min-width:520px">
+                  <thead>
+                    <tr>
+                      <th style="min-width:80px">성명</th>
+                      <th style="min-width:70px">관계</th>
+                      <th style="min-width:50px">연령</th>
+                      <th style="min-width:80px">동거 여부</th>
+                      <th>특이사항 (장애·수급 등)</th>
+                      <th style="width:32px"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="family-tbody">
+                    <tr>
+                      <td><input type="text" class="form-input" style="font-size:12px;padding:5px 6px" placeholder="성명"/></td>
+                      <td><select class="form-select" style="font-size:12px;padding:5px 4px">
+                        <option value="">관계</option>
+                        <option>배우자</option><option>자녀</option><option>부모</option>
+                        <option>형제·자매</option><option>조부모</option><option>기타</option>
+                      </select></td>
+                      <td><input type="number" class="form-input" style="font-size:12px;padding:5px 6px" placeholder="나이"/></td>
+                      <td><select class="form-select" style="font-size:12px;padding:5px 4px">
+                        <option value="">선택</option><option>동거</option><option>비동거</option>
+                      </select></td>
+                      <td><input type="text" class="form-input" style="font-size:12px;padding:5px 6px" placeholder="예) 장애2급, 기초수급자"/></td>
+                      <td><button type="button" class="row-del" onclick="delRow(this)">✕</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <button type="button" class="add-row-btn" onclick="addFamilyRow()" style="margin-top:8px">
+                + 가족 추가
+              </button>
+            </div>
+
+            <p class="sec-title">01-4 · 고용 · 직업 상태</p>
+            <div class="form-row">
+              <label class="form-label">현재 고용 형태<span class="req">*</span></label>
+              <div class="radio-group" style="flex-wrap:wrap">
+                <label class="radio-btn" onclick="toggleRadio(this,'employ-type');showEmployFields('직장인')">
+                  <input type="radio" name="employ-type" value="직장인"/>
+                  <div class="radio-dot"></div>직장인</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'employ-type');showEmployFields('자영업')">
+                  <input type="radio" name="employ-type" value="자영업·프리랜서"/>
+                  <div class="radio-dot"></div>자영업 · 프리랜서</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'employ-type');showEmployFields('플랫폼')">
+                  <input type="radio" name="employ-type" value="플랫폼노동"/>
+                  <div class="radio-dot"></div>플랫폼 노동 (배달·대리 등)</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'employ-type');showEmployFields('학생')">
+                  <input type="radio" name="employ-type" value="학생"/>
+                  <div class="radio-dot"></div>학생</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'employ-type');showEmployFields('무직')">
+                  <input type="radio" name="employ-type" value="무직"/>
+                  <div class="radio-dot"></div>무직</label>
+              </div>
+            </div>
+            <!-- 직장인 -->
+            <div class="cond" id="employ-직장인">
+              <div class="grid2" style="margin-bottom:12px">
+                <div>
+                  <label class="form-label">직장명<span class="req">*</span></label>
+                  <input class="form-input" type="text" id="f-employer-salaried" placeholder="재직 중인 직장명"/>
+                </div>
+                <div>
+                  <label class="form-label">고용형태</label>
+                  <select class="form-select" id="f-employ-subtype">
+                    <option value="">선택</option>
+                    <option>정규직</option><option>계약직</option>
+                    <option>일용직·아르바이트</option>
+                  </select>
+                </div>
+              </div>
+              <label class="form-label">직장 주소 <span class="opt">(선택)</span></label>
+              <input class="form-input" type="text" id="f-employer-addr" placeholder="직장 주소"/>
+            </div>
+            <!-- 자영업·프리랜서 -->
+            <div class="cond" id="employ-자영업">
+              <label class="form-label">업체명 / 업종<span class="req">*</span></label>
+              <input class="form-input" type="text" id="f-employer-biz" placeholder="업체명 또는 업종 (예: 카페 운영, IT 프리랜서)"/>
+            </div>
+            <!-- 플랫폼 노동 -->
+            <div class="cond" id="employ-플랫폼">
+              <label class="form-label">플랫폼 종류<span class="req">*</span></label>
+              <input class="form-input" type="text" id="f-employer-platform" placeholder="예) 배달의민족, 카카오T대리"/>
+            </div>
+            <!-- 학생 -->
+            <div class="cond" id="employ-학생">
+              <div class="grid2">
+                <div>
+                  <label class="form-label">학교명<span class="req">*</span></label>
+                  <input class="form-input" type="text" id="f-school" placeholder="재학 중인 학교명"/>
+                </div>
+                <div>
+                  <label class="form-label">학과 / 전공</label>
+                  <input class="form-input" type="text" id="f-major" placeholder="학과 또는 전공"/>
+                </div>
+              </div>
+            </div>
+            <!-- 무직 -->
+            <div class="cond" id="employ-무직">
+              <label class="form-label">무직 사유</label>
+              <div class="radio-group" style="flex-wrap:wrap">
+                <label class="radio-btn" onclick="toggleRadio(this,'unemploy-reason')">
+                  <input type="radio" name="unemploy-reason" value="구직중"/>
+                  <div class="radio-dot"></div>구직 중</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'unemploy-reason')">
+                  <input type="radio" name="unemploy-reason" value="육아휴직·출산"/>
+                  <div class="radio-dot"></div>육아휴직·출산</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'unemploy-reason')">
+                  <input type="radio" name="unemploy-reason" value="질병·부상"/>
+                  <div class="radio-dot"></div>질병·부상</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'unemploy-reason')">
+                  <input type="radio" name="unemploy-reason" value="가족돌봄"/>
+                  <div class="radio-dot"></div>가족 돌봄</label>
+                <label class="radio-btn" onclick="toggleRadio(this,'unemploy-reason')">
+                  <input type="radio" name="unemploy-reason" value="기타"/>
+                  <div class="radio-dot"></div>기타</label>
+              </div>
+            </div>
+            <div class="error-msg" id="err-employer" style="margin-top:4px"></div>
+
+            <p class="sec-title" style="margin-top:28px">01-5 · 정부 지원 수혜 여부</p>
+            <div class="form-row">
+              <label class="form-label"
+                >현재 받고 계신 정부 지원이 있으시면 선택해 주세요.
+                <span class="opt">(해당 항목 모두 선택)</span></label
+              >
+              <div class="check-group">
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-생계급여')"
+                  ><div class="check-mark"></div>기초수급 (생계급여)</label
+                >
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-주거급여')"
+                  ><div class="check-mark"></div>기초수급 (주거급여)</label
+                >
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-의료급여')"
+                  ><div class="check-mark"></div>기초수급 (의료급여)</label
+                >
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-차상위')"
+                  ><div class="check-mark"></div>차상위계층</label
+                >
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-한부모')"
+                  ><div class="check-mark"></div>한부모가족 지원</label
+                >
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-장애인')"
+                  ><div class="check-mark"></div>장애인</label
+                >
+                <label class="check-btn" onclick="toggleGovSupport(this,null,true)"
+                  ><div class="check-mark"></div>해당없음</label
+                >
+              </div>
+              <div id="gov-amounts" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn-back" onclick="goStep(0)">← 이전</button>
+              <button
+                class="btn btn-primary"
+                onclick="if(validateStep1())goStep(2)"
+              >
+                다음: 재무현황 →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+     STEP 2 — 재무현황
+════════════════════ -->
+      <div class="page" id="page2">
+        <!-- 응원 메시지 - 재무현황 진입 -->
+        <div style="text-align:center;padding:16px 20px;background:linear-gradient(135deg,#fff5f5,#fef0e0);border-radius:12px;margin:0 0 16px;border:1px solid #f5c8c8">
+          <div style="font-size:18px;margin-bottom:4px">💪</div>
+          <div style="font-size:14px;font-weight:600;color:#7b1a1a;margin-bottom:2px">기본 정보 완료! 절반을 넘었어요.</div>
+          <div style="font-size:13px;color:#8b3a3a">이제 재무 현황을 입력할 차례예요.</div>
+        </div>
+        <!-- CAT 02 — 부채 현황 -->
+        <div class="card" style="overflow: hidden">
+          <div
+            class="cat-header"
+            style="background: linear-gradient(135deg, #7b1a1a, #b83232)"
+          >
+            <span class="cat-num">02</span>
+            <div>
+              <div class="cat-title-text">현재 부채 상황</div>
+              <div class="cat-sub">보유하고 계신 모든 부채를 입력해 주세요</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="sec-title red">02-1 · 금융기관 대출</p>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-muted);
+                margin-bottom: 12px;
+              "
+            >
+              은행·저축은행·카드사·캐피탈·보험사 등의 대출을 입력해 주세요.              
+            </p>
+            <div style="overflow-x: auto">
+              <table class="debt-table" id="bank-table">
+                <thead>
+                  <tr>
+                    <th style="min-width: 90px">대출처 유형</th>
+                    <th style="min-width: 140px">상품 유형</th>
+                    <th style="min-width: 75px">기관명</th>
+                    <th style="min-width: 70px">약정금액(만)</th>
+                    <th style="min-width: 70px">현재잔액(만)</th>
+                    <th style="min-width: 75px">월상환(만)</th>
+                    <th style="min-width: 70px">금리(%)</th>
+                    <th style="min-width: 68px">담보유무</th>
+                    <th style="min-width: 112px">대출시작</th>
+                    <th style="min-width: 112px">만료</th>
+                    <th style="width: 32px"></th>
+                  </tr>
+                </thead>
+                <tbody id="bank-tbody">
+                  <tr>
+                    <td>
+                      <select
+                        class="form-select"
+                        style="font-size: 12px; padding: 6px 4px"
+                      >
+                        <option value="">선택</option>
+                        <option>은행</option>
+                        <option>저축은행</option>
+                        <option>카드사</option>
+                        <option>캐피탈</option>
+                        <option>보험사</option>
+                        <option>기타</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        class="form-select"
+                        style="font-size: 12px; padding: 6px 4px"
+                      >
+                        <option value="">선택</option>
+                        <option>일반신용대출</option>
+                        <option>주택담보대출</option>
+                        <option>정책서민금융 (햇살론 등)</option>
+                        <option>카드론</option>
+                        <option>차량구입대출</option>
+                        <option>기타</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="text"
+                        placeholder="기관명"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="number"
+                        placeholder="0"
+                        style="text-align: right"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="number"
+                        placeholder="0"
+                        style="text-align: right"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="number"
+                        placeholder="0"
+                        id="bank-monthly-0"
+                        oninput="syncBankTotal()"
+                        style="text-align: right"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="number"
+                        placeholder="0.0"
+                        style="text-align: right"
+                      />
+                    </td>
+                    <td>
+                      <select class="form-select" style="font-size:12px;padding:6px 4px">
+                        <option value="">선택</option>
+                        <option>없음</option>
+                        <option>부동산</option>
+                        <option>차량</option>
+                        <option>기타</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="month"
+                        style="font-size: 12px"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="month"
+                        style="font-size: 12px"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        onclick="removeRow(this)"
+                        style="
+                          background: none;
+                          border: none;
+                          color: #cc4444;
+                          cursor: pointer;
+                          font-size: 18px;
+                          padding: 0 4px;
+                        "
+                      >
+                        ×
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <button class="add-row-btn" onclick="addBankRow()">
+              + 항목 추가
+            </button>
+
+            <p class="sec-title red" style="margin-top: 24px">
+              02-2 · 기타 대출
+              <span
+                style="
+                  font-size: 11px;
+                  font-weight: 400;
+                  color: var(--text-muted);
+                "
+                >(KCB 미조회 항목 포함)</span
+              >
+            </p>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-muted);
+                margin-bottom: 12px;
+              "
+            >
+              대부업체, 학자금 대출, 서민금융진흥원, 신용회복위원회, 공단 대출,
+              가족·지인 차용 등 모든 채무를 입력해 주세요.
+            </p>
+            <div style="overflow-x: auto">
+              <table class="debt-table" id="nonbank-table">
+                <thead>
+                  <tr>
+                    <th style="min-width: 145px">대출처</th>
+                    <th style="min-width: 85px">기관명</th>
+                    <th style="min-width: 90px">약정금액</th>
+                    <th style="min-width: 90px">현재잔액</th>
+                    <th style="min-width: 105px">월 상환원리금</th>
+                    <th style="min-width: 120px">금리</th>
+                    <th style="min-width: 112px">대출시작</th>
+                    <th style="min-width: 112px">대출만료</th>
+                    <th style="width: 32px"></th>
+                  </tr>
+                </thead>
+                <tbody id="nonbank-tbody">
+                  <tr>
+                    <td>
+                      <select
+                        class="form-select"
+                        style="width: 100%; font-size: 12px; padding: 6px 4px"
+                        onchange="syncLoanTableTotal()"
+                      >
+                        <option value="">선택</option>
+                        <option>대부업체</option>
+                        <option>학자금(장학재단)</option>
+                        <option>서민금융진흥원</option>
+                        <option>신용회복위원회</option>
+                        <option>공단·지역농협 등</option>
+                        <option>가족 및 지인</option>
+                        <option>기타</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="text"
+                        placeholder="기관명"
+                        style="width: 100%"
+                      />
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 3px">
+                        <input
+                          class="form-input"
+                          type="number"
+                          placeholder="0"
+                          style="width: 100%; text-align: right"
+                          oninput="syncLoanTableTotal()"
+                        /><span
+                          style="
+                            font-size: 11px;
+                            color: var(--text-muted);
+                            white-space: nowrap;
+                          "
+                          >만</span
+                        >
+                      </div>
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 3px">
+                        <input
+                          class="form-input"
+                          type="number"
+                          placeholder="0"
+                          style="width: 100%; text-align: right"
+                          oninput="syncLoanTableTotal()"
+                        /><span
+                          style="
+                            font-size: 11px;
+                            color: var(--text-muted);
+                            white-space: nowrap;
+                          "
+                          >만</span
+                        >
+                      </div>
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 3px">
+                        <input
+                          class="form-input"
+                          type="number"
+                          placeholder="0"
+                          style="width: 100%; text-align: right"
+                          oninput="syncLoanTableTotal()"
+                        /><span
+                          style="
+                            font-size: 11px;
+                            color: var(--text-muted);
+                            white-space: nowrap;
+                          "
+                          >만</span
+                        >
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        class="form-select"
+                        style="width: 100%; font-size: 12px; padding: 6px 4px"
+                      >
+                        <option value="">선택</option>
+                        <option>무이자</option>
+                        <option>5% 미만</option>
+                        <option>5~10%</option>
+                        <option>10~15%</option>
+                        <option>15~20%</option>
+                        <option>20% 이상 (법정최고금리 초과 포함)</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="month"
+                        style="width: 100%; font-size: 12px"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-input"
+                        type="month"
+                        style="width: 100%; font-size: 12px"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        onclick="removeNonbankRow(this)"
+                        style="
+                          background: none;
+                          border: none;
+                          color: #cc4444;
+                          cursor: pointer;
+                          font-size: 18px;
+                          padding: 0 4px;
+                        "
+                      >
+                        ×
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <button class="add-row-btn" onclick="addNonbankRow()">
+              + 항목 추가
+            </button>
+            <div
+              id="nonbank-total-display"
+              style="
+                margin-top: 10px;
+                padding: 10px 14px;
+                background: var(--gray-50);
+                border: 1px solid var(--gray-200);
+                border-radius: var(--radius-sm);
+                font-size: 13px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span style="color: var(--text-muted)"
+                >기타 대출 월 상환원리금 합계</span
+              >
+              <strong id="nonbank-monthly-display" style="color: var(--primary)"
+                >0 만 원</strong
+              >
+            </div>
+
+            <p class="sec-title red" style="margin-top: 24px">
+              02-3 · 채무조정 이력
+            </p>
+            <div class="form-row">
+              <label class="form-label"
+                >채무조정(개인회생·파산·워크아웃 등)을 이용한 경험이 있거나 현재
+                진행 중이신가요?<span class="req">*</span></label
+              >
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'debt-adj');showCond('debt-adj-now',false);showCond('debt-adj-past',false)"
+                  ><input type="radio" name="debt-adj" value="없음" />
+                  <div class="radio-dot"></div>
+                  없음</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'debt-adj');showCond('debt-adj-now',true);showCond('debt-adj-past',false)"
+                  ><input type="radio" name="debt-adj" value="현재진행중" />
+                  <div class="radio-dot"></div>
+                  현재 진행 중</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'debt-adj');showCond('debt-adj-now',false);showCond('debt-adj-past',true)"
+                  ><input type="radio" name="debt-adj" value="과거완료" />
+                  <div class="radio-dot"></div>
+                  과거 완료 이력 있음</label
+                >
+              </div>
+              <div class="cond" id="debt-adj-now">
+                <div class="form-row" style="margin-bottom: 12px">
+                  <label class="form-label">유형 선택</label>
+                  <div class="radio-group">
+                    <label
+                      class="radio-btn"
+                      onclick="toggleRadio(this,'adj-type')"
+                      ><input type="radio" name="adj-type" value="개인회생" />
+                      <div class="radio-dot"></div>
+                      개인회생</label
+                    >
+                    <label
+                      class="radio-btn"
+                      onclick="toggleRadio(this,'adj-type')"
+                      ><input type="radio" name="adj-type" value="파산·면책" />
+                      <div class="radio-dot"></div>
+                      파산·면책</label
+                    >
+                    <label
+                      class="radio-btn"
+                      onclick="toggleRadio(this,'adj-type')"
+                      ><input
+                        type="radio"
+                        name="adj-type"
+                        value="신복위워크아웃"
+                      />
+                      <div class="radio-dot"></div>
+                      신복위 개인워크아웃</label
+                    >
+                    <label
+                      class="radio-btn"
+                      onclick="toggleRadio(this,'adj-type')"
+                      ><input
+                        type="radio"
+                        name="adj-type"
+                        value="프리워크아웃"
+                      />
+                      <div class="radio-dot"></div>
+                      프리워크아웃</label
+                    >
+                  </div>
+                </div>
+                <div class="grid2" style="margin-bottom: 10px">
+                  <div>
+                    <label class="form-label">총 납입 회차 (n회)</label>
+                    <input
+                      class="form-input"
+                      type="number"
+                      placeholder="예) 128"
+                      id="total-round"
+                    />
+                  </div>
+                  <div>
+                    <label class="form-label"
+                      >현재까지 납입 완료 회차 (m회)</label
+                    >
+                    <input
+                      class="form-input"
+                      type="number"
+                      placeholder="예) 64"
+                      id="done-round"
+                      oninput="calcRepayRate()"
+                    />
+                  </div>
+                </div>
+                <div
+                  id="repay-rate-display"
+                  style="
+                    display: none;
+                    background: var(--success-light);
+                    border: 1px solid #a8d5b8;
+                    border-radius: var(--radius-sm);
+                    padding: 10px 14px;
+                    font-size: 13px;
+                    color: var(--success);
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                  "
+                >
+                  성실상환도: <span id="repay-rate-val">—</span>% 납입 완료
+                </div>
+                <div class="form-row" style="margin-bottom: 0">
+                  <label class="form-label">월 납입액 (만원)</label>
+                  <input
+                    class="form-input"
+                    type="text"
+                    id="f-adj-monthly"
+                    placeholder="월 ___만 원"
+                  />
+                </div>
+              </div>
+              <div class="cond" id="debt-adj-past">
+                <textarea
+                  class="form-textarea"
+                  id="f-adj-past-detail"
+                  placeholder="채무조정이 완료된 시점과 이유를 간략히 설명해 주세요.&#10;예) 2022년에 신복위 워크아웃을 완료했습니다. 당시 가족 병환으로 수입이 줄었었습니다."
+                  style="min-height: 80px"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAT 03 — 소득과 생활비 -->
+        <div class="card" style="overflow: hidden">
+          <div
+            class="cat-header"
+            style="background: linear-gradient(135deg, #1b6b3a, #2e9954)"
+          >
+            <span class="cat-num">03</span>
+            <div>
+              <div class="cat-title-text">소득과 생활비</div>
+              <div class="cat-sub">현재 소득과 지출 현황을 입력해 주세요</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="sec-title green">03-1 · 소득</p>
+            <div class="info-box">
+              <span>ℹ️</span>
+              <span
+                >소득이 발생하는 항목별로 월 금액을 입력해 주세요. 해당 없는
+                항목은 0 또는 공란으로 두시면 됩니다.</span
+              >
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >월 소득 (세후 실수령액, 항목별 입력)<span class="req"
+                  >*</span
+                ></label
+              >
+
+              <div
+                style="
+                  border-radius: var(--radius-sm);
+                  overflow: hidden;
+                  border: 1px solid var(--gray-200);
+                "
+              >
+                <div class="income-section-header">
+                  <span class="income-section-tag" style="color: var(--primary)"
+                    >근로 · 사업</span
+                  >
+                </div>
+                <div class="income-row">
+                  <div style="flex: 1">
+                    <div class="income-label">
+                      근로소득 <span class="income-sub">(세후 실수령액)</span>
+                    </div>
+                  </div>
+                  <select
+                    class="form-select"
+                    id="inc-work-type"
+                    style="width: 160px; font-size: 12px; margin-right: 8px"
+                  >
+                    <option value="">고용형태</option>
+                    <option>정규직</option>
+                    <option>계약직</option>
+                    <option>일용직·아르바이트</option>
+                    <option>프리랜서·특수고용</option>
+                    <option>플랫폼 노동</option>
+                  </select>
+                  <div class="income-input-wrap">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      id="inc-work"
+                      oninput="updateCalc()"
+                    />
+                    <span class="income-unit">만 원</span>
+                  </div>
+                </div>
+                <div class="income-row">
+                  <div style="flex: 1">
+                    <div class="income-label">
+                      사업소득 <span class="income-sub">(자영업·프리랜서)</span>
+                    </div>
+                  </div>
+                  <div class="income-input-wrap">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      id="inc-biz"
+                      oninput="updateCalc()"
+                    />
+                    <span class="income-unit">만 원</span>
+                  </div>
+                </div>
+
+                <div class="income-section-header">
+                  <span class="income-section-tag" style="color: #6b4800"
+                    >지원 · 기타</span
+                  >
+                </div>
+                <div class="income-row">
+                  <div style="flex: 1">
+                    <div class="income-label">
+                      정부지원금
+                      <span class="income-sub">(수급·보조금 등)</span>
+                    </div>
+                  </div>
+                  <div class="income-input-wrap">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      id="inc-gov"
+                      oninput="updateCalc()"
+                    />
+                    <span class="income-unit">만 원</span>
+                  </div>
+                </div>
+                <div
+                  class="income-row"
+                  style="
+                    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+                    border-bottom: 1px solid var(--gray-200);
+                  "
+                >
+                  <div style="flex: 1">
+                    <div class="income-label">가족 지원 / 기타</div>
+                  </div>
+                  <div class="income-input-wrap">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      id="inc-etc"
+                      oninput="updateCalc()"
+                    />
+                    <span class="income-unit">만 원</span>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style="
+                  margin-top: 10px;
+                  padding: 10px 14px;
+                  background: var(--primary-pale);
+                  border: 1px solid #bdd8dc;
+                  border-radius: var(--radius-sm);
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                "
+              >
+                <span
+                  style="
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: var(--primary);
+                  "
+                  >월 소득 합계</span
+                >
+                <span
+                  style="
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: var(--primary);
+                  "
+                  id="income-total-display"
+                  >— 만 원</span
+                >
+              </div>
+            </div>
+
+              03-2 · 월 생활비
+            </p>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-muted);
+                margin-bottom: 14px;
+              "
+            >
+              해당 없는 항목은 0으로 입력해 주세요.
+            </p>
+
+            <div style="border-radius: var(--radius-sm); overflow: hidden">
+              <div
+                class="income-section-header"
+                style="
+                  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+                  border: 1px solid var(--gray-200);
+                  border-bottom: none;
+                "
+              >
+                <span class="income-section-tag" style="color: var(--primary)"
+                  >주거</span
+                >
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 주거비
+                    <span class="income-sub">(월세·전세이자·관리비 등)</span>
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-rent"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+
+              <div
+                class="income-section-header"
+                style="border: 1px solid var(--gray-200); border-bottom: none"
+              >
+                <span class="income-section-tag" style="color: #2e6b2e"
+                  >생활</span
+                >
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 식비 <span class="income-sub">(가구 전체 기준)</span>
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-food"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 교통비
+                    <span class="income-sub">(대중교통·주유비 등)</span>
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-transit"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">월 통신비</div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-comm"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+
+              <div
+                class="income-section-header"
+                style="border: 1px solid var(--gray-200); border-bottom: none"
+              >
+                <span class="income-section-tag" style="color: #8b4513"
+                  >의료·교육</span
+                >
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 의료비
+                    <span class="income-sub">(병원비·약값·간병비 등)</span>
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-medical"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 교육·양육비
+                    <span class="income-sub">(학원·보육료·돌봄 등)</span>
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-edu"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+
+              <div
+                class="income-section-header"
+                style="border: 1px solid var(--gray-200); border-bottom: none"
+              >
+                <span class="income-section-tag" style="color: #1a3a70"
+                  >금융</span
+                >
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 보험료
+                    <span class="income-sub"
+                      >(실손·생명·기타, 국민건강보험 제외)</span
+                    >
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-insure"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 부채 상환원리금
+                    <span class="income-sub">(02-1·02-2 자동 반영)</span>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 3px;
+                  "
+                >
+                  <div class="income-input-wrap">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      id="exp-loan"
+                      oninput="updateCalc()"
+                      style="background: #f5f5f5"
+                      readonly
+                    /><span class="income-unit">만 원</span>
+                  </div>
+                  <span style="font-size: 11px; color: var(--primary)"
+                    >대출표 입력 시 자동 합산</span
+                  >
+                </div>
+              </div>
+              <div class="income-row">
+                <div style="flex: 1">
+                  <div class="income-label">
+                    월 저축
+                    <span class="income-sub">(적금·예금 등 정기저축)</span>
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-saving"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+
+              <div
+                class="income-section-header"
+                style="border: 1px solid var(--gray-200); border-bottom: none"
+              >
+                <span class="income-section-tag" style="color: var(--gray-500)"
+                  >기타</span
+                >
+              </div>
+              <div
+                class="income-row"
+                style="
+                  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+                  border: 1px solid var(--gray-200);
+                "
+              >
+                <div style="flex: 1">
+                  <div class="income-label">
+                    기타 고정 지출
+                    <span class="income-sub"
+                      >(위 항목에 포함되지 않는 정기 지출)</span
+                    >
+                  </div>
+                </div>
+                <div class="income-input-wrap">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    id="exp-etc"
+                    oninput="updateCalc()"
+                  /><span class="income-unit">만 원</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-box">
+              <div class="calc-title">시스템 자동 산출 — 순가처분소득</div>
+              <div class="calc-row">
+                <span>월 소득 합계</span><span id="ci">— 만 원</span>
+              </div>
+              <div class="calc-row">
+                <span>월 필수지출 합계</span><span id="ce">— 만 원</span>
+              </div>
+              <div class="calc-total">
+                <div class="calc-row">
+                  <span>순가처분소득</span
+                  ><span id="cn" style="font-size: 20px; color: #7fe0a8"
+                    >— 만 원</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <p class="sec-title green" style="margin-top: 24px">
+              03-3 · 위기 대응 여건
+            </p>
+            <div class="form-row">
+              <label class="form-label"
+                >갑작스러운 어려움이 생겼을 때 도움이 될 수 있는 것들을 선택해
+                주세요.</label
+              >
+              <div class="buffer-grid">
+                <div class="buffer-item">
+                  <span class="buffer-icon">💰</span>
+                  <div style="flex: 1">
+                    <div class="buffer-label">현재 보유 중인 현금·예금</div>
+                    <div class="buffer-sub">통장 잔고·비상금 기준</div>
+                  </div>
+                  <select
+                    class="form-select"
+                    id="buf-cash"
+                    style="width: 160px"
+                  >
+                    <option value="">선택</option>
+                    <option>없음 (0원)</option>
+                    <option>10만 원 미만</option>
+                    <option>10만~50만 원</option>
+                    <option>50만~100만 원</option>
+                    <option>100만~300만 원</option>
+                    <option>300만 원 이상</option>
+                  </select>
+                </div>
+                <div class="buffer-item">
+                  <span class="buffer-icon">🤝</span>
+                  <div style="flex: 1">
+                    <div class="buffer-label">
+                      가족·지인에게 도움받을 수 있는 금액
+                    </div>
+                    <div class="buffer-sub">현실적으로 가능한 금액 기준</div>
+                  </div>
+                  <select
+                    class="form-select"
+                    id="buf-family"
+                    style="width: 160px"
+                  >
+                    <option value="">선택</option>
+                    <option>없음</option>
+                    <option>10만 원 미만</option>
+                    <option>10만~50만 원</option>
+                    <option>50만~100만 원</option>
+                    <option>100만~300만 원</option>
+                    <option>300만 원 이상</option>
+                  </select>
+                </div>
+                <div class="buffer-item">
+                  <span class="buffer-icon">🏷️</span>
+                  <div style="flex: 1">
+                    <div class="buffer-label">
+                      필요 시 처분·해지 가능한 자산
+                    </div>
+                    <div class="buffer-sub">예·적금, 차량, 귀금속 등</div>
+                  </div>
+                  <select
+                    class="form-select"
+                    id="buf-asset"
+                    style="width: 160px"
+                  >
+                    <option value="">선택</option>
+                    <option>없음 (0원)</option>
+                    <option>50만 원 미만</option>
+                    <option>50만~200만 원</option>
+                    <option>200만~500만 원</option>
+                    <option>500만 원 이상</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >예상치 못한 상황이 생겼을 때 어떻게 대처하실 것 같으신가요?
+                <span class="opt">(선택)</span></label
+              >
+              <p
+                style="
+                  font-size: 12px;
+                  color: var(--text-muted);
+                  margin-bottom: 8px;
+                "
+              >
+                현실적으로 생각나는 것들을 편하게 적어주세요.
+              </p>
+              <textarea
+                class="form-textarea"
+                id="f-crisis"
+                style="min-height: 80px"
+                placeholder="예) 부모님께 일시적으로 도움을 받을 수 있고, 적금이 만기되는 게 있어서 급한 상황은 어느 정도 버틸 수 있을 것 같습니다."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn-back" onclick="goStep(1)">← 이전</button>
+          <button class="btn btn-primary" onclick="goStep(3)">
+            다음: 신청배경·계획 →
+          </button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+     STEP 3 — 신청배경·대출계획
+════════════════════ -->
+      <div class="page" id="page3">
+        <!-- 응원 메시지 - 신청배경 진입 전 -->
+        <div style="text-align:center;padding:18px 20px;background:linear-gradient(135deg,#f0f9f4,#e8f4fd);border-radius:12px;margin:0 0 16px;border:1px solid #c8e6d4">
+          <div style="font-size:18px;margin-bottom:4px">🌱</div>
+          <div style="font-size:14px;font-weight:600;color:#1b6b3a;margin-bottom:2px">숫자 입력은 여기까지예요. 정말 잘 하셨어요!</div>
+          <div style="font-size:13px;color:#2e6b50">이제부터는 담당자에게 드리는 이야기입니다.<br>형식보다 <strong>진심</strong>이 더 중요합니다. 편하게 적어주세요.</div>
+        </div>
+
+        <!-- CAT 04 — 대출 신청서 (5개 질문) -->
+        <div class="card" style="overflow: hidden">
+          <div class="cat-header" style="background: linear-gradient(135deg, #4a1a6b, #7b3fae)">
+            <span class="cat-num">04</span>
+            <div>
+              <div class="cat-title-text">대출 신청서</div>        
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="info-box" style="background:#f8f0ff;border-color:#c8a8e8">
+              <span>📋</span>
+              <span>아래 5개 항목은 심사에서 가장 비중 있게 검토됩니다. 예시를 참고하되, 본인의 상황을 구체적이고 솔직하게 적어주세요.</span>
+            </div>
+
+            <!-- Q1 부채 발생 이유 -->
+            <div class="form-row" style="border-left:3px solid #7b3fae;padding-left:14px">
+              <label class="form-label" style="color:#4a1a6b">
+                Q1. 부채 발생 이유<span class="req">*</span>
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+                언제부터, 어떤 이유로 지금의 어려움이 시작되었나요?<br>
+                <span style="color:#888">예) 최근 소득 변동 여부, 가족 부양, 생활비 부족, 사업 실패, 질병 등</span>
+              </p>
+              <textarea class="form-textarea" id="f-background"
+                placeholder="예) 3년 전 다니던 회사가 폐업하면서 실직하게 되었습니다. 재취업이 예상보다 오래 걸렸고, 그 사이 카드값과 생활비를 감당하기 위해 대출을 늘렸습니다. 지금은 재취업에 성공했지만, 당시에 쌓인 고금리 대출 이자가 매달 큰 부담입니다."
+                style="min-height:140px" maxlength="800"
+                oninput="countChars(this,'cnt-background')"></textarea>
+              <div class="char-counter"><span id="cnt-background">0</span> / 800자</div>
+              <div class="error-msg" id="err-background"></div>
+            </div>
+
+            <!-- Q2 대환 필요 채무 현황 및 자금 사용계획 -->
+            <div class="form-row" style="border-left:3px solid #7b3fae;padding-left:14px;margin-top:20px">
+              <label class="form-label" style="color:#4a1a6b">
+                Q2. 대환 필요 채무 현황 및 자금 사용계획<span class="req">*</span>
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+                앞에 입력하신 부채 중 이번 대출로 갚으려는 채무는 무엇인가요? 독촉·추심·연체 상황이 있다면 함께 적어주세요.<br>
+                <span style="color:#888">예) A저축은행 카드론 300만 원 전액 대환 예정, 현재 2개월 연체 중 / 대환 후 월 상환액이 25만 원 → 12만 원으로 줄어들 것으로 예상</span>
+              </p>
+              <textarea class="form-textarea" id="f-use-repay-plan"
+                placeholder="어떤 채무를 대환할지, 대환 후 월 상환액이 어떻게 달라지는지 적어주세요."
+                style="min-height:120px" maxlength="800"
+                oninput="countChars(this,'cnt-plan')"></textarea>
+              <div class="char-counter"><span id="cnt-plan">0</span> / 800자</div>
+              <div class="error-msg" id="err-plan"></div>
+            </div>
+
+            <!-- Q3 현재 소득 및 고용 현황 -->
+            <div class="form-row" style="border-left:3px solid #7b3fae;padding-left:14px;margin-top:20px">
+              <label class="form-label" style="color:#4a1a6b">
+                Q3. 현재 소득 및 고용 현황
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+                현재 직업·근무 형태, 월평균 실수령 소득, 소득의 지속 가능성 등을 설명해 주세요.<br>
+                <span style="color:#888">예) 현재 편의점 아르바이트로 월 130만 원 수입 / 계약기간이 6개월 남아 안정적이나 이후 연장 불확실 / 병행하여 구직 활동 중</span>
+              </p>
+              <textarea class="form-textarea" id="f-income-status"
+                placeholder="소득이 있다면 얼마나 안정적인지, 없다면 앞으로의 계획을 적어주세요."
+                style="min-height:100px" maxlength="600"
+                oninput="countChars(this,'cnt-income-status')"></textarea>
+              <div class="char-counter"><span id="cnt-income-status">0</span> / 600자</div>
+            </div>
+
+            <!-- Q4 기대 변화 및 재무 안정화 계획 -->
+            <div class="form-row" style="border-left:3px solid #7b3fae;padding-left:14px;margin-top:20px">
+              <label class="form-label" style="color:#4a1a6b">
+                Q4. 본 지원을 통한 기대 변화 및 재무 안정화 계획
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+                이 대출로 어떤 변화가 생기길 기대하시나요? 향후 6개월간 재무를 어떻게 관리할 계획인지 함께 적어주세요.<br>
+                <span style="color:#888">예) 절감된 이자로 매달 비상금을 5만 원씩 적립할 계획 / 지출 항목 중 불필요한 구독을 해지해 생활비를 줄이겠습니다</span>
+              </p>
+              <textarea class="form-textarea" id="f-future"
+                placeholder="대출 이후 달라지는 점, 6개월간의 재무관리 계획을 편하게 적어주세요."
+                style="min-height:100px" maxlength="600"
+                oninput="countChars(this,'cnt-future')"></textarea>
+              <div class="char-counter"><span id="cnt-future">0</span> / 600자</div>
+            </div>
+
+            <!-- Q5 재무관리에서 가장 어려운 점 -->
+            <div class="form-row" style="border-left:3px solid #7b3fae;padding-left:14px;margin-top:20px">
+              <label class="form-label" style="color:#4a1a6b">
+                Q5. 재무관리에서 가장 어려운 점
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+                돈 관리를 할 때 가장 힘든 부분이 무엇인지 솔직하게 알려주세요.<br>
+                <span style="color:#888">예) 카드값 통제 / 생활비 부족 / 수입 불안정 / 가족 부양 부담 / 채무 우선순위 판단 어려움 / 소비 습관 등</span>
+              </p>
+              <textarea class="form-textarea" id="f-burden"
+                placeholder="2~3줄로 편하게 적어주세요."
+                style="min-height:80px" maxlength="500"
+                oninput="countChars(this,'cnt-burden')"></textarea>
+              <div class="char-counter"><span id="cnt-burden">0</span> / 500자</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CAT 05 — 대출 계획 -->
+        <div class="card" style="overflow: hidden">
+          <div
+            class="cat-header"
+            style="background: linear-gradient(135deg, #00546a, #007a96)"
+          >
+            <span class="cat-num">05</span>
+            <div>
+              <div class="cat-title-text">대출 계획</div>
+              <div class="cat-sub">신청 금액과 사용·상환 계획을 적어주세요</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="sec-title">05-1 · 신청 내용</p>
+            <div class="form-row">
+              <label class="form-label"
+                >신청 금액<span class="req">*</span></label
+              >
+              <div style="display: flex; align-items: center; gap: 10px">
+                <input
+                  class="form-input"
+                  type="number"
+                  id="f-amount"
+                  placeholder="최대 500"
+                  style="max-width: 180px"
+                  min="0"
+                  max="500"
+                  oninput="validateAmount(this)"
+                />
+                <span
+                  style="
+                    font-size: 14px;
+                    color: var(--text-muted);
+                    white-space: nowrap;
+                  "
+                  >만 원 (최대 500만 원)</span
+                >
+              </div>
+              <div class="error-msg" id="err-amount"></div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >희망 상환기간<span class="req">*</span></label
+              >
+              <div class="radio-group">
+                <label class="radio-btn" onclick="toggleRadio(this,'period')"
+                  ><input type="radio" name="period" value="12개월" />
+                  <div class="radio-dot"></div>
+                  12개월</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'period')"
+                  ><input type="radio" name="period" value="24개월" />
+                  <div class="radio-dot"></div>
+                  24개월</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'period')"
+                  ><input type="radio" name="period" value="36개월" />
+                  <div class="radio-dot"></div>
+                  36개월</label
+                >
+              </div>
+            </div>
+
+            <p class="sec-title">05-2 · 사용 목적</p>
+            <div class="form-row">
+              <label class="form-label"
+                >이번 대출을 주로 어디에 사용하실 예정인가요?<span class="req"
+                  >*</span
+                ></label
+              >
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input
+                    type="radio"
+                    name="loan-purpose"
+                    value="고금리대출상환"
+                  />
+                  <div class="radio-dot"></div>
+                  고금리 대출 상환 (대환)</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input
+                    type="radio"
+                    name="loan-purpose"
+                    value="생계비·생활비"
+                  />
+                  <div class="radio-dot"></div>
+                  생계비·생활비</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input type="radio" name="loan-purpose" value="의료비" />
+                  <div class="radio-dot"></div>
+                  의료비</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input type="radio" name="loan-purpose" value="주거관련" />
+                  <div class="radio-dot"></div>
+                  주거 관련 (보증금·수리)</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input
+                    type="radio"
+                    name="loan-purpose"
+                    value="사업운영자금"
+                  />
+                  <div class="radio-dot"></div>
+                  사업 운영자금</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input type="radio" name="loan-purpose" value="교육비" />
+                  <div class="radio-dot"></div>
+                  교육비</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'loan-purpose')"
+                  ><input type="radio" name="loan-purpose" value="기타" />
+                  <div class="radio-dot"></div>
+                  기타</label
+                >
+              </div>
+            </div>
+
+            <p class="sec-title">05-3 · 상환 계획</p>
+            <div class="form-row">
+              <label class="form-label">
+                이 대출을 어떤 소득으로, 매월 얼마씩 상환할 계획인가요? 예상치 못한 상황이 생기면 어떻게 대처하실 건가요?<span class="req">*</span>
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+                ① 상환 재원 (어떤 소득으로) &nbsp;② 월 상환 예정액 &nbsp;③ 소득이 줄거나 갑작스러운 지출이 생기면 어떻게 대처할지
+              </p>
+              <textarea
+                class="form-textarea"
+                id="f-repay-plan"
+                placeholder="예) 매달 급여 180만 원에서 월 상환액 15만 원을 자동이체로 납입할 계획입니다. 소득이 갑자기 줄 경우 불필요한 구독서비스를 먼저 정리하고, 필요 시 담당자와 일정을 협의하겠습니다."
+                style="min-height: 120px"
+                maxlength="700"
+                oninput="countChars(this,'cnt-repay')"
+              ></textarea>
+              <div class="char-counter"><span id="cnt-repay">0</span> / 700자</div>
+              <div class="error-msg" id="err-repay"></div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >대출 상환 자동이체 설정 동의<span class="req">*</span></label
+              >
+              <div
+                style="
+                  background: var(--primary-pale);
+                  border: 1.5px solid var(--border);
+                  border-radius: var(--radius-sm);
+                  padding: 14px 16px;
+                "
+              >
+                <label
+                  style="
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 10px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: var(--text);
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    id="autodebit-agree"
+                    style="
+                      margin-top: 3px;
+                      accent-color: var(--primary);
+                      width: 16px;
+                      height: 16px;
+                      flex-shrink: 0;
+                    "
+                  />
+                  <span
+                    >[필수] 대출 상환금이 지정 계좌에서 매월 자동이체 방식으로
+                    납부됨에 동의합니다.</span
+                  >
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1단계 완료 + 중간 제출 -->
+        <div class="mid-submit-card">
+          <div class="mid-submit-inner">
+            <p
+              style="
+                font-size: 17px;
+                font-weight: 700;
+                color: var(--primary-dark);
+                margin-bottom: 8px;
+              "
+            >
+              필수 정보 입력이 완료되었습니다.
+            </p>
+            <p
+              style="
+                font-size: 14px;
+                color: var(--text-muted);
+                margin-bottom: 20px;
+              "
+            >
+              아래 <strong>최종 제출</strong>을 누르거나, 2단계 금융생활 설문에
+              계속해서 참여하세요.
+            </p>
+            <label
+              style="
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                color: var(--text);
+                justify-content: flex-start;
+                text-align: left;
+                margin-bottom: 20px;
+                max-width: 520px;
+                margin-left: auto;
+                margin-right: auto;
+              "
+            >
+              <input
+                type="checkbox"
+                id="final-consent-mid"
+                style="
+                  margin-top: 3px;
+                  accent-color: var(--primary);
+                  width: 16px;
+                  height: 16px;
+                  flex-shrink: 0;
+                "
+              />
+              <span
+                >위의 내용이 모두 사실임을 확인하며, 허위 기재 시 대출이 거절될
+                수 있음을 동의합니다.</span
+              >
+            </label>
+            <button
+              class="btn btn-primary"
+              onclick="submitMid()"
+              style="
+                max-width: 360px;
+                margin: 0 auto;
+                width: auto;
+                padding: 14px 32px;
+              "
+            >
+              제출
+            </button>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn-back" onclick="goStep(2)">← 이전</button>
+          <button
+            class="btn btn-primary"
+            onclick="goStep(4)"
+            style="background: linear-gradient(135deg, #1a3a1a, #2e6b2e)"
+          >
+            2단계 설문에도 참여하기 →
+          </button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+     STEP 4 — 금융생활·성향
+════════════════════ -->
+      <div class="page" id="page4">
+        <!-- 응원 메시지 - 마지막 단계 진입 -->
+        <div style="text-align:center;padding:16px 20px;background:linear-gradient(135deg,#f0fff4,#f0f8ff);border-radius:12px;margin:0 0 16px;border:1px solid #b8e0c8">
+          <div style="font-size:20px;margin-bottom:4px">🎉</div>
+          <div style="font-size:14px;font-weight:600;color:#1b6b3a;margin-bottom:2px">신청서 작성 거의 다 됐어요!</div>
+          <div style="font-size:13px;color:#2e7a50"></div>
+        </div>
+        <div class="card" style="overflow: hidden">
+          <div
+            class="cat-header"
+            style="background: linear-gradient(135deg, #1a3a1a, #2e6b2e)"
+          >
+            <span class="cat-num">06</span>
+            <div>
+              <div class="cat-title-text">금융 생활 및 가치관</div>
+              <div class="cat-sub">
+                2단계 심층 설문 — 선택사항 (심사 결과에 영향 없음)
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div
+              style="
+                background: #e8f5ec;
+                border: 1.5px solid #a8d8b0;
+                border-radius: var(--radius-sm);
+                padding: 16px 20px;
+                margin-bottom: 24px;
+              "
+            >
+              <p
+                style="
+                  font-size: 14px;
+                  font-weight: 700;
+                  color: #1e5c2e;
+                  margin-bottom: 6px;
+                "
+              >
+                이 설문은 선택사항입니다
+              </p>
+              <p
+                style="
+                  font-size: 13px;
+                  color: #2e6b2e;
+                  line-height: 1.7;
+                  margin: 0;
+                "
+              >
+                본 설문은 차기 사업의 심사 기준 고도화 및 정책 개선을 위한 참고
+                자료로 활용됩니다.<br />
+                <strong>현재 심사 결과에는 영향을 미치지 않습니다.</strong
+                ><br />
+                미참여 시 어떠한 불이익도 발생하지 않으며, 참여 시 보다 정밀한
+                상담이 가능합니다.
+              </p>
+            </div>
+
+            <p class="sec-title">06-1 · 평소 금융 생활</p>
+            <div class="form-row">
+              <label class="form-label"
+                >통신비, 공과금, 보험료 등을 자동이체로 납부하고
+                계신가요?</label
+              >
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'autotransfer')"
+                  ><input type="radio" name="autotransfer" />
+                  <div class="radio-dot"></div>
+                  대부분 자동이체</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'autotransfer')"
+                  ><input type="radio" name="autotransfer" />
+                  <div class="radio-dot"></div>
+                  일부만 자동이체</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'autotransfer')"
+                  ><input type="radio" name="autotransfer" />
+                  <div class="radio-dot"></div>
+                  아니오, 수동 납부</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >최근 1년 사이에 통신비, 공과금 등을 연체한 적이
+                있으신가요?</label
+              >
+              <div class="radio-group">
+                <label class="radio-btn" onclick="toggleRadio(this,'util-late')"
+                  ><input type="radio" name="util-late" />
+                  <div class="radio-dot"></div>
+                  없음</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'util-late')"
+                  ><input type="radio" name="util-late" />
+                  <div class="radio-dot"></div>
+                  1~2회</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'util-late')"
+                  ><input type="radio" name="util-late" />
+                  <div class="radio-dot"></div>
+                  3회 이상</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >최근 6개월 사이에 해당하는 것이 있으시면 모두 선택해
+                주세요.</label
+              >
+              <div class="check-group">
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'fin-behavior')"
+                  ><div class="check-mark"></div>
+                  가계부 앱 사용</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'fin-behavior')"
+                  ><div class="check-mark"></div>
+                  지출 계획 수립</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'fin-behavior')"
+                  ><div class="check-mark"></div>
+                  재무 상담·교육 참여</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'fin-behavior')"
+                  ><div class="check-mark"></div>
+                  체크카드로 전환</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'fin-behavior')"
+                  ><div class="check-mark"></div>
+                  해당없음</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >최근 3개월 사이 주거비, 통신비, 보험료 등 고정 지출이 어떻게
+                달라졌나요?</label
+              >
+              <div class="radio-group">
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'fixed-exp-change')"
+                  ><input type="radio" name="fixed-exp-change" />
+                  <div class="radio-dot"></div>
+                  증가했다</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'fixed-exp-change')"
+                  ><input type="radio" name="fixed-exp-change" />
+                  <div class="radio-dot"></div>
+                  비슷하게 유지됐다</label
+                >
+                <label
+                  class="radio-btn"
+                  onclick="toggleRadio(this,'fixed-exp-change')"
+                  ><input type="radio" name="fixed-exp-change" />
+                  <div class="radio-dot"></div>
+                  감소했다</label
+                >
+              </div>
+            </div>
+
+            <p class="sec-title">06-2 · 지원 제도 이용 경험</p>
+            <div class="form-row">
+              <label class="form-label"
+                >이번 신청 전에 햇살론, 새희망홀씨 등 서민금융 지원 제도를 알고
+                계셨나요?</label
+              >
+              <div class="radio-group">
+                <label class="radio-btn" onclick="toggleRadio(this,'knew-prog')"
+                  ><input type="radio" name="knew-prog" />
+                  <div class="radio-dot"></div>
+                  알고 있었고 이미 시도했음</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'knew-prog')"
+                  ><input type="radio" name="knew-prog" />
+                  <div class="radio-dot"></div>
+                  알고 있었으나 조건이 안 됐음</label
+                >
+                <label class="radio-btn" onclick="toggleRadio(this,'knew-prog')"
+                  ><input type="radio" name="knew-prog" />
+                  <div class="radio-dot"></div>
+                  잘 몰랐음</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >이번 신청 전에 다른 곳에 대출을 신청해 보신 적 있으신가요?
+                <span class="opt">(모두 선택)</span></label
+              >
+              <div class="check-group">
+                <label class="check-btn" onclick="toggleCheck(this,'prev-app')"
+                  ><div class="check-mark"></div>
+                  은행 거절</label
+                >
+                <label class="check-btn" onclick="toggleCheck(this,'prev-app')"
+                  ><div class="check-mark"></div>
+                  저축은행 거절</label
+                >
+                <label class="check-btn" onclick="toggleCheck(this,'prev-app')"
+                  ><div class="check-mark"></div>
+                  카드론 이용</label
+                >
+                <label class="check-btn" onclick="toggleCheck(this,'prev-app')"
+                  ><div class="check-mark"></div>
+                  정책금융기관 거절</label
+                >
+                <label class="check-btn" onclick="toggleCheck(this,'prev-app')"
+                  ><div class="check-mark"></div>
+                  처음 신청</label
+                >
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label"
+                >본인 신용점수에 가장 큰 영향을 준 요인이 무엇이라고
+                생각하시나요? <span class="opt">(해당 모두 선택)</span></label
+              >
+              <div class="check-group">
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  과거 연체·체납 이력</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  대출 건수가 많음 (다중채무)</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  채무조정 이력</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  신용카드 연체</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  소득 증빙 부족</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  금융 거래 이력 없음 (씬파일)</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  잘 모름</label
+                >
+                <label
+                  class="check-btn"
+                  onclick="toggleCheck(this,'score-factor')"
+                  ><div class="check-mark"></div>
+                  기타</label
+                >
+              </div>
+              <p
+                style="
+                  font-size: 11px;
+                  color: var(--text-muted);
+                  margin-top: 8px;
+                "
+              >
+                ※ 신청자 인식과 실제 데이터의 차이를 심사 참고 지표로
+                활용합니다.
+              </p>
+            </div>
+
+            <p class="sec-title" style="margin-top: 28px">
+              05-3 · 생각과 가치관
+              <span
+                style="
+                  font-size: 11px;
+                  font-weight: 400;
+                  color: var(--text-muted);
+                "
+                >(심사 미반영 · 데이터 축적 목적)</span
+              >
+            </p>
+            <div class="info-box" style="margin-bottom: 16px">
+              <span>ℹ️</span>
+              <span
+                >아래 질문들은 현재 대출 심사에 직접 반영되지 않습니다. 1(전혀
+                그렇지 않다) ~ 5(매우 그렇다)로 편하게 답해주세요.</span
+              >
+            </div>
+            <div id="psych-questions"></div>
+
+            <div style="margin-top: 32px">
+              <p class="sec-title">최종 확인 및 동의</p>
+              <div
+                style="
+                  background: var(--gray-50);
+                  border-radius: var(--radius-sm);
+                  padding: 18px 20px;
+                  margin-bottom: 16px;
+                  font-size: 13px;
+                  color: var(--text-mid);
+                  line-height: 1.8;
+                "
+              >
+                위의 내용이 모두 사실임을 확인해 주세요. 허위 기재 시 대출이
+                거절될 수 있습니다.<br />
+                수집된 정보는 청년 희망사다리 금융지원 심사 목적으로만
+                사용됩니다.<br />
+                심사를 위해 추가 서류 요청이나 담당자 유선 연락이 있을 수
+                있습니다.
+              </div>
+              <label
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 10px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  color: var(--text);
+                "
+              >
+                <input
+                  type="checkbox"
+                  id="final-agree"
+                  style="
+                    margin-top: 3px;
+                    accent-color: var(--primary);
+                    width: 16px;
+                    height: 16px;
+                  "
+                />
+                <span
+                  >네, 모두 확인했어요. 개인정보 수집·이용에 동의하며, 심사를
+                  위한 추가 서류 제출 및 유선 상담에 응하겠습니다.</span
+                >
+              </label>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn-back" onclick="goStep(3)">← 이전</button>
+              <button
+                class="btn btn-primary"
+                id="submit-btn"
+                onclick="submitForm()"
+                style="background: linear-gradient(135deg, #1e5c2e, #2e6b2e)"
+              >
+                신청서 최종 제출
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+     STEP 5 — 완료
+════════════════════ -->
+      <div class="page" id="page5">
+        <div class="card">
+          <div class="complete-wrap">
+            <div class="complete-icon" style="font-size: 38px">🎉</div>
+            <h2>신청이 완료됐어요!</h2>
+            <p>
+              용기 내어 신청해주셔서 감사해요.<br />담당자가 꼼꼼히 검토할게요.
+            </p>
+            <div class="receipt-box">
+              <div class="receipt-label">접수번호</div>
+              <div class="receipt-num" id="receipt-display">—</div>
+            </div>
+            <p style="color: var(--text-muted)">
+              담당자가
+              <strong style="color: var(--primary)"
+                >영업일 기준 7일 이내</strong
+              >
+              등록하신 연락처로 연락드립니다.<br />
+              유선 상담과 추가 서류 확인 후 최종 심사가 진행됩니다.<br /><br />
+              <span style="color: var(--primary-light); font-size: 13px"
+                >소득증빙 서류는 담당자 안내 시 제출해 주시면 됩니다.</span
+              >
+            </p>
+            <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap">
+              <button
+                class="btn btn-primary"
+                style="width:auto;padding:14px 28px"
+                onclick="downloadReceipt()"
+              >
+                📄 접수증 PDF 저장
+              </button>
+              <button
+                class="btn"
+                style="width:auto;padding:14px 28px;background:var(--gray-100);color:var(--text-mid);border:1px solid var(--border)"
+                onclick="location.reload()"
+              >
+                처음으로
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ── 성향 문항 ─────────────────────────────────────────────
+      const psychItems = [
+        {
+          q: "금전적인 약속을 어기는 것은 인간관계에서 치명적이라고 생각한다.",
+          factor: "정직·성실",
+        },
+        {
+          q: "주변 사람들이 돈을 쓰자고 권유해도, 내 예산에 맞지 않으면 단호하게 거절한다.",
+          factor: "정직·성실",
+        },
+        {
+          q: "모임이나 친구들 사이에서 체면을 구기지 않기 위해 무리해서 지출하는 편이다.",
+          factor: "정직·성실",
+          rev: true,
+        },
+        {
+          q: "남은 통장 잔고나 갚아야 할 빚을 생각하면 종종 불안해서 잠이 오지 않는다.",
+          factor: "재무 걱정",
+        },
+        {
+          q: "혹시라도 연체가 발생하여 불이익을 당할까 봐 항상 걱정한다.",
+          factor: "재무 걱정",
+        },
+        {
+          q: "나의 경제적 상황은 운보다는 나의 노력에 달려 있다.",
+          factor: "자기효능감",
+        },
+        {
+          q: "어려운 상황에서도 나는 스스로를 믿고 포기하지 않는 편이다.",
+          factor: "자기효능감",
+        },
+        {
+          q: "예상치 못한 재무적 위기가 생겨도 침착하게 해결책을 찾아낼 수 있다.",
+          factor: "자기효능감",
+        },
+        {
+          q: "나는 대출 상환 약속을 반드시 지킬 의지가 있다.",
+          factor: "상환의지",
+        },
+        {
+          q: "경제적으로 어려울 때 주변에 손을 벌리기보다 내 지출을 먼저 통제한다.",
+          factor: "상환의지",
+        },
+        {
+          q: "나는 지금 겪고 있는 어려움을 극복하고 더 나은 미래를 만들 수 있다고 확신한다.",
+          factor: "상환의지",
+        },
+        {
+          q: "한 번 세운 지출 계획이나 상환 계획은 웬만하면 끝까지 지킨다.",
+          factor: "자기통제",
+        },
+        {
+          q: "나에게 주어진 재무적 의무 (공과금, 이자 납부 등)를 잊어버린 적이 거의 없다.",
+          factor: "자기통제",
+        },
+        {
+          q: "나는 계획에 없던 물건을 충동적으로 구매하는 경우가 자주 있다.",
+          factor: "자기통제",
+          rev: true,
+        },
+        {
+          q: "실패할 확률이 반반이더라도 대박을 칠 가능성이 있다면 과감히 도전하는 편이다.",
+          factor: "위험추구",
+        },
+        {
+          q: "무리한 빚을 내서라도 확실한 투자처가 있다면 돈을 빌릴 것이다.",
+          factor: "위험추구",
+          rev: true,
+        },
+      ];
+
+      function renderPsych() {
+        const c = document.getElementById("psych-questions");
+        const labels = [
+          "전혀\n그렇지 않다",
+          "그렇지\n않다",
+          "보통",
+          "그렇다",
+          "매우\n그렇다",
+        ];
+        c.innerHTML = psychItems
+          .map(
+            (it, i) => `
+    <div class="likert-q">
+      <div class="likert-factor">${it.factor}${it.rev ? " ★역문항" : ""}</div>
+      <div class="likert-text">Q${i + 1}. ${it.q}</div>
+      <div class="likert-scale">
+        <span class="likert-label">${labels[0]}</span>
+        <div class="likert-opts">
+          ${[1, 2, 3, 4, 5].map((v) => `<button class="likert-opt" onclick="pickLikert(this,${i})">${v}</button>`).join("")}
+        </div>
+        <span class="likert-label">${labels[4]}</span>
+      </div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function pickLikert(btn, idx) {
+        btn
+          .closest(".likert-opts")
+          .querySelectorAll(".likert-opt")
+          .forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+      }
+
+      // ── 자격확인 ──────────────────────────────────────────────
+      const eligState = {};
+      const eligKeys = ["eq1", "eq3", "eq4", "eq5"];
+      function eligCheck(lbl, qid, res) {
+        document.querySelectorAll(".radio-btn").forEach((l) => {
+          if (l.querySelector(`input[name="${qid}"]`))
+            l.classList.remove("selected");
+        });
+        lbl.classList.add("selected");
+        eligState[qid] = res;
+        const s = document.getElementById(qid + "-stop");
+        if (s) s.style.display = res === "fail" ? "block" : "none";
+        const allPass = eligKeys.every((k) => eligState[k] === "pass");
+        const allAnswered = eligKeys.every((k) => k in eligState);
+        const pass = document.getElementById("elig-pass");
+        const btn = document.getElementById("elig-next");
+        if (allAnswered && allPass) {
+          pass.style.display = "block";
+          btn.disabled = false;
+        } else {
+          pass.style.display = "none";
+          btn.disabled = true;
+        }
+      }
+
+      // ── 스텝 이동 ────────────────────────────────────────────
+      function goStep(n) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("page" + n).classList.add("active");
+        for (let i = 0; i < 5; i++) {
+          const el = document.getElementById("si" + i);
+          if (!el) continue;
+          el.classList.remove("active", "done");
+          const c = el.querySelector(".step-num");
+          if (i < n) {
+            el.classList.add("done");
+            c.textContent = "✓";
+          } else if (i === n) {
+            el.classList.add("active");
+            c.textContent = i + 1;
+          } else {
+            c.textContent = i + 1;
+          }
+        }
+        const bar = document.getElementById("survey-progress-bar");
+        if (bar) bar.style.display = n >= 2 && n <= 4 ? "block" : "none";
+        if (n >= 2 && n <= 4) setTimeout(updateSurveyProgress, 100);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // ── 라디오/체크 토글 ─────────────────────────────────────
+      function toggleRadio(lbl, name) {
+        document.querySelectorAll(".radio-btn").forEach((l) => {
+          if (l.querySelector(`input[name="${name}"]`))
+            l.classList.remove("selected");
+        });
+        lbl.classList.add("selected");
+      }
+      function toggleCheck(lbl, name) {
+        lbl.classList.toggle("selected");
+      }
+      function showCond(id, show) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (show) el.classList.add("show");
+        else el.classList.remove("show");
+      }
+
+      // ── 정부지원 토글 ────────────────────────────────────────
+      function toggleGovSupport(lbl, amtId, isNone) {
+        if (isNone) {
+          document.querySelectorAll(".check-btn").forEach((b) => {
+            if (b !== lbl) b.classList.remove("selected");
+          });
+          document.getElementById("gov-amounts").innerHTML = "";
+          lbl.classList.toggle("selected");
+          return;
+        }
+        document.querySelectorAll(".check-btn").forEach((b) => {
+          if (b.textContent.trim() === "해당없음")
+            b.classList.remove("selected");
+        });
+        lbl.classList.toggle("selected");
+        updateGovAmounts();
+      }
+
+      function updateGovAmounts() {
+        const wrap = document.getElementById("gov-amounts");
+        const selected = [
+          ...document.querySelectorAll(".check-btn.selected"),
+        ].map((b) => b.textContent.trim());
+        const govTypes = selected.filter((t) => t !== "해당없음");
+        const existing = {};
+        wrap.querySelectorAll("[data-gov]").forEach((el) => {
+          const inp = el.querySelector("input");
+          if (inp) existing[el.dataset.gov] = inp.value;
+        });
+        wrap.innerHTML = govTypes
+          .map((type) => {
+            const id = "gov-amount-" + type.replace(/[^가-힣a-zA-Z0-9]/g, "");
+            const val = existing[type] || "";
+            return `<div class="gov-amount-row" data-gov="${type}" style="display:flex;align-items:center;gap:10px;background:var(--primary-pale);border:1px solid #BDD8DC;border-radius:var(--radius-sm);padding:10px 14px">
+      <label style="font-size:13px;font-weight:600;color:var(--primary);min-width:160px;flex-shrink:0">${type}</label>
+      <input class="form-input" type="number" placeholder="0" value="${val}" id="${id}" oninput="syncGovIncome()" style="width:100px;text-align:right">
+      <span style="font-size:13px;color:var(--text-muted)">만 원 / 월</span>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function syncGovIncome() {
+        let total = 0;
+        document
+          .querySelectorAll('[data-gov] input[type="number"]')
+          .forEach((inp) => {
+            total += parseInt(inp.value || 0);
+          });
+        const govEl = document.getElementById("inc-gov");
+        if (govEl) {
+          govEl.value = total > 0 ? total : "";
+          updateCalc();
+        }
+      }
+
+      // ── 거주 형태별 비용 입력 ───────────────────────────────
+      function updateResidenceCost(type) {
+        const wrap = document.getElementById("residence-cost-wrap");
+        if (!wrap) return;
+        let html = "";
+        if (type === "전세" || type === "임대주택") {
+          html = `<div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:10px">${type === "임대주택" ? "임대주택" : "전세"} 비용 정보</div>
+    <div class="grid2">
+      <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">보증금</label>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+      <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">${type === "임대주택" ? "월 임대료" : "월 전세이자·관리비"}</label>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+    </div>`;
+          wrap.style.display = "block";
+        } else if (type === "월세") {
+          html = `<div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:10px">월세 비용 정보</div>
+    <div class="grid2">
+      <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">보증금</label>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+      <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">월 세</label>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+    </div>`;
+          wrap.style.display = "block";
+        } else if (type === "고시원") {
+          html = `<div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px">월 납입액</div>
+    <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="width:120px;text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원 / 월</span></div>`;
+          wrap.style.display = "block";
+        } else {
+          wrap.style.display = "none";
+          wrap.innerHTML = "";
+          return;
+        }
+        wrap.innerHTML = html;
+        wrap.classList.add("show");
+      }
+
+      // ── 채무조정 성실상환도 계산 ───────────────────────────
+      function calcRepayRate() {
+        const total = parseInt(
+          document.getElementById("total-round")?.value || 0,
+        );
+        const done = parseInt(
+          document.getElementById("done-round")?.value || 0,
+        );
+        const disp = document.getElementById("repay-rate-display");
+        const val = document.getElementById("repay-rate-val");
+        if (total > 0 && done > 0) {
+          const rate = Math.round((done / total) * 100);
+          val.textContent = rate;
+          disp.style.display = "block";
+        } else {
+          disp.style.display = "none";
+        }
+      }
+
+      // ── 부채 테이블 행 추가/삭제 ───────────────────────────
+      function addBankRow() {
+        const tbody = document.getElementById("bank-tbody");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+    <td><select class="form-select" style="font-size:12px;padding:6px 4px"><option value="">선택</option><option>은행</option><option>저축은행</option><option>카드사</option><option>캐피탈</option><option>보험사</option><option>기타</option></select></td>
+    <td><select class="form-select" style="font-size:12px;padding:6px 4px"><option value="">선택</option><option>일반신용대출</option><option>주택담보대출</option><option>정책서민금융 (햇살론 등)</option><option>카드론</option><option>차량구입대출</option><option>기타</option></select></td>
+    <td><input class="form-input" type="text" placeholder="기관명"></td>
+    <td><input class="form-input" type="number" placeholder="0" style="text-align:right"></td>
+    <td><input class="form-input" type="number" placeholder="0" style="text-align:right"></td>
+    <td><input class="form-input" type="number" placeholder="0" oninput="syncBankTotal()" style="text-align:right"></td>
+    <td><input class="form-input" type="number" placeholder="0.0" style="text-align:right"></td>
+    <td><select class="form-select" style="font-size:12px;padding:6px 4px"><option value="">선택</option><option>없음</option><option>부동산</option><option>차량</option><option>기타</option></select></td>
+    <td><input class="form-input" type="month" style="font-size:12px"></td>
+    <td><input class="form-input" type="month" style="font-size:12px"></td>
+    <td><button onclick="removeRow(this)" style="background:none;border:none;color:#CC4444;cursor:pointer;font-size:18px;padding:0 4px">×</button></td>`;
+        tbody.appendChild(tr);
+      }
+
+      // ── 고용형태 조건부 표시 ───────────────────────────────
+      function showEmployFields(type) {
+        ['직장인','자영업','플랫폼','학생','무직'].forEach(t => {
+          const el = document.getElementById('employ-' + t);
+          if (el) el.style.display = (t === type) ? 'block' : 'none';
+        });
+        document.getElementById('err-employer').textContent = '';
+      }
+
+      // ── 가족동거 테이블 행 추가 ──────────────────────────
+      function addFamilyRow() {
+        const tbody = document.getElementById('family-tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+    <td><input type="text" class="form-input" style="font-size:12px;padding:5px 6px" placeholder="성명"/></td>
+    <td><select class="form-select" style="font-size:12px;padding:5px 4px"><option value="">관계</option><option>배우자</option><option>자녀</option><option>부모</option><option>형제·자매</option><option>조부모</option><option>기타</option></select></td>
+    <td><input type="number" class="form-input" style="font-size:12px;padding:5px 6px" placeholder="나이"/></td>
+    <td><select class="form-select" style="font-size:12px;padding:5px 4px"><option value="">선택</option><option>동거</option><option>비동거</option></select></td>
+    <td><input type="text" class="form-input" style="font-size:12px;padding:5px 6px" placeholder="예) 장애2급, 기초수급자"/></td>
+    <td><button type="button" class="row-del" onclick="delRow(this)" style="background:none;border:none;color:#cc4444;cursor:pointer;font-size:18px;padding:0 4px">×</button></td>`;
+        tbody.appendChild(tr);
+      }
+
+      function delRow(btn) {
+        const row = btn.closest('tr');
+        const tbody = row.closest('tbody');
+        if (tbody.querySelectorAll('tr').length > 1) row.remove();
+      }
+
+      // ── 가족동거 테이블 수집 ──────────────────────────────
+      function collectFamilyTable() {
+        const rows = document.querySelectorAll('#family-tbody tr');
+        const result = [];
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('input, select');
+          if (cells.length < 5) return;
+          const name = cells[0].value.trim();
+          const rel = cells[1].value;
+          const age = cells[2].value;
+          const live = cells[3].value;
+          const note = cells[4].value.trim();
+          if (name || rel || age) {
+            result.push([name, rel, age, live, note].join('|'));
+          }
+        });
+        return result.join(' / ');
+      }
+
+      function addNonbankRow() {
+        const tbody = document.getElementById("nonbank-tbody");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+    <td><select class="form-select" style="width:100%;font-size:12px;padding:6px 4px" onchange="syncLoanTableTotal()">
+      <option value="">선택</option><option>대부업체</option><option>학자금(장학재단)</option><option>서민금융진흥원</option><option>신용회복위원회</option><option>공단·지역농협 등</option><option>가족 및 지인</option><option>기타</option>
+    </select></td>
+    <td><input class="form-input" type="text" placeholder="기관명" style="width:100%"></td>
+    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" style="width:100%;text-align:right" oninput="syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
+    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" style="width:100%;text-align:right" oninput="syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
+    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" style="width:100%;text-align:right" oninput="syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
+    <td><select class="form-select" style="width:100%;font-size:12px;padding:6px 4px">
+      <option value="">선택</option><option>무이자</option><option>5% 미만</option><option>5~10%</option><option>10~15%</option><option>15~20%</option><option>20% 이상</option>
+    </select></td>
+    <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
+    <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
+    <td><button onclick="removeNonbankRow(this)" style="background:none;border:none;color:#CC4444;cursor:pointer;font-size:18px;padding:0 4px">×</button></td>`;
+        tbody.appendChild(tr);
+      }
+
+      function addEmployRow() {
+        const tbody = document.getElementById("employ-tbody");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+    <td><input class="form-input" type="text" placeholder="직장·사업체명" style="width:100%"></td>
+    <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
+    <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
+    <td><input class="form-input" type="text" placeholder="예) 배달, 요양보호" style="width:100%"></td>
+    <td><select class="form-select" style="width:100%;font-size:12px;padding:6px 4px">
+      <option value="">선택</option><option>정규직</option><option>계약직</option><option>일용직·아르바이트</option><option>자영업·사업주</option><option>프리랜서·특수고용</option><option>플랫폼 노동 (배달·대리)</option><option>기타</option>
+    </select></td>
+    <td><button onclick="removeRow(this)" style="background:none;border:none;color:#CC4444;cursor:pointer;font-size:18px;padding:0 4px">×</button></td>`;
+        tbody.appendChild(tr);
+      }
+
+      function removeRow(btn) {
+        const row = btn.closest("tr");
+        const tbody = row.closest("tbody");
+        if (tbody.querySelectorAll("tr").length > 1) row.remove();
+        syncBankTotal();
+      }
+
+      function removeNonbankRow(btn) {
+        const row = btn.closest("tr");
+        const tbody = row.closest("tbody");
+        if (tbody.querySelectorAll("tr").length > 1) row.remove();
+        syncLoanTableTotal();
+      }
+
+      // ── 대출 합산 → exp-loan ───────────────────────────────
+      function syncBankTotal() {
+        let b = 0;
+        document.querySelectorAll("#bank-tbody tr").forEach((row) => {
+          const monthlyInputs = row.querySelectorAll("td:nth-child(6) input");
+          if (monthlyInputs[0]) b += parseInt(monthlyInputs[0].value || 0);
+        });
+        syncTotal(b);
+      }
+
+      function syncLoanTableTotal() {
+        let n = 0;
+        document.querySelectorAll("#nonbank-tbody tr").forEach((row) => {
+          const numInputs = row.querySelectorAll('input[type="number"]');
+          if (numInputs[2]) n += parseInt(numInputs[2].value || 0);
+        });
+        const disp = document.getElementById("nonbank-monthly-display");
+        if (disp) disp.textContent = n + " 만 원";
+        let b = 0;
+        document.querySelectorAll("#bank-tbody tr").forEach((row) => {
+          const inp = row.querySelector("td:nth-child(6) input");
+          if (inp) b += parseInt(inp.value || 0);
+        });
+        syncTotal(b + n);
+      }
+
+      function syncTotal(total) {
+        const el = document.getElementById("exp-loan");
+        if (el) {
+          el.value = total > 0 ? total : "";
+          updateCalc();
+        }
+      }
+
+      // ── 순가처분소득 계산 ─────────────────────────────────
+      function updateCalc() {
+        const incWork = parseInt(
+          document.getElementById("inc-work")?.value || 0,
+        );
+        const incBiz = parseInt(document.getElementById("inc-biz")?.value || 0);
+        const incGov = parseInt(document.getElementById("inc-gov")?.value || 0);
+        const incEtc = parseInt(document.getElementById("inc-etc")?.value || 0);
+        const totalIncome = incWork + incBiz + incGov + incEtc;
+
+        const expFields = [
+          "exp-rent",
+          "exp-food",
+          "exp-transit",
+          "exp-comm",
+          "exp-medical",
+          "exp-edu",
+          "exp-insure",
+          "exp-loan",
+          "exp-saving",
+          "exp-etc",
+        ];
+        const totalExp = expFields.reduce((sum, id) => {
+          const el = document.getElementById(id);
+          return sum + (el ? parseInt(el.value || 0) : 0);
+        }, 0);
+
+        const net = totalIncome - totalExp;
+        const incTotalDisp = document.getElementById("income-total-display");
+        const ciEl = document.getElementById("ci");
+        const ceEl = document.getElementById("ce");
+        const cnEl = document.getElementById("cn");
+
+        if (incTotalDisp)
+          incTotalDisp.textContent = totalIncome
+            ? totalIncome + " 만 원"
+            : "— 만 원";
+        if (ciEl)
+          ciEl.textContent = totalIncome ? totalIncome + " 만 원" : "— 만 원";
+        if (ceEl)
+          ceEl.textContent = totalExp ? "-" + totalExp + " 만 원" : "— 만 원";
+        if (cnEl) {
+          if (totalIncome) {
+            cnEl.textContent = net + " 만 원";
+            cnEl.style.color = net >= 0 ? "#7FE0A8" : "#FF8A80";
+          } else {
+            cnEl.textContent = "— 만 원";
+          }
+        }
+      }
+
+      // ── 신청서 진행 바 ────────────────────────────────────
+      function updateSurveyProgress() {
+        const activePage = document.querySelector(".page.active");
+        if (!activePage) return;
+
+        const radioGroups = new Set();
+        const checkGroups = new Set();
+        const textareas = [];
+        const numInputs = [];
+
+        activePage.querySelectorAll(".radio-btn").forEach((b) => {
+          const inp = b.querySelector('input[type="radio"]');
+          if (inp && inp.name) radioGroups.add(inp.name);
+        });
+        activePage
+          .querySelectorAll(".check-group")
+          .forEach((g, i) => checkGroups.add("cg:" + i));
+        activePage
+          .querySelectorAll("textarea[id]")
+          .forEach((t) => textareas.push(t.id));
+        activePage
+          .querySelectorAll('input[id^="exp-"], input[id^="inc-"]')
+          .forEach((i) => numInputs.push(i.id));
+
+        const total =
+          radioGroups.size +
+          checkGroups.size +
+          textareas.length +
+          numInputs.length;
+        let answered = 0;
+
+        activePage.querySelectorAll(".radio-btn.selected").forEach((b) => {
+          const inp = b.querySelector('input[type="radio"]');
+          if (inp && inp.name && radioGroups.has(inp.name)) {
+            radioGroups.delete(inp.name);
+            answered++;
+          }
+        });
+        activePage.querySelectorAll(".check-group").forEach((g, i) => {
+          if (g.querySelector(".check-btn.selected")) answered++;
+        });
+        textareas.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && el.value.trim().length > 3) answered++;
+        });
+        numInputs.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && el.value && parseInt(el.value) >= 0) answered++;
+        });
+
+        const pct =
+          total > 0 ? Math.min(100, Math.round((answered / total) * 100)) : 0;
+        const totalDisplay =
+          radioGroups.size +
+          checkGroups.size +
+          textareas.length +
+          numInputs.length;
+
+        document.getElementById("prog-current").textContent = answered;
+        document.getElementById("prog-total").textContent = total;
+        document.getElementById("prog-fill").style.width = pct + "%";
+        document.getElementById("prog-pct").textContent = pct + "%";
+      }
+
+      document.addEventListener("click", () =>
+        setTimeout(updateSurveyProgress, 80),
+      );
+      document.addEventListener("input", () =>
+        setTimeout(updateSurveyProgress, 80),
+      );
+
+      // ── 문자 카운터 ───────────────────────────────────────
+      function countChars(el, cntId) {
+        const c = document.getElementById(cntId);
+        if (!c) return;
+        const len = el.value.length;
+        const max = parseInt(el.getAttribute("maxlength") || 9999);
+        c.textContent = len;
+        const wrap = c.closest(".char-counter");
+        if (wrap) {
+          wrap.classList.remove("warn", "over");
+          if (len > max * 0.85) wrap.classList.add("warn");
+          if (len >= max) wrap.classList.add("over");
+        }
+      }
+
+      // ── 유효성 검사 ───────────────────────────────────────
+      function validateRequired(el, errId) {
+        const msg = document.getElementById(errId);
+        if (!el.value.trim()) {
+          el.classList.add("error");
+          if (msg) msg.classList.add("show");
+          return false;
+        }
+        el.classList.remove("error");
+        if (msg) msg.classList.remove("show");
+        return true;
+      }
+
+      function validateBirth(el) {
+        const msg = document.getElementById("err-birth");
+        const val = el.value.replace(/\D/g, "");
+        el.value = val;
+        if (val.length === 8 && /^(19|20)\d{6}$/.test(val)) {
+          el.classList.remove("error");
+          if (msg) {
+            msg.classList.remove("show");
+          }
+          return true;
+        } else if (val.length > 0) {
+          el.classList.add("error");
+          if (msg) {
+            msg.textContent = "올바른 생년월일 8자리를 입력해 주세요.";
+            msg.classList.add("show");
+          }
+          return false;
+        }
+        return false;
+      }
+
+      function validatePhone(el) {
+        const msg = document.getElementById("err-phone");
+        const val = el.value.replace(/[^0-9\-]/g, "");
+        el.value = val;
+        const clean = val.replace(/-/g, "");
+        if (/^01[0-9]{8,9}$/.test(clean)) {
+          el.classList.remove("error");
+          if (msg) msg.classList.remove("show");
+          return true;
+        } else if (val.length > 0) {
+          el.classList.add("error");
+          if (msg) {
+            msg.textContent = "올바른 휴대전화 번호를 입력해 주세요.";
+            msg.classList.add("show");
+          }
+          return false;
+        }
+        return false;
+      }
+
+      function validateEmail(el) {
+        const msg = document.getElementById("err-email");
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
+          el.classList.remove("error");
+          if (msg) msg.classList.remove("show");
+          return true;
+        } else if (el.value.length > 0) {
+          el.classList.add("error");
+          if (msg) {
+            msg.textContent = "올바른 이메일 주소를 입력해 주세요.";
+            msg.classList.add("show");
+          }
+          return false;
+        }
+        return false;
+      }
+
+      function validateAmount(el) {
+        const msg = document.getElementById("err-amount");
+        const val = parseInt(el.value);
+        if (val > 500) {
+          el.classList.add("error");
+          if (msg) {
+            msg.textContent = "최대 500만 원까지 신청 가능합니다.";
+            msg.classList.add("show");
+          }
+          return false;
+        }
+        el.classList.remove("error");
+        if (msg) msg.classList.remove("show");
+        return true;
+      }
+
+      function validateStep1() {
+        let ok = true;
+        if (!validateRequired(document.getElementById("f-name"), "err-name"))
+          ok = false;
+        if (!validateBirth(document.getElementById("f-birth"))) ok = false;
+        if (!validatePhone(document.getElementById("f-phone"))) ok = false;
+        if (!validateEmail(document.getElementById("f-email"))) ok = false;
+        if (!validateRequired(document.getElementById("f-address"), "err-address"))
+          ok = false;
+        // 고용형태 검증
+        const employType = getRadioVal('employ-type');
+        const errEl = document.getElementById('err-employer');
+        if (!employType) {
+          if (errEl) errEl.textContent = '현재 고용 형태를 선택해 주세요.';
+          ok = false;
+        } else {
+          if (employType === '직장인') {
+            const nm = document.getElementById('f-employer-salaried');
+            if (!nm?.value?.trim()) {
+              if (errEl) errEl.textContent = '직장명을 입력해 주세요.';
+              ok = false;
+            } else if (errEl) errEl.textContent = '';
+          } else if (employType === '자영업·프리랜서') {
+            const nm = document.getElementById('f-employer-biz');
+            if (!nm?.value?.trim()) {
+              if (errEl) errEl.textContent = '업체명 또는 업종을 입력해 주세요.';
+              ok = false;
+            } else if (errEl) errEl.textContent = '';
+          } else if (employType === '플랫폼노동') {
+            const nm = document.getElementById('f-employer-platform');
+            if (!nm?.value?.trim()) {
+              if (errEl) errEl.textContent = '플랫폼 종류를 입력해 주세요.';
+              ok = false;
+            } else if (errEl) errEl.textContent = '';
+          } else if (employType === '학생') {
+            const nm = document.getElementById('f-school');
+            if (!nm?.value?.trim()) {
+              if (errEl) errEl.textContent = '학교명을 입력해 주세요.';
+              ok = false;
+            } else if (errEl) errEl.textContent = '';
+          } else {
+            if (errEl) errEl.textContent = '';
+          }
+        }
+        if (!ok) {
+          document.querySelector(".form-input.error, .error-msg:not(:empty)")
+            ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        return ok;
+      }
+
+      // ──────────────────────────────────────────────────────
+      // GAS URL — 여기에 Google Apps Script 웹앱 URL을 붙여넣으세요
+      // ──────────────────────────────────────────────────────
+      const GAS_URL = 'https://script.google.com/macros/s/AKfycbze8pwj7bmVatJgdBHdt6MEkINpD9a_6wnp2-0lSnh_uziTPFQEWD95P_C3Jl0iD1k/exec';
+
+      // ── 데이터 수집 헬퍼 ──────────────────────────────────
+      function getRadioVal(name) {
+        const s = document.querySelector(`.radio-btn.selected input[name="${name}"]`);
+        if (!s) return '';
+        return s.value || s.closest('.radio-btn').textContent.trim();
+      }
+      // 그룹명으로 선택된 체크박스 텍스트 수집
+      function getCheckedGroup(groupName) {
+        return Array.from(document.querySelectorAll('.check-btn.selected'))
+          .filter(b => (b.getAttribute('onclick') || '').includes(`'${groupName}'`))
+          .map(b => b.textContent.trim())
+          .join(', ');
+      }
+      // 정부지원수혜 수집
+      function collectGovSupport() {
+        const selected = Array.from(document.querySelectorAll('.check-btn.selected'))
+          .filter(b => (b.getAttribute('onclick') || '').includes('toggleGovSupport') && !b.textContent.includes('해당없음'))
+          .map(b => b.textContent.trim());
+        return selected.length ? selected.join(', ') : '해당없음';
+      }
+      // 소득유형 도출
+      function deriveIncomeType() {
+        const parts = [];
+        const workVal = parseInt(document.getElementById('inc-work')?.value || '0');
+        const workType = document.getElementById('inc-work-type')?.value || '';
+        if (workVal > 0) parts.push(workType ? `근로소득 (${workType})` : '근로소득');
+        const bizVal = parseInt(document.getElementById('inc-biz')?.value || '0');
+        if (bizVal > 0) parts.push('사업소득 (자영업·프리랜서)');
+        const govVal = parseInt(document.getElementById('inc-gov')?.value || '0');
+        if (govVal > 0) parts.push('정부지원금');
+        const etcVal = parseInt(document.getElementById('inc-etc')?.value || '0');
+        if (etcVal > 0) parts.push('기타소득');
+        return parts.join(', ') || '—';
+      }
+      function collectTable(tbodyId) {
+        const tb = document.getElementById(tbodyId);
+        if (!tb) return '';
+        const rows = [];
+        tb.querySelectorAll('tr').forEach(tr => {
+          const vals = [];
+          tr.querySelectorAll('input,select').forEach(el => vals.push(el.value.trim()));
+          if (vals.some(v => v && v !== '선택')) rows.push(vals.join('|'));
+        });
+        return rows.join('\n');
+      }
+      function collectPsychData(d) {
+        const revIdx = [2, 13];
+        const scores = [];
+        document.querySelectorAll('#psych-questions .likert-opts').forEach((opts, i) => {
+          const sel = opts.querySelector('.likert-opt.selected');
+          const v = sel ? parseInt(sel.textContent) : '';
+          scores.push(v);
+          d[`심리_Q${i + 1}`] = v;
+        });
+        const fac = { H: [0,1,2], E: [3,4], X: [5,6,7], A: [8,9,10], C: [11,12,13], O: [14,15] };
+        Object.entries(fac).forEach(([k, idxs]) => {
+          const vals = idxs.map(i => {
+            let v = scores[i];
+            if (v === '') return null;
+            return revIdx.includes(i) ? 6 - v : v;
+          }).filter(v => v !== null);
+          d[`심리_${k}요인`] = vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2) : '';
+        });
+      }
+      function collectData() {
+        const now = new Date();
+        const d = {};
+        d['신청일시'] = now.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        d['신청일'] = now.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
+        // 자격 — GAS 스프레드시트 헤더명과 일치하는 고정 매핑
+        const eligMap = { eq1:'연령', eq3:'저신용', eq4:'연체없음', eq5:'체납없음' };
+        Object.keys(eligMap).forEach(k => { d[`자격_${eligMap[k]}`] = eligState[k] || ''; });
+        // 기본정보
+        d['성명'] = document.getElementById('f-name')?.value?.trim() || '';
+        d['생년월일'] = document.getElementById('f-birth')?.value?.trim() || '';
+        d['성별'] = getRadioVal('gender');
+        d['휴대전화'] = document.getElementById('f-phone')?.value?.trim() || '';
+        d['이메일'] = document.getElementById('f-email')?.value?.trim() || '';
+        d['주소'] = document.getElementById('f-address')?.value?.trim() || '';
+        d['실거주지'] = document.getElementById('f-address-real')?.value?.trim() || '';
+        d['거주형태'] = getRadioVal('residence');
+        d['이사계획'] = getRadioVal('move-plan');
+        d['가구원수'] = getRadioVal('hh');
+        d['세대주여부'] = getRadioVal('householder');
+        d['부양가족'] = getRadioVal('dependent');
+        d['부양가족상세'] = document.getElementById('f-dep-detail')?.value?.trim() || '';
+        d['가족동거사항'] = collectFamilyTable();
+        // 고용·직업 정보
+        const employType = getRadioVal('employ-type');
+        d['고용형태'] = employType;
+        d['고용세부'] = document.getElementById('f-employ-subtype')?.value || '';
+        d['무직사유'] = getRadioVal('unemploy-reason');
+        d['학교명학과'] = ((document.getElementById('f-school')?.value || '') + ' ' + (document.getElementById('f-major')?.value || '')).trim();
+        // 직장명을 고용형태에 따라 도출
+        let emp = '';
+        if (employType === '직장인') emp = document.getElementById('f-employer-salaried')?.value?.trim() || '';
+        else if (employType === '자영업·프리랜서') emp = document.getElementById('f-employer-biz')?.value?.trim() || '';
+        else if (employType === '플랫폼노동') emp = document.getElementById('f-employer-platform')?.value?.trim() || '';
+        else if (employType === '학생') emp = '학생(' + (document.getElementById('f-school')?.value?.trim() || '') + ')';
+        else if (employType === '무직') emp = '무직';
+        d['직장명'] = emp;
+        d['직장주소'] = document.getElementById('f-employer-addr')?.value?.trim() || '';
+        // 재무현황
+        d['소득유형'] = deriveIncomeType();
+        d['소득이력'] = collectTable('employ-tbody');
+        d['소득구간'] = getRadioVal('income');
+        // 지출 — GAS 헤더명과 일치하는 한국어 키
+        const expMap = {
+          'exp-rent':'주거', 'exp-food':'식비', 'exp-transit':'교통',
+          'exp-comm':'통신', 'exp-medical':'의료', 'exp-edu':'교육양육',
+          'exp-insure':'보험', 'exp-loan':'대출상환', 'exp-saving':'저축', 'exp-etc':'기타'
+        };
+        Object.entries(expMap).forEach(([id, label]) => {
+          d[`지출_${label}`] = document.getElementById(id)?.value || '0';
+        });
+        d['부채_금융기관'] = collectTable('bank-tbody');
+        d['부채_기타대출'] = collectTable('nonbank-tbody');
+        d['부채_지인차용'] = collectTable('personal-tbody');
+        d['채무조정이력'] = getRadioVal('debt-adj');
+        d['채무조정유형'] = getRadioVal('adj-type');
+        d['채무조정월납액'] = document.getElementById('f-adj-monthly')?.value?.trim() || '';
+        d['채무조정과거상세'] = document.getElementById('f-adj-past-detail')?.value?.trim() || '';
+        d['위기대응_현금'] = document.getElementById('buf-cash')?.value || '';
+        d['위기대응_가족도움'] = document.getElementById('buf-family')?.value || '';
+        d['위기대응_처분자산'] = document.getElementById('buf-asset')?.value || '';
+        // 신청배경·대출계획
+        d['정부지원수혜'] = collectGovSupport();
+        d['Q1_부채발생이유'] = document.getElementById('f-background')?.value?.trim() || '';
+        d['Q2_대환채무및사용계획'] = document.getElementById('f-use-repay-plan')?.value?.trim() || '';
+        d['Q3_소득고용현황'] = document.getElementById('f-income-status')?.value?.trim() || '';
+        d['Q4_기대변화재무계획'] = document.getElementById('f-future')?.value?.trim() || '';
+        d['Q5_재무관리어려운점'] = document.getElementById('f-burden')?.value?.trim() || '';
+        d['신청금액'] = (document.getElementById('f-amount')?.value || '') + '만 원';
+        d['희망상환기간'] = getRadioVal('period');
+        d['대출목적'] = getRadioVal('loan-purpose');
+        d['상환계획'] = document.getElementById('f-repay-plan')?.value?.trim() || '';
+        d['자동이체동의'] = document.getElementById('autodebit-agree')?.checked ? '동의' : '미동의';
+        // 금융생활·성향
+        d['금융생활_자동이체'] = getRadioVal('autotransfer');
+        d['금융생활_공과금연체'] = getRadioVal('util-late');
+        d['금융생활_행동'] = getCheckedGroup('fin-behavior');
+        d['금융생활_고정지출변화'] = getRadioVal('fixed-exp-change');
+        d['지원제도인지'] = getRadioVal('knew-prog');
+        d['이전신청경험'] = getCheckedGroup('prev-app');
+        d['신용점수요인'] = getCheckedGroup('score-factor');
+        collectPsychData(d);
+        return d;
+      }
+
+      // ── 중간 제출 ─────────────────────────────────────────
+      function submitMid() {
+        // Q1·Q2 필수 검증
+        const q1 = document.getElementById('f-background');
+        const q2 = document.getElementById('f-use-repay-plan');
+        if (!q1?.value?.trim()) {
+          const err = document.getElementById('err-background');
+          if (err) err.textContent = 'Q1 부채 발생 이유를 입력해 주세요.';
+          q1?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        if (!q2?.value?.trim()) {
+          const err = document.getElementById('err-plan');
+          if (err) err.textContent = 'Q2 대환 필요 채무 현황을 입력해 주세요.';
+          q2?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        const cb = document.getElementById("final-consent-mid");
+        if (!cb || !cb.checked) {
+          alert("동의 체크를 해 주세요.");
+          return;
+        }
+        submitComplete();
+      }
+
+      // ── 최종 제출 ─────────────────────────────────────────
+      function submitForm() {
+        if (!document.getElementById("final-agree").checked) {
+          alert("최종 동의를 체크해 주세요.");
+          return;
+        }
+        submitComplete();
+      }
+
+      async function submitComplete() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const rand = Math.floor(Math.random() * 90000) + 10000;
+        const receiptNum = `YH-${year}${month}${day}-${rand}`;
+
+        const data = collectData();
+        data['접수번호'] = receiptNum;
+
+        // GAS 전송
+        if (GAS_URL && GAS_URL.startsWith('https://script.google.com/')) {
+          try {
+            await fetch(GAS_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain' },
+              body: JSON.stringify(data),
+              mode: 'no-cors'
+            });
+            console.log('[제출완료] 접수번호:', receiptNum);
+          } catch (e) {
+            console.warn('[GAS 전송 실패 — 접수번호는 정상 생성됨]', e.message);
+          }
+        } else {
+          console.log('[개발모드] GAS URL 미설정 — 수집 데이터:\n' + JSON.stringify(data, null, 2));
+        }
+
+        document.getElementById("receipt-display").textContent = receiptNum;
+        // 완료 화면에 이름 표시
+        const nameEl = document.getElementById('f-name');
+        if (nameEl && nameEl.value.trim()) {
+          const h2 = document.querySelector('#page5 h2');
+          if (h2) h2.textContent = `${nameEl.value.trim()}님, 신청이 완료됐어요!`;
+        }
+        goStep(5);
+      }
+
+      // ── PDF 접수증 저장 ───────────────────────────────────
+      function downloadReceipt() {
+        const receiptNum = document.getElementById('receipt-display').textContent || '—';
+        const name = (document.getElementById('f-name') || {}).value?.trim() || '';
+        const phone = (document.getElementById('f-phone') || {}).value?.trim() || '';
+        const amount = (document.getElementById('f-amount') || {}).value || '';
+        const now = new Date().toLocaleDateString('ko-KR');
+        const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<title>청년 희망사다리 접수증</title>
+<style>
+  body{font-family:'Malgun Gothic',sans-serif;margin:0;padding:40px;color:#111;background:#fff}
+  .header{text-align:center;border-bottom:3px solid #006B77;padding-bottom:20px;margin-bottom:32px}
+  .header h1{font-size:22px;color:#006B77;margin:0 0 6px}
+  .header p{color:#666;font-size:13px;margin:0}
+  .receipt-box{text-align:center;background:#EEF7F9;border:2px solid #006B77;border-radius:12px;padding:24px;margin:24px 0}
+  .receipt-box .label{font-size:13px;color:#006B77;font-weight:600;margin-bottom:8px}
+  .receipt-box .num{font-size:28px;font-weight:700;color:#004D58;letter-spacing:2px}
+  table{width:100%;border-collapse:collapse;margin:20px 0}
+  td{padding:10px 14px;border:1px solid #DDE6E8;font-size:14px}
+  td:first-child{background:#F0F4F5;font-weight:600;width:35%;color:#374151}
+  .footer{margin-top:32px;padding-top:16px;border-top:1px solid #DDE6E8;font-size:12px;color:#999;text-align:center;line-height:1.8}
+  @media print{body{padding:20px}}
+</style></head><body>
+<div class="header">
+  <h1>청년 희망사다리 금융지원 신청 접수증</h1>
+  <p>금융산업공익재단 × 사회연대은행</p>
+</div>
+<div class="receipt-box">
+  <div class="label">접수번호</div>
+  <div class="num">${receiptNum}</div>
+</div>
+<table>
+  <tr><td>신청자</td><td>${name}</td></tr>
+  <tr><td>연락처</td><td>${phone}</td></tr>
+  <tr><td>신청금액</td><td>${amount ? amount + ' 만 원' : '—'}</td></tr>
+  <tr><td>신청일자</td><td>${now}</td></tr>
+  <tr><td>처리 예정</td><td>영업일 기준 7일 이내 담당자 연락</td></tr>
+</table>
+<div class="footer">
+  본 접수증은 신청 확인용 문서입니다.<br>
+  심사 결과와 무관하게 신청이 접수되었음을 확인합니다.<br>
+  문의: 사회연대은행 ☎ 02-2038-4900
+</div>
+</body></html>`;
+
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `청년희망사다리_접수증_${receiptNum}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // ── 초기화 ────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        renderPsych();
+      });
+    </script>
+  </body>
+</html>
