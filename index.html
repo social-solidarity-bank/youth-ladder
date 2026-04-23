@@ -10,6 +10,8 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- [YL-2] 카카오 우편번호 서비스 -->
+    <script src="https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <style>
       :root {
         --primary: #006b77;
@@ -1755,31 +1757,40 @@
             </div>
 
             <p class="sec-title">01-2 · 주소 및 거주</p>
+            <!-- [YL-2] 주소 검색(카카오 Postcode) + 상세주소 -->
             <div class="form-row">
               <label class="form-label"
-                >주민등록상 주소<span class="req">*</span></label
+                >실거주지 주소<span class="req">*</span></label
               >
-              <input
-                class="form-input"
-                type="text"
-                id="f-address"
-                placeholder="시 · 구 · 도로명 주소"
-                oninput="validateRequired(this,'err-address')"
-              />
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <input
+                  class="form-input"
+                  type="text"
+                  id="f-address"
+                  placeholder="시 · 구 · 도로명 주소"
+                  readonly
+                  oninput="validateRequired(this,'err-address')"
+                  style="flex:1"
+                />
+                <button
+                  type="button"
+                  onclick="new daum.Postcode({oncomplete:function(data){document.getElementById('f-address').value=data.roadAddress||data.jibunAddress;document.getElementById('err-address').classList.remove('show');document.getElementById('f-address-detail').focus();}}).open();"
+                  style="background:var(--primary);color:#fff;border:none;padding:11px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap"
+                >
+                  주소 검색
+                </button>
+              </div>
               <div class="error-msg" id="err-address">
                 주소를 입력해 주세요.
               </div>
             </div>
             <div class="form-row">
-              <label class="form-label"
-                >실거주지 주소
-                <span class="opt">(주민등록상 주소와 다른 경우)</span></label
-              >
+              <label class="form-label">상세주소</label>
               <input
                 class="form-input"
                 type="text"
-                id="f-address-real"
-                placeholder="실제 우편 수령 가능한 주소"
+                id="f-address-detail"
+                placeholder="동·호수, 건물명 등 상세주소 입력"
               />
             </div>
             <div class="form-row">
@@ -4735,8 +4746,9 @@
         d['성별'] = getRadioVal('gender');
         d['휴대전화'] = document.getElementById('f-phone')?.value?.trim() || '';
         d['이메일'] = document.getElementById('f-email')?.value?.trim() || '';
+        // [YL-2] 실거주지 주소 + 상세주소
         d['주소'] = document.getElementById('f-address')?.value?.trim() || '';
-        d['실거주지'] = document.getElementById('f-address-real')?.value?.trim() || '';
+        d['상세주소'] = document.getElementById('f-address-detail')?.value?.trim() || '';
         d['거주형태'] = getRadioVal('residence');
         d['이사계획'] = getRadioVal('move-plan');
         d['가구원수'] = getRadioVal('hh');
