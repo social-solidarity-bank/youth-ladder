@@ -1484,104 +1484,142 @@
             </div>
             <div>
               <div class="card-title">자격 확인 체크리스트</div>
+              <!-- [YL-D] 항목 수 4 → 6 -->
               <div class="card-desc">
-                4가지 항목이 모두 해당되면 신청 가능합니다
+                6가지 항목이 모두 해당되면 신청 가능합니다
               </div>
             </div>
           </div>
           <div class="card-body">
-            <div class="elig-q">
-              <div class="elig-q-label">
-                <span class="elig-num">1</span>만 19세 이상 39세 이하
-                청년인가요?
+            <!-- [YL-D] 자격확인 6개 항목 카드 스타일 전환 (eq1·eq3·eq6·eq7·eq4·eq5) -->
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <!-- [YL-D] eq1 · 연령 -->
+              <div id="eq1-card" style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:200px">
+                    <span style="font-size:18px">👤</span>
+                    <span style="font-size:14px;font-weight:600;color:var(--text)">만 19세 이상 39세 이하 청년인가요?</span>
+                  </div>
+                  <div class="radio-group" style="gap:6px">
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq1','pass')"
+                      ><input type="radio" name="eq1" /><div class="radio-dot"></div>네, 해당돼요</label>
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq1','fail')"
+                      ><input type="radio" name="eq1" /><div class="radio-dot"></div>아니요</label>
+                  </div>
+                </div>
+                <div class="stop-msg" id="eq1-stop" style="display:none">
+                  <h4>⚠ 연령 기준이 맞지 않아요</h4>
+                  <p>이 사업은 만 19~39세 청년을 대상으로 합니다.</p>
+                </div>
               </div>
-              <div class="radio-group">
-                <label class="radio-btn" onclick="eligCheck(this,'eq1','pass')"
-                  ><input type="radio" name="eq1" />
-                  <div class="radio-dot"></div>
-                  네, 해당돼요</label
-                >
-                <label class="radio-btn" onclick="eligCheck(this,'eq1','fail')"
-                  ><input type="radio" name="eq1" />
-                  <div class="radio-dot"></div>
-                  아니요</label
-                >
-              </div>
-              <div class="stop-msg" id="eq1-stop" style="display: none">
-                <h4>⚠ 연령 기준이 맞지 않아요</h4>
-                <p>이 사업은 만 19~39세 청년을 대상으로 합니다.</p>
-              </div>
-            </div>
 
-            <div class="elig-q">
-              <div class="elig-q-label">
-                <span class="elig-num">2</span>신용점수가 낮거나 은행·저축은행
-                대출이 어려우신가요?
+              <!-- [YL-D] eq3 · 소득기준 150% (기준표 라디오 위에 유지) -->
+              <div id="eq3-card" style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                  <span style="font-size:18px">📊</span>
+                  <span style="font-size:14px;font-weight:600;color:var(--text)">가구 소득이 기준 중위소득 150% 이하인가요?</span>
+                </div>
+                <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px">
+                  <div style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:6px">2026년 기준 중위소득 150%</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;font-size:12px">
+                    <div><span style="color:var(--text-muted)">1인 </span><strong>3,413,832원</strong></div>
+                    <div><span style="color:var(--text-muted)">2인 </span><strong>5,658,472원</strong></div>
+                    <div><span style="color:var(--text-muted)">3인 </span><strong>7,263,460원</strong></div>
+                    <div><span style="color:var(--text-muted)">4인 </span><strong>8,853,726원</strong></div>
+                    <div><span style="color:var(--text-muted)">5인 </span><strong>10,354,622원</strong></div>
+                    <div><span style="color:var(--text-muted)">6인 </span><strong>11,724,718원</strong></div>
+                  </div>
+                </div>
+                <div class="radio-group" style="gap:6px">
+                  <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq3','pass')"
+                    ><input type="radio" name="eq3" /><div class="radio-dot"></div>네, 150% 이하입니다</label>
+                  <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq3','fail')"
+                    ><input type="radio" name="eq3" /><div class="radio-dot"></div>아니요, 초과합니다</label>
+                </div>
+                <div class="stop-msg" id="eq3-stop" style="display:none">
+                  <h4>⚠ 소득 기준을 초과해요</h4>
+                  <p>소득 기준을 초과합니다.</p>
+                </div>
               </div>
-              <div class="radio-group">
-                <label class="radio-btn" onclick="eligCheck(this,'eq3','pass')"
-                  ><input type="radio" name="eq3" />
-                  <div class="radio-dot"></div>
-                  네, 대출이 잘 안 돼요</label
-                >
-                <label class="radio-btn" onclick="eligCheck(this,'eq3','fail')"
-                  ><input type="radio" name="eq3" />
-                  <div class="radio-dot"></div>
-                  아니요, 일반 대출 이용 가능해요</label
-                >
-              </div>
-              <div class="stop-msg" id="eq3-stop" style="display: none">
-                <h4>⚠ 일반 금융기관을 먼저 이용해보세요</h4>
-                <p>
-                  신용등급이 양호하다면 일반 금융기관에서 더 좋은 조건으로
-                  이용하실 수 있어요.
-                </p>
-              </div>
-            </div>
 
-            <div class="elig-q">
-              <div class="elig-q-label">
-                <span class="elig-num">3</span>현재 금융기관 연체나 채무불이행
-                상태가 아닌가요?
+              <!-- [YL-D] eq6 · 다중부채 2건+ -->
+              <div id="eq6-card" style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:200px">
+                    <span style="font-size:18px">💳</span>
+                    <span style="font-size:14px;font-weight:600;color:var(--text)">현재 2곳 이상의 금융기관에서 대출을 이용 중인가요?</span>
+                  </div>
+                  <div class="radio-group" style="gap:6px">
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq6','pass')"
+                      ><input type="radio" name="eq6" /><div class="radio-dot"></div>네, 다중부채 2건 이상입니다</label>
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq6','fail')"
+                      ><input type="radio" name="eq6" /><div class="radio-dot"></div>아니요</label>
+                  </div>
+                </div>
+                <div class="stop-msg" id="eq6-stop" style="display:none">
+                  <h4>⚠ 다중부채 기준이 맞지 않아요</h4>
+                  <p>다중부채 2건 이상인 분을 대상으로 합니다.</p>
+                </div>
               </div>
-              <div class="radio-group">
-                <label class="radio-btn" onclick="eligCheck(this,'eq4','pass')"
-                  ><input type="radio" name="eq4" />
-                  <div class="radio-dot"></div>
-                  네, 연체 없어요</label
-                >
-                <label class="radio-btn" onclick="eligCheck(this,'eq4','fail')"
-                  ><input type="radio" name="eq4" />
-                  <div class="radio-dot"></div>
-                  현재 연체 중이에요</label
-                >
-              </div>
-              <div class="stop-msg" id="eq4-stop" style="display: none">
-                <h4>⚠ 연체 해소 후 다시 신청해주세요</h4>
-                <p>담당자와 먼저 상담을 통해 안내 받으시기를 권장합니다.</p>
-              </div>
-            </div>
 
-            <div class="elig-q">
-              <div class="elig-q-label">
-                <span class="elig-num">4</span>국세 체납이나 압류 처분이
-                없으신가요?
+              <!-- [YL-D] eq7 · 고금리 10%+ -->
+              <div id="eq7-card" style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:200px">
+                    <span style="font-size:18px">📈</span>
+                    <span style="font-size:14px;font-weight:600;color:var(--text)">이 중 연 10% 이상 고금리 대출이 1건 이상 있나요?</span>
+                  </div>
+                  <div class="radio-group" style="gap:6px">
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq7','pass')"
+                      ><input type="radio" name="eq7" /><div class="radio-dot"></div>네, 있습니다</label>
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq7','fail')"
+                      ><input type="radio" name="eq7" /><div class="radio-dot"></div>아니요</label>
+                  </div>
+                </div>
+                <div class="stop-msg" id="eq7-stop" style="display:none">
+                  <h4>⚠ 고금리 기준이 맞지 않아요</h4>
+                  <p>연 10% 이상 고금리 대출이 1건 이상 있어야 합니다.</p>
+                </div>
               </div>
-              <div class="radio-group">
-                <label class="radio-btn" onclick="eligCheck(this,'eq5','pass')"
-                  ><input type="radio" name="eq5" />
-                  <div class="radio-dot"></div>
-                  네, 없어요</label
-                >
-                <label class="radio-btn" onclick="eligCheck(this,'eq5','fail')"
-                  ><input type="radio" name="eq5" />
-                  <div class="radio-dot"></div>
-                  있어요</label
-                >
+
+              <!-- [YL-D] eq4 · 연체없음 -->
+              <div id="eq4-card" style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:200px">
+                    <span style="font-size:18px">✅</span>
+                    <span style="font-size:14px;font-weight:600;color:var(--text)">현재 금융기관 연체나 채무불이행 상태가 아닌가요?</span>
+                  </div>
+                  <div class="radio-group" style="gap:6px">
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq4','pass')"
+                      ><input type="radio" name="eq4" /><div class="radio-dot"></div>네, 연체 없어요</label>
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq4','fail')"
+                      ><input type="radio" name="eq4" /><div class="radio-dot"></div>현재 연체 중이에요</label>
+                  </div>
+                </div>
+                <div class="stop-msg" id="eq4-stop" style="display:none">
+                  <h4>⚠ 연체 해소 후 다시 신청해주세요</h4>
+                  <p>현재 연체·채무불이행 상태에서는 신청할 수 없습니다.</p>
+                </div>
               </div>
-              <div class="stop-msg" id="eq5-stop" style="display: none">
-                <h4>⚠ 해당 사항 해소 후 신청해주세요</h4>
-                <p>국세 체납·압류가 있는 경우 신청이 어렵습니다.</p>
+
+              <!-- [YL-D] eq5 · 국세체납없음 -->
+              <div id="eq5-card" style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:200px">
+                    <span style="font-size:18px">🏛️</span>
+                    <span style="font-size:14px;font-weight:600;color:var(--text)">국세 체납이나 압류 처분이 없으신가요?</span>
+                  </div>
+                  <div class="radio-group" style="gap:6px">
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq5','pass')"
+                      ><input type="radio" name="eq5" /><div class="radio-dot"></div>네, 없어요</label>
+                    <label class="radio-btn" style="padding:6px 14px;font-size:12px" onclick="eligCheck(this,'eq5','fail')"
+                      ><input type="radio" name="eq5" /><div class="radio-dot"></div>있어요</label>
+                  </div>
+                </div>
+                <div class="stop-msg" id="eq5-stop" style="display:none">
+                  <h4>⚠ 해당 사항 해소 후 신청해주세요</h4>
+                  <p>국세체납·압류 처분이 있으면 신청할 수 없습니다.</p>
+                </div>
               </div>
             </div>
 
@@ -4084,7 +4122,8 @@
 
       // ── 자격확인 ──────────────────────────────────────────────
       const eligState = {};
-      const eligKeys = ["eq1", "eq3", "eq4", "eq5"];
+      // [YL-D] eq6(다중부채)·eq7(고금리) 추가로 6개 확장
+      const eligKeys = ["eq1", "eq3", "eq6", "eq7", "eq4", "eq5"];
       function eligCheck(lbl, qid, res) {
         document.querySelectorAll(".radio-btn").forEach((l) => {
           if (l.querySelector(`input[name="${qid}"]`))
@@ -4094,6 +4133,9 @@
         eligState[qid] = res;
         const s = document.getElementById(qid + "-stop");
         if (s) s.style.display = res === "fail" ? "block" : "none";
+        // [YL-D] 카드 테두리 pass=primary / fail=danger 반영
+        const card = document.getElementById(qid + "-card");
+        if (card) card.style.borderColor = res === "pass" ? "var(--primary)" : "var(--danger)";
         const allPass = eligKeys.every((k) => eligState[k] === "pass");
         const allAnswered = eligKeys.every((k) => k in eligState);
         const pass = document.getElementById("elig-pass");
@@ -4916,7 +4958,8 @@
         d['신청일시'] = now.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
         d['신청일'] = now.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
         // 자격 — GAS 스프레드시트 헤더명과 일치하는 고정 매핑
-        const eligMap = { eq1:'연령', eq3:'저신용', eq4:'연체없음', eq5:'체납없음' };
+        // [YL-D] 6개 항목으로 확장: 연령/소득150%/다중부채/고금리/연체없음/체납없음
+        const eligMap = { eq1:'연령', eq3:'소득150%', eq6:'다중부채', eq7:'고금리', eq4:'연체없음', eq5:'체납없음' };
         Object.keys(eligMap).forEach(k => { d[`자격_${eligMap[k]}`] = eligState[k] || ''; });
         // 기본정보
         d['성명'] = document.getElementById('f-name')?.value?.trim() || '';
