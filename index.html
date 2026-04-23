@@ -2125,24 +2125,25 @@
                 >현재 받고 계신 정부 지원이 있으시면 선택해 주세요.
                 <span class="opt">(해당 항목 모두 선택)</span></label
               >
+              <!-- [YL-B] 다시봄 스타일 라벨 축약 + '장애인' → '자립준비청년' -->
               <div class="check-group">
-                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-생계급여')"
-                  ><div class="check-mark"></div>기초수급 (생계급여)</label
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-생계')"
+                  ><div class="check-mark"></div>기초수급(생계)</label
                 >
-                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-주거급여')"
-                  ><div class="check-mark"></div>기초수급 (주거급여)</label
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-주거')"
+                  ><div class="check-mark"></div>기초수급(주거)</label
                 >
-                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-의료급여')"
-                  ><div class="check-mark"></div>기초수급 (의료급여)</label
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-의료')"
+                  ><div class="check-mark"></div>기초수급(의료)</label
                 >
                 <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-차상위')"
                   ><div class="check-mark"></div>차상위계층</label
                 >
                 <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-한부모')"
-                  ><div class="check-mark"></div>한부모가족 지원</label
+                  ><div class="check-mark"></div>한부모가족</label
                 >
-                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-장애인')"
-                  ><div class="check-mark"></div>장애인</label
+                <label class="check-btn" onclick="toggleGovSupport(this,'gov-amount-자립준비청년')"
+                  ><div class="check-mark"></div>자립준비청년</label
                 >
                 <label class="check-btn" onclick="toggleGovSupport(this,null,true)"
                   ><div class="check-mark"></div>해당없음</label
@@ -2588,27 +2589,17 @@
                       <div class="radio-dot"></div>
                       파산·면책</label
                     >
+                    <!-- [YL-B] 신복위 개인워크아웃·프리워크아웃을 '신용회복위원회'로 통합 -->
                     <label
                       class="radio-btn"
                       onclick="toggleRadio(this,'adj-type')"
                       ><input
                         type="radio"
                         name="adj-type"
-                        value="신복위워크아웃"
+                        value="신용회복위원회"
                       />
                       <div class="radio-dot"></div>
-                      신복위 개인워크아웃</label
-                    >
-                    <label
-                      class="radio-btn"
-                      onclick="toggleRadio(this,'adj-type')"
-                      ><input
-                        type="radio"
-                        name="adj-type"
-                        value="프리워크아웃"
-                      />
-                      <div class="radio-dot"></div>
-                      프리워크아웃</label
+                      신용회복위원회</label
                     >
                     <!-- [YL-5] 새출발기금 / 기타 옵션 추가 -->
                     <label
@@ -2903,11 +2894,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-rent"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2927,11 +2919,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-food"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2943,11 +2936,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-transit"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2956,11 +2950,12 @@
                   <div class="income-label">월 통신비</div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-comm"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2981,11 +2976,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-medical"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2997,11 +2993,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-edu"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3024,11 +3021,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-insure"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3070,11 +3068,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-saving"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3103,11 +3102,12 @@
                   </div>
                 </div>
                 <div class="income-input-wrap">
+                  <!-- [YL-B] 입력 범위 검증 -->
                   <input
                     type="number"
                     placeholder="0"
                     id="exp-etc"
-                    oninput="updateCalc()"
+                    oninput="validateNumLimit(this);updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -4935,6 +4935,21 @@
         el.classList.remove("error");
         if (msg) msg.classList.remove("show");
         return true;
+      }
+
+      // [YL-B] 생활비·금액 입력 범위 정규화 (만원 단위, 음수·비정상치 차단)
+      function validateNumLimit(el, max) {
+        if (!el) return;
+        const cap = typeof max === "number" ? max : 99999;
+        let v = (el.value || "").replace(/[^0-9]/g, "");
+        if (v === "") {
+          el.value = "";
+          return;
+        }
+        let n = parseInt(v, 10);
+        if (isNaN(n) || n < 0) n = 0;
+        if (n > cap) n = cap;
+        el.value = String(n);
       }
 
       function validateStep1() {
