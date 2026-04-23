@@ -1399,6 +1399,7 @@
     <!-- 진행 단계 -->
     <div class="progress-wrap">
       <div class="progress-inner">
+        <!-- [YL-A] 3단계 구조: 자격확인 · 동의 · 신청서 -->
         <div class="steps-row">
           <div class="step-item active" id="si0">
             <div class="step-num">1</div>
@@ -1407,22 +1408,12 @@
           <span class="step-arrow">›</span>
           <div class="step-item" id="si1">
             <div class="step-num">2</div>
-            <div><div class="step-label">기본정보</div></div>
+            <div><div class="step-label">동의</div></div>
           </div>
           <span class="step-arrow">›</span>
           <div class="step-item" id="si2">
             <div class="step-num">3</div>
-            <div><div class="step-label">재무현황</div></div>
-          </div>
-          <span class="step-arrow">›</span>
-          <div class="step-item" id="si3">
-            <div class="step-num">4</div>
-            <div><div class="step-label">신청 내용</div></div>
-          </div>
-          <span class="step-arrow">›</span>
-          <div class="step-item" id="si4">
-            <div class="step-num">5</div>
-            <div><div class="step-label">금융생활·성향</div></div>
+            <div><div class="step-label">신청서</div></div>
           </div>
         </div>
       </div>
@@ -1642,10 +1633,59 @@
         </div>
       </div>
 
-      <!-- ════════════════════
-     STEP 1 — 기본정보
+      <!-- [YL-A] ════════════════════
+     STEP 1 — 동의
 ════════════════════ -->
       <div class="page" id="page1">
+        <div class="card">
+          <div class="cat-header" style="background: linear-gradient(135deg, var(--primary-dark), var(--primary-light))">
+            <span class="cat-num">✓</span>
+            <div>
+              <div class="cat-title-text">신청 전 동의</div>
+              <div class="cat-sub">개인(신용)정보 수집·이용 동의를 먼저 확인해 주세요</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="sec-title">최종 확인 및 동의</p>
+            <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:18px 20px;margin-bottom:16px;font-size:13px;color:var(--text-mid);line-height:1.8">
+              신청하실 내용이 모두 사실임을 확인해 주세요. 허위 기재 시 대출이 거절될 수 있습니다.<br />
+              수집된 정보는 청년 희망사다리 금융지원 심사 목적으로만 사용됩니다.<br />
+              심사를 위해 추가 서류 요청이나 담당자 유선 연락이 있을 수 있습니다.
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:16px;font-size:12px;color:var(--text-mid);line-height:1.75">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">
+                개인(신용)정보 수집·이용 동의 안내
+              </div>
+              <div style="font-weight:700;color:var(--text);margin-top:6px">수집·이용 목적</div>
+              <ul style="margin:4px 0 10px 18px;padding:0">
+                <li>청년 희망사다리 금융지원 자격 심사 및 대출 실행</li>
+                <li>심사·상담을 위한 본인확인 및 연락</li>
+                <li>동일인의 중복 신청 여부 확인 및 부정 수혜 방지</li>
+              </ul>
+              <div style="font-weight:700;color:var(--text)">보유 및 이용기간</div>
+              <ul style="margin:4px 0 0 18px;padding:0">
+                <li>대출 실행 여부와 무관하게 수집일로부터 관계 법령이 정한 기간 동안 보관 후 파기</li>
+                <li>서비스 부정이용 방지를 위한 최소한의 식별정보는 탈퇴일로부터 5년간 별도 DB에 분리 보관 후 파기됩니다.</li>
+              </ul>
+            </div>
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:var(--text)">
+              <input type="checkbox" id="final-agree" style="margin-top:3px;accent-color:var(--primary);width:16px;height:16px" />
+              <span>네, 모두 확인했어요. 개인정보 수집·이용에 동의하며, 심사를 위한 추가 서류 제출 및 유선 상담에 응하겠습니다.</span>
+            </label>
+            <div class="btn-group" style="margin-top:20px">
+              <button class="btn-back" onclick="goStep(0)">← 이전</button>
+              <button class="btn btn-primary" onclick="agreeNext()">
+                동의하고 신청서 작성하기 →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- [YL-A] ════════════════════
+     STEP 2 — 신청서 (기본정보 · 재무현황 · 신청배경 · 금융생활 통합)
+════════════════════ -->
+      <div class="page" id="page2">
         <div class="card">
           <div class="cat-header">
             <span class="cat-num">01</span>
@@ -2125,23 +2165,10 @@
               <div id="gov-amounts" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
             </div>
 
-            <div class="btn-group">
-              <button class="btn-back" onclick="goStep(0)">← 이전</button>
-              <button
-                class="btn btn-primary"
-                onclick="if(validateStep1())goStep(2)"
-              >
-                다음: 재무현황 →
-              </button>
-            </div>
+            <!-- [YL-A] 단계 간 이동 버튼 제거 (기본정보 → 재무현황 통합 스크롤) -->
           </div>
         </div>
-      </div>
 
-      <!-- ════════════════════
-     STEP 2 — 재무현황
-════════════════════ -->
-      <div class="page" id="page2">
         <!-- 응원 메시지 - 재무현황 진입 -->
         <div style="text-align:center;padding:16px 20px;background:linear-gradient(135deg,#fff5f5,#fef0e0);border-radius:12px;margin:0 0 16px;border:1px solid #f5c8c8">
           <div style="font-size:18px;margin-bottom:4px">💪</div>
@@ -3253,18 +3280,8 @@
           </div>
         </div>
 
-        <div class="btn-group">
-          <button class="btn-back" onclick="goStep(1)">← 이전</button>
-          <button class="btn btn-primary" onclick="goStep(3)">
-            다음: 신청배경·계획 →
-          </button>
-        </div>
-      </div>
+        <!-- [YL-A] 단계 간 이동 버튼 제거 (재무현황 → 신청배경 통합 스크롤) -->
 
-      <!-- ════════════════════
-     STEP 3 — 신청배경·대출계획
-════════════════════ -->
-      <div class="page" id="page3">
         <!-- 응원 메시지 - 신청배경 진입 전 -->
         <div style="text-align:center;padding:18px 20px;background:linear-gradient(135deg,#f0f9f4,#e8f4fd);border-radius:12px;margin:0 0 16px;border:1px solid #c8e6d4">
           <div style="font-size:18px;margin-bottom:4px">🌱</div>
@@ -3588,92 +3605,8 @@
           </div>
         </div>
 
-        <!-- 1단계 완료 + 중간 제출 -->
-        <div class="mid-submit-card">
-          <div class="mid-submit-inner">
-            <p
-              style="
-                font-size: 17px;
-                font-weight: 700;
-                color: var(--primary-dark);
-                margin-bottom: 8px;
-              "
-            >
-              필수 정보 입력이 완료되었습니다.
-            </p>
-            <p
-              style="
-                font-size: 14px;
-                color: var(--text-muted);
-                margin-bottom: 20px;
-              "
-            >
-              아래 <strong>최종 제출</strong>을 누르거나, 2단계 금융생활 설문에
-              계속해서 참여하세요.
-            </p>
-            <label
-              style="
-                display: flex;
-                align-items: flex-start;
-                gap: 10px;
-                cursor: pointer;
-                font-size: 14px;
-                color: var(--text);
-                justify-content: flex-start;
-                text-align: left;
-                margin-bottom: 20px;
-                max-width: 520px;
-                margin-left: auto;
-                margin-right: auto;
-              "
-            >
-              <input
-                type="checkbox"
-                id="final-consent-mid"
-                style="
-                  margin-top: 3px;
-                  accent-color: var(--primary);
-                  width: 16px;
-                  height: 16px;
-                  flex-shrink: 0;
-                "
-              />
-              <span
-                >위의 내용이 모두 사실임을 확인하며, 허위 기재 시 대출이 거절될
-                수 있음을 동의합니다.</span
-              >
-            </label>
-            <button
-              class="btn btn-primary"
-              onclick="submitMid()"
-              style="
-                max-width: 360px;
-                margin: 0 auto;
-                width: auto;
-                padding: 14px 32px;
-              "
-            >
-              제출
-            </button>
-          </div>
-        </div>
+        <!-- [YL-A] 중간 제출(mid-submit-card) + 단계 이동 버튼 제거, 금융생활 섹션으로 통합 스크롤 -->
 
-        <div class="btn-group">
-          <button class="btn-back" onclick="goStep(2)">← 이전</button>
-          <button
-            class="btn btn-primary"
-            onclick="goStep(4)"
-            style="background: linear-gradient(135deg, #1a3a1a, #2e6b2e)"
-          >
-            2단계 설문에도 참여하기 →
-          </button>
-        </div>
-      </div>
-
-      <!-- ════════════════════
-     STEP 4 — 금융생활·성향
-════════════════════ -->
-      <div class="page" id="page4">
         <!-- 응원 메시지 - 마지막 단계 진입 -->
         <div style="text-align:center;padding:16px 20px;background:linear-gradient(135deg,#f0fff4,#f0f8ff);border-radius:12px;margin:0 0 16px;border:1px solid #b8e0c8">
           <div style="font-size:20px;margin-bottom:4px">🎉</div>
@@ -3972,86 +3905,9 @@
 
             <!-- [YL-C] FRDI-24 심리설문(05-3 · 금융 생활과 가치관) 섹션 제거 -->
 
-            <div style="margin-top: 32px">
-              <p class="sec-title">최종 확인 및 동의</p>
-              <div
-                style="
-                  background: var(--gray-50);
-                  border-radius: var(--radius-sm);
-                  padding: 18px 20px;
-                  margin-bottom: 16px;
-                  font-size: 13px;
-                  color: var(--text-mid);
-                  line-height: 1.8;
-                "
-              >
-                위의 내용이 모두 사실임을 확인해 주세요. 허위 기재 시 대출이
-                거절될 수 있습니다.<br />
-                수집된 정보는 청년 희망사다리 금융지원 심사 목적으로만
-                사용됩니다.<br />
-                심사를 위해 추가 서류 요청이나 담당자 유선 연락이 있을 수
-                있습니다.
-              </div>
-              <!-- [YL-5] 개인(신용)정보 수집·이용 동의 상세 -->
-              <div
-                style="
-                  background: #fff;
-                  border: 1px solid var(--border-light);
-                  border-radius: var(--radius-sm);
-                  padding: 16px 18px;
-                  margin-bottom: 16px;
-                  font-size: 12px;
-                  color: var(--text-mid);
-                  line-height: 1.75;
-                "
-              >
-                <div style="font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px">
-                  개인(신용)정보 수집·이용 동의 안내
-                </div>
-                <div style="font-weight: 700; color: var(--text); margin-top: 6px">수집·이용 목적</div>
-                <ul style="margin: 4px 0 10px 18px; padding: 0">
-                  <li>청년 희망사다리 금융지원 자격 심사 및 대출 실행</li>
-                  <li>심사·상담을 위한 본인확인 및 연락</li>
-                  <li>동일인의 중복 신청 여부 확인 및 부정 수혜 방지</li>
-                </ul>
-                <div style="font-weight: 700; color: var(--text)">보유 및 이용기간</div>
-                <ul style="margin: 4px 0 0 18px; padding: 0">
-                  <li>대출 실행 여부와 무관하게 수집일로부터 관계 법령이 정한 기간 동안 보관 후 파기</li>
-                  <li>
-                    서비스 부정이용 방지를 위한 최소한의 식별정보는 탈퇴일로부터
-                    5년간 별도 DB에 분리 보관 후 파기됩니다.
-                  </li>
-                </ul>
-              </div>
-              <label
-                style="
-                  display: flex;
-                  align-items: flex-start;
-                  gap: 10px;
-                  cursor: pointer;
-                  font-size: 14px;
-                  color: var(--text);
-                "
-              >
-                <input
-                  type="checkbox"
-                  id="final-agree"
-                  style="
-                    margin-top: 3px;
-                    accent-color: var(--primary);
-                    width: 16px;
-                    height: 16px;
-                  "
-                />
-                <span
-                  >네, 모두 확인했어요. 개인정보 수집·이용에 동의하며, 심사를
-                  위한 추가 서류 제출 및 유선 상담에 응하겠습니다.</span
-                >
-              </label>
-            </div>
+            <!-- [YL-A] 최종 확인 및 동의 섹션은 page1(동의 단계)로 이동, 이전 버튼 제거 -->
 
-            <div class="btn-group">
-              <button class="btn-back" onclick="goStep(3)">← 이전</button>
+            <div class="btn-group" style="justify-content:center">
               <button
                 class="btn btn-primary"
                 id="submit-btn"
@@ -4065,10 +3921,10 @@
         </div>
       </div>
 
-      <!-- ════════════════════
-     STEP 5 — 완료
+      <!-- [YL-A] ════════════════════
+     STEP 3 — 완료
 ════════════════════ -->
-      <div class="page" id="page5">
+      <div class="page" id="page3">
         <div class="card">
           <div class="complete-wrap">
             <div class="complete-icon" style="font-size: 38px">🎉</div>
@@ -4150,12 +4006,13 @@
       }
 
       // ── 스텝 이동 ────────────────────────────────────────────
+      // [YL-A] 3단계 구조: 0=자격확인 / 1=동의 / 2=신청서 / 3=완료
       function goStep(n) {
         document
           .querySelectorAll(".page")
           .forEach((p) => p.classList.remove("active"));
         document.getElementById("page" + n).classList.add("active");
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 3; i++) {
           const el = document.getElementById("si" + i);
           if (!el) continue;
           el.classList.remove("active", "done");
@@ -4171,9 +4028,19 @@
           }
         }
         const bar = document.getElementById("survey-progress-bar");
-        if (bar) bar.style.display = n >= 2 && n <= 4 ? "block" : "none";
-        if (n >= 2 && n <= 4) setTimeout(updateSurveyProgress, 100);
+        if (bar) bar.style.display = n === 2 ? "block" : "none";
+        if (n === 2) setTimeout(updateSurveyProgress, 100);
         window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // [YL-A] 동의 페이지 진행 핸들러
+      function agreeNext() {
+        const cb = document.getElementById("final-agree");
+        if (!cb || !cb.checked) {
+          alert("개인(신용)정보 수집·이용 동의를 체크해 주세요.");
+          return;
+        }
+        goStep(2);
       }
 
       // ── 라디오/체크 토글 ─────────────────────────────────────
@@ -5127,13 +4994,14 @@
           if (error) throw error;
 
           // 4. 완료 화면
+          // [YL-A] 3단계 구조: 완료 페이지 id를 page3으로 통일
           document.getElementById('receipt-display').textContent = receiptNum;
           const nameEl = document.getElementById('f-name');
           if (nameEl && nameEl.value.trim()) {
-            const h2 = document.querySelector('#page5 h2');
+            const h2 = document.querySelector('#page3 h2');
             if (h2) h2.textContent = `${nameEl.value.trim()}님, 신청이 완료됐어요!`;
           }
-          goStep(5);
+          goStep(3);
 
         } catch(e) {
           console.error('[제출 실패]', e);
