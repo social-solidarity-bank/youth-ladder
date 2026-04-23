@@ -3033,6 +3033,57 @@
                   >
                 </div>
               </div>
+
+              <!-- [YL-3] DSR 실시간 계산 -->
+              <div
+                id="yl3-dsr-wrap"
+                style="
+                  margin-top: 16px;
+                  padding-top: 14px;
+                  border-top: 1px solid rgba(255, 255, 255, 0.18);
+                "
+              >
+                <div class="calc-title">DSR · 총부채원리금상환비율</div>
+                <div
+                  id="yl3-dsr-empty"
+                  style="font-size: 12px; opacity: 0.78; padding: 2px 0"
+                >
+                  부채와 소득을 입력하면 DSR이 자동 계산됩니다.
+                </div>
+                <div id="yl3-dsr-detail" style="display: none">
+                  <div class="calc-row">
+                    <span>월 총 상환액</span
+                    ><span id="yl3-debt">— 만 원</span>
+                  </div>
+                  <div class="calc-row">
+                    <span>월 소득</span
+                    ><span id="yl3-income">— 만 원</span>
+                  </div>
+                  <div class="calc-row">
+                    <span>DSR</span
+                    ><span
+                      id="yl3-dsr-val"
+                      style="font-size: 20px; font-weight: 700"
+                      >—%</span
+                    >
+                  </div>
+                  <div
+                    id="yl3-dsr-warn"
+                    style="
+                      display: none;
+                      margin-top: 8px;
+                      padding: 8px 10px;
+                      background: #e65100;
+                      border-radius: 6px;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #fff;
+                    "
+                  >
+                    ⚠ DSR이 40%를 초과합니다. 상환 부담이 높을 수 있어요.
+                  </div>
+                </div>
+              </div>
             </div>
 
             <p class="sec-title green" style="margin-top: 24px">
@@ -4433,7 +4484,95 @@
             cnEl.textContent = "— 만 원";
           }
         }
+        calcDSR(); // [YL-3] 소득 변경 시 DSR 동기화
       }
+
+      // [YL-3] ── DSR 실시간 계산 ─────────────────────────────
+      function calcDSR() {
+        const sumMonthly = (tbodyId) => {
+          const tbody = document.getElementById(tbodyId);
+          if (!tbody) return 0;
+          let s = 0;
+          tbody.querySelectorAll("tr").forEach((row) => {
+            if (tbodyId === "bank-tbody") {
+              const inp = row.querySelector("td:nth-child(6) input");
+              if (inp) s += parseFloat(inp.value) || 0;
+            } else {
+              const nums = row.querySelectorAll('input[type="number"]');
+              if (nums[2]) s += parseFloat(nums[2].value) || 0;
+            }
+          });
+          return s;
+        };
+        const debt =
+          sumMonthly("bank-tbody") +
+          sumMonthly("nonbank-tbody") +
+          sumMonthly("personal-tbody");
+
+        const incIds = [
+          "inc-work",
+          "inc-biz",
+          "inc-gov",
+          "inc-etc",
+          "f-inc-work",
+          "f-inc-biz",
+          "f-inc-gov",
+          "f-inc-etc",
+        ];
+        let income = 0;
+        incIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) income += parseFloat(el.value) || 0;
+        });
+
+        const empty = document.getElementById("yl3-dsr-empty");
+        const detail = document.getElementById("yl3-dsr-detail");
+        const warn = document.getElementById("yl3-dsr-warn");
+        if (!empty || !detail) return;
+
+        if (debt === 0 && income === 0) {
+          empty.style.display = "";
+          detail.style.display = "none";
+          return;
+        }
+        empty.style.display = "none";
+        detail.style.display = "";
+
+        document.getElementById("yl3-debt").textContent = debt + " 만 원";
+        document.getElementById("yl3-income").textContent =
+          income + " 만 원";
+        const dsrEl = document.getElementById("yl3-dsr-val");
+        if (income > 0) {
+          const dsr = (debt / income) * 100;
+          dsrEl.textContent = dsr.toFixed(1) + "%";
+          if (warn) warn.style.display = dsr > 40 ? "" : "none";
+        } else {
+          dsrEl.textContent = "—%";
+          if (warn) warn.style.display = "none";
+        }
+      }
+
+      // [YL-3] DSR 트리거: 부채 테이블 & 소득 입력 변경 시 자동 재계산
+      document.addEventListener("DOMContentLoaded", () => {
+        ["bank-tbody", "nonbank-tbody", "personal-tbody"].forEach((id) => {
+          const t = document.getElementById(id);
+          if (t) t.addEventListener("input", calcDSR);
+        });
+        [
+          "inc-work",
+          "inc-biz",
+          "inc-gov",
+          "inc-etc",
+          "f-inc-work",
+          "f-inc-biz",
+          "f-inc-gov",
+          "f-inc-etc",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener("input", calcDSR);
+        });
+        calcDSR();
+      });
 
       // ── 신청서 진행 바 ────────────────────────────────────
       function updateSurveyProgress() {
