@@ -4958,6 +4958,192 @@
       document.addEventListener("DOMContentLoaded", () => {
         renderPsych();
       });
+
+      // [YL-1] ── 자동저장 (localStorage) ──────────────────────
+      (function () {
+        const STORAGE_KEY = "youthladder_draft";
+        const SAVE_INTERVAL_MS = 3000;
+        let suppressSave = false;
+
+        function hasContent(data) {
+          const inputHas = Object.values(data.inputs || {}).some(
+            (v) => v && String(v).length > 0
+          );
+          const radioHas = Object.keys(data.radios || {}).length > 0;
+          const checkHas = Object.values(data.checkboxes || {}).some((v) => v);
+          const btnHas = (data.selectedBtns || []).length > 0;
+          return inputHas || radioHas || checkHas || btnHas;
+        }
+
+        function assignIds() {
+          document.querySelectorAll(".radio-btn, .check-btn").forEach((el, i) => {
+            if (!el.dataset.ylId) el.dataset.ylId = "yl-btn-" + i;
+          });
+        }
+
+        function collect() {
+          const data = {
+            inputs: {},
+            radios: {},
+            checkboxes: {},
+            selectedBtns: [],
+          };
+          document.querySelectorAll("input, textarea, select").forEach((el) => {
+            if (el.type === "radio") {
+              if (el.checked && el.name) data.radios[el.name] = el.value || "";
+            } else if (el.type === "checkbox") {
+              const key = el.id;
+              if (key) data.checkboxes[key] = el.checked;
+            } else if (
+              !["button", "submit", "reset", "file"].includes(el.type)
+            ) {
+              const key = el.id || el.name;
+              if (key) data.inputs[key] = el.value;
+            }
+          });
+          document
+            .querySelectorAll(".radio-btn.selected, .check-btn.selected")
+            .forEach((el) => {
+              if (el.dataset.ylId) data.selectedBtns.push(el.dataset.ylId);
+            });
+          return data;
+        }
+
+        function save() {
+          if (suppressSave) return;
+          try {
+            const data = collect();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateSaveTime(new Date());
+          } catch (e) {
+            console.warn("[YL-1] autosave failed:", e);
+          }
+        }
+
+        function updateSaveTime(d) {
+          const el = document.getElementById("yl-save-time");
+          if (!el) return;
+          const p = (n) => String(n).padStart(2, "0");
+          el.textContent =
+            "마지막 저장: " +
+            d.getFullYear() +
+            "." +
+            p(d.getMonth() + 1) +
+            "." +
+            p(d.getDate()) +
+            " " +
+            p(d.getHours()) +
+            ":" +
+            p(d.getMinutes());
+        }
+
+        function restore() {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return false;
+          let data;
+          try {
+            data = JSON.parse(raw);
+          } catch {
+            return false;
+          }
+          if (!hasContent(data)) return false;
+
+          suppressSave = true;
+          Object.entries(data.inputs || {}).forEach(([key, val]) => {
+            const el =
+              document.getElementById(key) ||
+              document.querySelector('[name="' + key + '"]');
+            if (el && el.tagName !== "BUTTON") el.value = val;
+          });
+          Object.entries(data.radios || {}).forEach(([name, val]) => {
+            const el = document.querySelector(
+              'input[type="radio"][name="' + name + '"][value="' + val + '"]'
+            );
+            if (el) el.checked = true;
+          });
+          Object.entries(data.checkboxes || {}).forEach(([id, checked]) => {
+            const el = document.getElementById(id);
+            if (el) el.checked = checked;
+          });
+          (data.selectedBtns || []).forEach((ylId) => {
+            const el = document.querySelector('[data-yl-id="' + ylId + '"]');
+            if (el) el.click();
+          });
+          suppressSave = false;
+          return true;
+        }
+
+        function installUI() {
+          const bar = document.createElement("div");
+          bar.id = "yl-save-bar";
+          bar.setAttribute(
+            "style",
+            "position:fixed;bottom:0;left:0;right:0;background:#fff;" +
+              "border-top:1px solid #e5e7eb;padding:10px 16px;display:flex;" +
+              "align-items:center;justify-content:space-between;z-index:150;" +
+              "box-shadow:0 -2px 8px rgba(0,0,0,0.04);" +
+              "font-family:'Noto Sans KR',sans-serif"
+          );
+          bar.innerHTML =
+            '<span id="yl-save-time" style="font-size:12px;color:#6b7280">마지막 저장: —</span>' +
+            '<button id="yl-save-btn" type="button" style="padding:8px 16px;background:#006b77;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">임시저장</button>';
+          document.body.appendChild(bar);
+          document.body.style.paddingBottom = "60px";
+
+          const banner = document.createElement("div");
+          banner.id = "yl-restore-banner";
+          banner.setAttribute(
+            "style",
+            "position:fixed;bottom:60px;left:50%;transform:translateX(-50%);" +
+              "background:#1E1E1E;color:#fff;padding:14px 20px;border-radius:10px;" +
+              "display:none;align-items:center;gap:14px;z-index:151;" +
+              "box-shadow:0 4px 20px rgba(0,0,0,0.2);font-size:13px;" +
+              "font-family:'Noto Sans KR',sans-serif"
+          );
+          banner.innerHTML =
+            "<span>💾 이전 작성 내용을 불러왔습니다.</span>" +
+            '<button id="yl-banner-delete" type="button" style="padding:6px 12px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer">삭제하고 새로 작성</button>' +
+            '<button id="yl-banner-close" type="button" style="padding:6px 12px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:6px;font-size:12px;cursor:pointer">닫기</button>';
+          document.body.appendChild(banner);
+
+          document
+            .getElementById("yl-save-btn")
+            .addEventListener("click", () => {
+              save();
+              const btn = document.getElementById("yl-save-btn");
+              const orig = btn.textContent;
+              btn.textContent = "✅ 저장 완료!";
+              btn.disabled = true;
+              setTimeout(() => {
+                btn.textContent = orig;
+                btn.disabled = false;
+              }, 2000);
+            });
+          document
+            .getElementById("yl-banner-delete")
+            .addEventListener("click", () => {
+              localStorage.removeItem(STORAGE_KEY);
+              window.location.reload();
+            });
+          document
+            .getElementById("yl-banner-close")
+            .addEventListener("click", () => {
+              document.getElementById("yl-restore-banner").style.display =
+                "none";
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+          installUI();
+          assignIds();
+          const restored = restore();
+          if (restored) {
+            const b = document.getElementById("yl-restore-banner");
+            if (b) b.style.display = "flex";
+          }
+          setInterval(save, SAVE_INTERVAL_MS);
+        });
+      })();
     </script>
   </body>
 </html>
