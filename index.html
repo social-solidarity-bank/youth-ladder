@@ -3347,6 +3347,23 @@
               <div class="error-msg" id="err-plan"></div>
             </div>
 
+            <!-- Q3. 대출 상환 계획 -->
+            <div class="form-row" style="border-left:3px solid #7b3fae;padding-left:14px;margin-top:24px">
+              <label class="form-label" style="color:#4a1a6b;font-size:14px">
+                Q3. 대출 상환 계획<span class="req">*</span>
+              </label>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.7">
+                이 대출을 어떤 소득으로, 매월 얼마씩 상환할 계획인가요? 예상치 못한 상황이 생기면 어떻게 대처하실 건가요?<br>
+                ① 상환 재원 (어떤 소득으로) &nbsp;② 월 상환 예정액 &nbsp;③ 소득이 줄거나 갑작스러운 지출이 생기면 어떻게 대처할지
+              </p>
+              <textarea class="form-textarea" id="f-q3-repay-plan"
+                placeholder="예) 매달 급여 180만 원에서 월 상환액 15만 원을 자동이체로 납입할 계획입니다. 소득이 갑자기 줄 경우 불필요한 구독서비스를 먼저 정리하고, 필요 시 담당자와 일정을 협의하겠습니다."
+                style="min-height:120px" maxlength="700"
+                oninput="countChars(this,'cnt-q3-repay-plan')"></textarea>
+              <div class="char-counter"><span id="cnt-q3-repay-plan">0</span> / 700자</div>
+              <div class="error-msg" id="err-q3-repay"></div>
+            </div>
+
           </div>
         </div>
 
@@ -4779,6 +4796,7 @@
         // [YL-req2] Q1~Q4 키를 Q1/Q2 2개로 교체 (Q3_*, Q4_* 키 제거)
         d['Q1_부채발생이유'] = document.getElementById('f-q1-background')?.value.trim() || '';
         d['Q2_대환채무및사용계획'] = document.getElementById('f-q2-plan')?.value.trim() || '';
+        d['Q3_상환계획'] = document.getElementById('f-q3-repay-plan')?.value.trim() || '';
         d['신청금액'] = (document.getElementById('f-amount')?.value || '') + '만 원';
         d['희망상환기간'] = getRadioVal('period');
         d['대출목적'] = getRadioVal('loan-purpose');
@@ -4810,6 +4828,12 @@
           const err = document.getElementById('err-plan');
           if (err) err.textContent = 'Q2 대환 필요 채무 현황을 입력해 주세요.';
           q2?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        if (!document.getElementById('f-q3-repay-plan')?.value?.trim()) {
+          const err = document.getElementById('err-q3-repay');
+          if (err) { err.textContent = 'Q3 대출 상환 계획을 입력해 주세요.'; err.classList.add('show'); }
+          document.getElementById('f-q3-repay-plan')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
         const cb = document.getElementById("final-consent-mid");
@@ -4868,6 +4892,7 @@
             qual_no_delinquency: data['자격_체납없음'] === 'pass',
             q1_background:       data['Q1_부채발생이유'],
             q2_repay_plan:       data['Q2_대환채무및사용계획'],
+            q3_repay_plan:       data['Q3_상환계획'],
             // [YL-req1] 개인(신용)정보 동의서 6개 체크 상태 반영
             consent_collect:        document.getElementById('consent-collect')?.checked || false,
             consent_collect_id:     document.getElementById('consent-collect-id')?.checked || false,
