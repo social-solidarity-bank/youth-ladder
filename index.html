@@ -1754,19 +1754,46 @@
                 />
                 <div class="error-msg" id="err-name">성명을 입력해 주세요.</div>
               </div>
-              <div class="form-row" style="margin-bottom: 0">
-                <label class="form-label"
-                  >생년월일<span class="req">*</span></label
-                >
-                <input
-                  class="form-input"
-                  type="text"
-                  id="f-birth"
-                  placeholder="예) 19980315"
-                  maxlength="8"
-                  oninput="validateBirth(this)"
-                />
-                <div class="error-msg" id="err-birth"></div>
+              <div class="form-row" style="margin-bottom:0">
+                <label class="form-label">주민등록번호<span class="req">*</span></label>
+                <div style="display:flex;align-items:center;gap:8px;max-width:340px">
+                  <input
+                    class="form-input"
+                    type="text"
+                    id="f-rrn-front"
+                    inputmode="numeric"
+                    maxlength="6"
+                    placeholder="앞 6자리"
+                    style="flex:0 0 130px;text-align:center;letter-spacing:3px"
+                    oninput="this.value=this.value.replace(/\D/g,'');validateRrn()"
+                  />
+                  <span style="color:var(--gray-400);font-size:20px;font-weight:300;flex-shrink:0">—</span>
+                  <div style="position:relative;flex:1;max-width:160px">
+                    <input
+                      class="form-input"
+                      type="password"
+                      id="f-rrn-back"
+                      inputmode="numeric"
+                      maxlength="7"
+                      placeholder="●●●●●●●"
+                      style="text-align:center;letter-spacing:3px;padding-right:40px"
+                      oninput="this.value=this.value.replace(/\D/g,'');validateRrn()"
+                    />
+                    <button
+                      type="button"
+                      id="rrn-eye-btn"
+                      onclick="toggleRrnVisibility()"
+                      aria-label="뒷자리 표시/숨김"
+                      style="position:absolute;right:8px;top:50%;transform:translateY(-50%);
+                             background:none;border:none;cursor:pointer;padding:4px;
+                             color:var(--gray-400);font-size:16px;line-height:1"
+                    >👁</button>
+                  </div>
+                </div>
+                <div class="error-msg" id="err-rrn"></div>
+                <p style="font-size:12px;color:var(--text-muted);margin-top:6px">
+                  ※ 주민등록번호 뒷자리는 저장되지 않으며, 대출 심사 목적으로만 사용됩니다.
+                </p>
               </div>
             </div>
             <div class="form-row" style="margin-top: 14px">
@@ -4431,25 +4458,65 @@
         return true;
       }
 
-      function validateBirth(el) {
-        const msg = document.getElementById("err-birth");
-        const val = el.value.replace(/\D/g, "");
-        el.value = val;
-        if (val.length === 8 && /^(19|20)\d{6}$/.test(val)) {
-          el.classList.remove("error");
-          if (msg) {
-            msg.classList.remove("show");
-          }
-          return true;
-        } else if (val.length > 0) {
-          el.classList.add("error");
-          if (msg) {
-            msg.textContent = "올바른 생년월일 8자리를 입력해 주세요.";
-            msg.classList.add("show");
-          }
+      function toggleRrnVisibility() {
+        const inp = document.getElementById('f-rrn-back');
+        const btn = document.getElementById('rrn-eye-btn');
+        if (!inp) return;
+        if (inp.type === 'password') {
+          inp.type = 'text';
+          btn.textContent = '🙈';
+        } else {
+          inp.type = 'password';
+          btn.textContent = '👁';
+        }
+      }
+
+      function validateRrn() {
+        const front = (document.getElementById('f-rrn-front')?.value || '').trim();
+        const back  = (document.getElementById('f-rrn-back')?.value  || '').trim();
+        const msg   = document.getElementById('err-rrn');
+        const fEl   = document.getElementById('f-rrn-front');
+        const bEl   = document.getElementById('f-rrn-back');
+
+        if (!front && !back) {
+          fEl?.classList.remove('error');
+          bEl?.classList.remove('error');
+          if (msg) msg.classList.remove('show');
           return false;
         }
-        return false;
+        if (front.length < 6 || back.length < 7) return false;
+
+        const mm = parseInt(front.slice(2,4), 10);
+        const dd = parseInt(front.slice(4,6), 10);
+        if (mm < 1 || mm > 12 || dd < 1 || dd > 31) {
+          fEl?.classList.add('error');
+          bEl?.classList.add('error');
+          if (msg) { msg.textContent = '생년월일이 올바르지 않습니다.'; msg.classList.add('show'); }
+          return false;
+        }
+        const g = parseInt(back[0], 10);
+        if (![1,2,3,4,8,9].includes(g)) {
+          fEl?.classList.add('error');
+          bEl?.classList.add('error');
+          if (msg) { msg.textContent = '주민등록번호가 올바르지 않습니다.'; msg.classList.add('show'); }
+          return false;
+        }
+        const all = front + back;
+        const w = [2,3,4,5,6,7,8,9,2,3,4,5];
+        let sum = 0;
+        for (let i = 0; i < 12; i++) sum += parseInt(all[i],10) * w[i];
+        const check = (11 - (sum % 11)) % 10;
+        if (check !== parseInt(all[12],10)) {
+          fEl?.classList.add('error');
+          bEl?.classList.add('error');
+          if (msg) { msg.textContent = '주민등록번호가 올바르지 않습니다.'; msg.classList.add('show'); }
+          return false;
+        }
+
+        fEl?.classList.remove('error');
+        bEl?.classList.remove('error');
+        if (msg) msg.classList.remove('show');
+        return true;
       }
 
       function validatePhone(el) {
@@ -4524,7 +4591,7 @@
         let ok = true;
         if (!validateRequired(document.getElementById("f-name"), "err-name"))
           ok = false;
-        if (!validateBirth(document.getElementById("f-birth"))) ok = false;
+        if (!validateRrn()) ok = false;
         if (!validatePhone(document.getElementById("f-phone"))) ok = false;
         if (!validateEmail(document.getElementById("f-email"))) ok = false;
         if (!validateRequired(document.getElementById("f-address"), "err-address"))
@@ -4640,7 +4707,12 @@
         Object.keys(eligMap).forEach(k => { d[`자격_${eligMap[k]}`] = eligState[k] || ''; });
         // 기본정보
         d['성명'] = document.getElementById('f-name')?.value?.trim() || '';
-        d['생년월일'] = document.getElementById('f-birth')?.value?.trim() || '';
+        const _front = document.getElementById('f-rrn-front')?.value?.trim() || '';
+        const _back  = document.getElementById('f-rrn-back')?.value?.trim()  || '';
+        const _g = _back[0] || '';
+        const _century = ['1','2','5','6'].includes(_g) ? '19'
+                       : ['3','4','7','8'].includes(_g) ? '20' : '19';
+        d['생년월일'] = _front.length === 6 ? _century + _front : '';
         d['성별'] = getRadioVal('gender');
         d['휴대전화'] = document.getElementById('f-phone')?.value?.trim() || '';
         d['이메일'] = document.getElementById('f-email')?.value?.trim() || '';
@@ -4921,6 +4993,7 @@
             selectedBtns: [],
           };
           document.querySelectorAll("input, textarea, select").forEach((el) => {
+            if (el.id === 'f-rrn-back') return;
             if (el.type === "radio") {
               if (el.checked && el.name) data.radios[el.name] = el.value || "";
             } else if (el.type === "checkbox") {
@@ -4982,6 +5055,7 @@
 
           suppressSave = true;
           Object.entries(data.inputs || {}).forEach(([key, val]) => {
+            if (key === 'f-rrn-back') return;
             const el =
               document.getElementById(key) ||
               document.querySelector('[name="' + key + '"]');
