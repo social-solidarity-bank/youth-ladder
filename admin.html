@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>희망사다리 관리자 — 신청서 뷰어</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #006b77; --teal-dark: #004d58; --teal-light: #e6f5f7;
+  --red: #991b1b; --red-light: #fef2f2;
+  --green: #1a7a5e; --green-light: #e6f5f0;
+  --amber: #92400e; --amber-light: #fffbeb;
+  --purple: #4a1a6b;
+  --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+  --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280;
+  --gray-700: #374151; --gray-900: #111827;
+  --border: #d1d5db; --radius: 8px; --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(--gray-900); font-size: 13px; line-height: 1.6; }
+
+/* ── 로그인 화면 */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); }
+.login-card { background: #fff; border-radius: 16px; padding: 40px 36px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.login-logo { text-align: center; margin-bottom: 28px; }
+.login-logo .mark { font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 700; color: var(--teal); margin-bottom: 8px; }
+.login-logo .sub { font-size: 12px; color: var(--gray-400); }
+.login-field { margin-bottom: 16px; }
+.login-field label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-700); margin-bottom: 6px; }
+.login-field input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
+.login-field input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,107,119,0.1); }
+.login-btn { width: 100%; padding: 12px; background: var(--teal); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 8px; transition: background 0.2s; }
+.login-btn:hover { background: var(--teal-dark); }
+.login-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+.login-error { background: var(--red-light); border: 1px solid #fecaca; color: var(--red); border-radius: 6px; padding: 10px 14px; font-size: 13px; margin-top: 12px; display: none; }
+.login-note { font-size: 11px; color: var(--gray-400); text-align: center; margin-top: 16px; line-height: 1.6; }
+
+/* ── 메인 레이아웃 */
+.app-layout { display: none; min-height: 100vh; }
+.app-layout.show { display: flex; }
+.sidebar { width: 300px; flex-shrink: 0; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.content { flex: 1; overflow: hidden; min-width: 0; }
+
+/* ── 사이드바 */
+.sidebar-header { padding: 18px; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); color: #fff; }
+.sidebar-title { font-family: 'Noto Serif KR', serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.sidebar-sub { font-size: 11px; opacity: 0.75; }
+.sidebar-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.sidebar-count { font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 10px; }
+.logout-btn { font-size: 11px; color: rgba(255,255,255,0.75); background: none; border: 1px solid rgba(255,255,255,0.3); padding: 3px 10px; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.logout-btn:hover { background: rgba(255,255,255,0.15); }
+
+.search-wrap { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); }
+.search-input { width: 100%; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 12px; font-family: inherit; outline: none; }
+.search-input:focus { border-color: var(--teal); }
+
+.app-card { padding: 14px 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background 0.15s; }
+.app-card:hover { background: var(--gray-50); }
+.app-card.active { background: var(--teal-light); border-left: 3px solid var(--teal); padding-left: 13px; }
+.app-num { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: 0.05em; margin-bottom: 2px; }
+.app-name { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+.app-meta { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+.status-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: var(--amber-light); color: var(--amber); border: 1px solid #f5d06a; margin-top: 5px; }
+
+/* ── 메인 */
+.main-area { padding: 24px 28px; max-width: 860px; margin: 0 auto; }
+.no-select { text-align: center; padding: 80px 20px; color: var(--gray-400); }
+.no-select .icon { font-size: 48px; margin-bottom: 16px; }
+
+/* ── 신청서 */
+.app-header { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); border-radius: 12px; padding: 22px 26px; color: #fff; margin-bottom: 16px; }
+.app-header .receipt { font-size: 12px; opacity: 0.8; margin-bottom: 6px; }
+.app-header h1 { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+.app-header-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); color: #fff; }
+.chip.hl { background: rgba(255,229,127,0.9); border-color: #ffd740; color: #004d58; }
+
+.qual-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+.qual-item { background: #fff; border: 1.5px solid var(--green); border-radius: var(--radius); padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--green); }
+.qual-item.fail { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+.card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; box-shadow: var(--shadow); }
+.card-header { padding: 12px 18px; font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+.card-header .num { font-size: 10px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 2px 7px; border-radius: 8px; letter-spacing: 0.05em; }
+.card-body { padding: 18px; }
+.h-teal { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); }
+.h-red { background: linear-gradient(135deg, #7b1a1a, #b83232); }
+.h-green { background: linear-gradient(135deg, #1b6b3a, #2e9954); }
+.h-purple { background: linear-gradient(135deg, var(--purple), #7b3fae); }
+.h-dark { background: linear-gradient(135deg, #1a3a1a, #2e6b2e); }
+
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+.info-row { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; border-bottom: 1px solid var(--gray-100); }
+.info-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: 0.04em; text-transform: uppercase; }
+.info-value { font-size: 13px; color: var(--gray-900); font-weight: 500; }
+
+.expense-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-top: 8px; }
+.exp-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 6px; padding: 8px; text-align: center; }
+.exp-label { font-size: 10px; color: var(--gray-500); margin-bottom: 3px; }
+.exp-val { font-size: 14px; font-weight: 700; color: var(--teal); }
+
+.debt-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+.debt-table th { background: var(--gray-50); color: var(--gray-500); font-size: 10px; font-weight: 700; padding: 6px 7px; border: 1px solid var(--border); text-align: center; white-space: nowrap; }
+.debt-table td { padding: 6px 7px; border: 1px solid var(--border); color: var(--gray-700); }
+.debt-table tr:nth-child(even) td { background: var(--gray-50); }
+
+.q-box { background: var(--gray-50); border: 1px solid var(--gray-200); border-left: 4px solid var(--purple); border-radius: 6px; padding: 14px 16px; margin-bottom: 12px; white-space: pre-wrap; line-height: 1.85; font-size: 13px; color: var(--gray-900); }
+.q-label { font-size: 11px; font-weight: 700; color: var(--purple); margin-bottom: 8px; }
+
+.sec { font-size: 11px; font-weight: 700; color: var(--teal); border-left: 3px solid var(--teal); padding-left: 8px; margin: 14px 0 8px; letter-spacing: 0.05em; text-transform: uppercase; }
+.sec.red { color: var(--red); border-left-color: var(--red); }
+.sec.green { color: var(--green); border-left-color: var(--green); }
+
+.crisis-grid { display: flex; gap: 10px; margin-top: 8px; }
+.crisis-item { flex: 1; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 6px; padding: 10px 14px; }
+.crisis-label { font-size: 11px; color: var(--gray-500); margin-bottom: 4px; }
+.crisis-val { font-size: 14px; font-weight: 700; color: var(--gray-700); }
+
+.warn-box { background: var(--amber-light); border: 1.5px solid #f5d06a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--amber); margin-bottom: 14px; display: flex; gap: 8px; }
+
+.btn-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.btn { padding: 8px 18px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; }
+.btn-print { background: var(--teal); color: #fff; }
+.btn-print:hover { background: var(--teal-dark); }
+.btn-refresh { background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--gray-300); }
+
+/* ── 로딩 */
+.loading { text-align: center; padding: 40px; color: var(--gray-400); font-size: 14px; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--gray-200); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media print {
+  .sidebar, .btn-row, .search-wrap { display: none !important; }
+  .content { padding: 0; }
+  .main-area { padding: 0; max-width: 100%; }
+  body { background: #fff; }
+}
+@media (max-width: 780px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; }
+  .qual-grid { grid-template-columns: repeat(2,1fr); }
+  .expense-grid { grid-template-columns: repeat(3,1fr); }
+  .info-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── 로그인 화면 -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="mark">희</div>
+      <div style="font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:var(--teal-dark);margin-bottom:4px">청년 희망사다리</div>
+      <div class="sub">관리자 신청서 뷰어 · 사회연대은행</div>
+    </div>
+    <div class="login-field">
+      <label>이메일</label>
+      <input type="email" id="email-input" placeholder="admin@socialbank.or.kr" />
+    </div>
+    <div class="login-field">
+      <label>비밀번호</label>
+      <input type="password" id="pw-input" placeholder="••••••••" />
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-note">
+      Supabase 관리자 계정으로 로그인하세요.<br>
+      계정 발급: Supabase Dashboard → Authentication → Users
+    </div>
+  </div>
+</div>
+
+<!-- ── 메인 앱 -->
+<div class="app-layout" id="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">청년 희망사다리 신청서</div>
+      <div class="sidebar-sub">금융산업공익재단 × 사회연대은행</div>
+      <div class="sidebar-meta">
+        <span class="sidebar-count" id="total-count">—</span>
+        <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <input class="search-input" type="text" id="search-input" placeholder="이름·접수번호 검색..." oninput="filterApps()" />
+    </div>
+    <div id="app-list">
+      <div class="loading"><div class="spinner"></div>불러오는 중...</div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <div class="main-area" id="main-area">
+      <div class="no-select">
+        <div class="icon">📋</div>
+        <p style="font-size:15px;margin-bottom:8px">신청자를 선택하세요</p>
+        <p style="font-size:12px;color:var(--gray-400)">왼쪽 목록에서 신청자를 클릭하면<br>전체 신청서 내용이 표시됩니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── Supabase 설정 ──────────────────────────────────────
+const SUPABASE_URL  = 'https://pmvpacynvtpkwpvaezgg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtdnBhY3ludnRwa3dwdmFlemdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTAwMzQsImV4cCI6MjA5MTMyNjAzNH0.pGNzhGiUnMA52kxw3t-EvZUFCcmt-lWelj4xwS9Gb-8';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let ALL_APPS = [];
+let CURRENT_IDX = null;
+
+// ── 로그인 ────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+});
+
+async function doLogin() {
+  const email = document.getElementById('email-input').value.trim();
+  const pw    = document.getElementById('pw-input').value;
+  const btn   = document.getElementById('login-btn');
+  const err   = document.getElementById('login-error');
+
+  if (!email || !pw) { showErr('이메일과 비밀번호를 입력해 주세요.'); return; }
+  btn.disabled = true; btn.textContent = '로그인 중...';
+  err.style.display = 'none';
+
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error) {
+    showErr('로그인 실패: ' + (error.message || '이메일 또는 비밀번호를 확인해 주세요.'));
+    btn.disabled = false; btn.textContent = '로그인';
+    return;
+  }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-layout').classList.add('show');
+  loadApps();
+}
+
+function showErr(msg) {
+  const err = document.getElementById('login-error');
+  err.textContent = msg; err.style.display = 'block';
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// 세션 복구
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-layout').classList.add('show');
+    loadApps();
+  }
+});
+
+// ── 데이터 로드 ───────────────────────────────────────
+async function loadApps() {
+  const { data, error } = await sb
+    .from('applications')
+    .select('*')
+    .order('submitted_at', { ascending: false });
+
+  if (error) {
+    document.getElementById('app-list').innerHTML =
+      `<div class="loading" style="color:var(--red)">로드 실패: ${error.message}</div>`;
+    return;
+  }
+
+  ALL_APPS = (data || []).map(r => {
+    let fd = {};
+    try { fd = typeof r.form_data === 'object' ? r.form_data : JSON.parse(r.form_data || '{}'); } catch {}
+    return { ...r, fd };
+  });
+
+  renderList(ALL_APPS);
+}
+
+function renderList(apps) {
+  const total = document.getElementById('total-count');
+  total.textContent = apps.length + '건';
+  const list = document.getElementById('app-list');
+  if (apps.length === 0) {
+    list.innerHTML = '<div class="loading">검색 결과 없음</div>'; return;
+  }
+  list.innerHTML = apps.map((a, i) => {
+    const origIdx = ALL_APPS.indexOf(a);
+    return `
+      <div class="app-card" onclick="showApp(${origIdx})" id="card-${origIdx}">
+        <div class="app-num">${a.receipt_number || '—'}</div>
+        <div class="app-name">${a.name || '—'}</div>
+        <div class="app-meta">${fmtDate(a.birth_date)} · ${a.employment_type || '—'} · ${(a.submitted_at||'').slice(0,10)}</div>
+        <div style="margin-top:5px"><span class="status-badge">${a.review1_judgment || '검토중'}</span></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterApps() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = q ? ALL_APPS.filter(a =>
+    (a.name||'').toLowerCase().includes(q) ||
+    (a.receipt_number||'').toLowerCase().includes(q) ||
+    (a.phone||'').includes(q)
+  ) : ALL_APPS;
+  renderList(filtered);
+}
+
+// ── 헬퍼 ─────────────────────────────────────────────
+function fmt(v) { return v || '—'; }
+function fmtDate(d) {
+  if (!d) return '—';
+  const s = String(d).replace(/-/g,'');
+  if (s.length < 8) return d;
+  return s.slice(0,4) + '. ' + s.slice(4,6) + '. ' + s.slice(6,8) + '.';
+}
+function parseDebt(raw) {
+  if (!raw) return [];
+  return raw.trim().split('\n').map(l => l.split('|').map(p => p.trim())).filter(r => r.some(p => p));
+}
+function renderDebt(rows, cols) {
+  if (!rows || rows.length === 0) return '<p style="color:var(--gray-400);font-size:12px;padding:6px 0">입력 없음</p>';
+  const hs = cols.map(c => `<th>${c}</th>`).join('');
+  const bs = rows.map(r => `<tr>${cols.map((_,i) => `<td>${fmt(r[i])}</td>`).join('')}</tr>`).join('');
+  return `<table class="debt-table"><thead><tr>${hs}</tr></thead><tbody>${bs}</tbody></table>`;
+}
+
+// ── 신청서 렌더링 ─────────────────────────────────────
+function showApp(idx) {
+  CURRENT_IDX = idx;
+  document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+  const cardEl = document.getElementById('card-' + idx);
+  if (cardEl) cardEl.classList.add('active');
+
+  const a = ALL_APPS[idx];
+  const fd = a.fd || {};
+
+  const qualItems = [
+    ['연령 (만 19~39세)', a.qual_age],
+    ['소득 150% 이하', a.qual_income_150],
+    ['다중부채 2건 이상', a.qual_multi_debt],
+    ['고금리 10% 이상', a.qual_high_rate],
+    ['금융기관 연체 없음', a.qual_no_overdue],
+    ['국세 체납 없음', a.qual_no_delinquency],
+  ];
+
+  const expEntries = [
+    ['주거', fd['지출_주거']], ['식비', fd['지출_식비']],
+    ['교통', fd['지출_교통']], ['통신', fd['지출_통신']],
+    ['의료', fd['지출_의료']], ['교육양육', fd['지출_교육양육']],
+    ['보험', fd['지출_보험']], ['대출상환', fd['지출_대출상환']],
+    ['저축', fd['지출_저축']], ['기타', fd['지출_기타']],
+  ];
+  const totalExp = expEntries.reduce((s,[,v]) => s + (parseInt(v)||0), 0);
+
+  const bankCols  = ['유형','상품','기관명','약정(만)','잔액(만)','월상환(만)','금리','담보','시작','만료'];
+  const otherCols = ['대출처','기관명','약정(만)','잔액(만)','월상환(만)','금리','시작','만료'];
+
+  const debtBank  = parseDebt(fd['부채_금융기관'] || '');
+  const debtOther = parseDebt(fd['부채_기타대출'] || '');
+
+  document.getElementById('main-area').innerHTML = `
+    <div class="btn-row">
+      <button class="btn btn-print" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+      <button class="btn btn-refresh" onclick="loadApps()">🔄 새로고침</button>
+    </div>
+
+    <div class="app-header">
+      <div class="receipt">${a.receipt_number} · 접수 ${(a.submitted_at||'').slice(0,10)}</div>
+      <h1>${a.name} (${fd['성별']||'—'}, ${fmtDate(String(a.birth_date||''))})</h1>
+      <div class="app-header-chips">
+        <span class="chip">${a.employment_type||'—'}</span>
+        <span class="chip">${fd['소득유형']||'—'}</span>
+        <span class="chip">${fd['거주형태']||'—'}</span>
+        <span class="chip hl">신청액 ${a.loan_amount||'—'}만원</span>
+        <span class="chip">${fd['자동이체동의']||'—'}</span>
+      </div>
+    </div>
+
+    <div class="qual-grid">
+      ${qualItems.map(([label,pass]) => `
+        <div class="qual-item ${pass ? '' : 'fail'}">
+          <span>${pass ? '✅' : '❌'}</span><span>${label}</span>
+        </div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-header h-teal"><span class="num">01</span> 신청자 기본정보</div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-row"><span class="info-label">성명</span><span class="info-value">${a.name}</span></div>
+          <div class="info-row"><span class="info-label">생년월일 / 성별</span><span class="info-value">${fmtDate(String(a.birth_date||''))} / ${fd['성별']||'—'}</span></div>
+          <div class="info-row"><span class="info-label">휴대전화</span><span class="info-value">${a.phone}</span></div>
+          <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${fmt(fd['이메일'])}</span></div>
+          <div class="info-row" style="grid-column:span 2"><span class="info-label">주소</span><span class="info-value">${fmt(fd['주소'])} ${fd['상세주소']||''}</span></div>
+          <div class="info-row"><span class="info-label">거주형태</span><span class="info-value">${fmt(fd['거주형태'])}</span></div>
+          <div class="info-row"><span class="info-label">이사계획</span><span class="info-value">${fmt(fd['이사계획'])}</span></div>
+          <div class="info-row"><span class="info-label">가구원수</span><span class="info-value">${fmt(fd['가구원수'])}</span></div>
+          <div class="info-row"><span class="info-label">세대주여부</span><span class="info-value">${fmt(fd['세대주여부'])}</span></div>
+          <div class="info-row"><span class="info-label">부양가족</span><span class="info-value">${fmt(fd['부양가족'])}${fd['부양가족상세'] ? ' — ' + fd['부양가족상세'] : ''}</span></div>
+          <div class="info-row"><span class="info-label">고용형태</span><span class="info-value">${fmt(a.employment_type)} / ${fmt(fd['고용세부'])}</span></div>
+          <div class="info-row"><span class="info-label">직장명 / 주소</span><span class="info-value">${fmt(fd['직장명'])}${fd['직장주소'] ? ' · ' + fd['직장주소'] : ''}</span></div>
+          <div class="info-row" style="grid-column:span 2"><span class="info-label">정부지원 수혜</span><span class="info-value">${fmt(fd['정부지원수혜'])}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header h-red"><span class="num">02</span> 현재 부채 상황</div>
+      <div class="card-body">
+        <div class="sec red">02-1 · 금융기관 대출</div>
+        ${renderDebt(debtBank, bankCols)}
+        <div class="sec red" style="margin-top:14px">02-2 · 기타 대출</div>
+        ${renderDebt(debtOther, otherCols)}
+        <div class="sec red" style="margin-top:14px">02-3 · 채무조정 이력</div>
+        <div class="info-grid" style="margin-top:8px">
+          <div class="info-row"><span class="info-label">이력</span><span class="info-value">${fmt(fd['채무조정이력'])}</span></div>
+          <div class="info-row"><span class="info-label">유형</span><span class="info-value">${fmt(fd['채무조정유형'])}${fd['채무조정유형_기타상세'] ? ' (' + fd['채무조정유형_기타상세'] + ')' : ''}</span></div>
+          <div class="info-row"><span class="info-label">월 납입액</span><span class="info-value">${fd['채무조정월납액'] ? fd['채무조정월납액'] + '만원' : '—'}</span></div>
+          <div class="info-row"><span class="info-label">과거 상세</span><span class="info-value">${fmt(fd['채무조정과거상세'])}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header h-green"><span class="num">03</span> 소득과 생활비</div>
+      <div class="card-body">
+        <div class="sec green">소득유형</div>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${fmt(fd['소득유형'])}</p>
+        <div class="sec green">월 지출 (단위: 만원)</div>
+        <div class="expense-grid">
+          ${expEntries.map(([label,val]) => `
+            <div class="exp-item">
+              <div class="exp-label">${label}</div>
+              <div class="exp-val">${parseInt(val)||0}만</div>
+            </div>`).join('')}
+        </div>
+        <div style="text-align:right;margin-top:8px;font-size:12px;color:var(--gray-500)">
+          지출 합계: <strong style="color:var(--teal)">${totalExp}만원</strong>
+        </div>
+        <div class="sec green" style="margin-top:14px">위기 대응 여건</div>
+        <div class="crisis-grid">
+          <div class="crisis-item"><div class="crisis-label">💰 보유 현금·예금</div><div class="crisis-val">${fmt(fd['위기대응_현금'])}</div></div>
+          <div class="crisis-item"><div class="crisis-label">🤝 가족·지인 지원가능액</div><div class="crisis-val">${fmt(fd['위기대응_가족도움'])}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header h-purple"><span class="num">04</span> 대출 신청서 — 심사 핵심</div>
+      <div class="card-body">
+        <div class="q-label">Q1. 부채 발생 이유 및 신청 이유</div>
+        <div class="q-box">${fmt(a.q1_background)}</div>
+        <div class="q-label" style="margin-top:14px">Q2. 대환 필요 채무 현황 및 자금 사용계획</div>
+        <div class="q-box">${fmt(a.q2_repay_plan)}</div>
+        <div class="q-label" style="margin-top:14px">Q3. 대출 상환 계획</div>
+        <div class="q-box">${fmt(a.q3_repay_plan)}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header h-dark"><span class="num">05·06</span> 대출계획 · 금융생활</div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-row"><span class="info-label">신청금액</span><span class="info-value">${a.loan_amount||'—'}만원</span></div>
+          <div class="info-row"><span class="info-label">자동이체 동의</span><span class="info-value">${fmt(fd['자동이체동의'])}</span></div>
+          <div class="info-row"><span class="info-label">이전 신청 경험</span><span class="info-value">${fmt(fd['이전신청경험'])}</span></div>
+          <div class="info-row"><span class="info-label">신용점수 요인 (자가인식)</span><span class="info-value">${fmt(fd['신용점수요인'])}</span></div>
+          <div class="info-row" style="grid-column:span 2"><span class="info-label">최근 금융개선 행동</span><span class="info-value">${fmt(fd['금융생활_행동'])}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
