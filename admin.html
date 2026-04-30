@@ -266,7 +266,7 @@ async function loadApps() {
 
   if (error) {
     document.getElementById('app-list').innerHTML =
-      `<div class="loading" style="color:var(--red)">로드 실패: ${error.message}</div>`;
+      `<div class="loading" style="color:var(--red)">로드 실패: ${esc(error.message)}</div>`;
     return;
   }
 
@@ -290,10 +290,10 @@ function renderList(apps) {
     const origIdx = ALL_APPS.indexOf(a);
     return `
       <div class="app-card" onclick="showApp(${origIdx})" id="card-${origIdx}">
-        <div class="app-num">${a.receipt_number || '—'}</div>
-        <div class="app-name">${a.name || '—'}</div>
-        <div class="app-meta">${fmtDate(a.birth_date)} · ${a.employment_type || '—'} · ${(a.submitted_at||'').slice(0,10)}</div>
-        <div style="margin-top:5px"><span class="status-badge">${a.review1_judgment || '검토중'}</span></div>
+        <div class="app-num">${esc(a.receipt_number)}</div>
+        <div class="app-name">${esc(a.name)}</div>
+        <div class="app-meta">${esc(fmtDate(a.birth_date))} · ${esc(a.employment_type)} · ${esc((a.submitted_at||'').slice(0,10))}</div>
+        <div style="margin-top:5px"><span class="status-badge">${esc(a.review1_judgment || '검토중')}</span></div>
       </div>
     `;
   }).join('');
@@ -310,7 +310,15 @@ function filterApps() {
 }
 
 // ── 헬퍼 ─────────────────────────────────────────────
-function fmt(v) { return v || '—'; }
+function esc(v) {
+  if (!v) return '—';
+  return String(v)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
 function fmtDate(d) {
   if (!d) return '—';
   const s = String(d).replace(/-/g,'');
@@ -324,7 +332,7 @@ function parseDebt(raw) {
 function renderDebt(rows, cols) {
   if (!rows || rows.length === 0) return '<p style="color:var(--gray-400);font-size:12px;padding:6px 0">입력 없음</p>';
   const hs = cols.map(c => `<th>${c}</th>`).join('');
-  const bs = rows.map(r => `<tr>${cols.map((_,i) => `<td>${fmt(r[i])}</td>`).join('')}</tr>`).join('');
+  const bs = rows.map(r => `<tr>${cols.map((_,i) => `<td>${esc(r[i])}</td>`).join('')}</tr>`).join('');
   return `<table class="debt-table"><thead><tr>${hs}</tr></thead><tbody>${bs}</tbody></table>`;
 }
 
@@ -369,14 +377,14 @@ function showApp(idx) {
     </div>
 
     <div class="app-header">
-      <div class="receipt">${a.receipt_number} · 접수 ${(a.submitted_at||'').slice(0,10)}</div>
-      <h1>${a.name} (${fd['성별']||'—'}, ${fmtDate(String(a.birth_date||''))})</h1>
+      <div class="receipt">${esc(a.receipt_number)} · 접수 ${esc((a.submitted_at||'').slice(0,10))}</div>
+      <h1>${esc(a.name)} (${esc(fd['성별'])}, ${esc(fmtDate(String(a.birth_date||'')))})</h1>
       <div class="app-header-chips">
-        <span class="chip">${a.employment_type||'—'}</span>
-        <span class="chip">${fd['소득유형']||'—'}</span>
-        <span class="chip">${fd['거주형태']||'—'}</span>
-        <span class="chip hl">신청액 ${a.loan_amount||'—'}만원</span>
-        <span class="chip">${fd['자동이체동의']||'—'}</span>
+        <span class="chip">${esc(a.employment_type)}</span>
+        <span class="chip">${esc(fd['소득유형'])}</span>
+        <span class="chip">${esc(fd['거주형태'])}</span>
+        <span class="chip hl">신청액 ${esc(a.loan_amount)}만원</span>
+        <span class="chip">${esc(fd['자동이체동의'])}</span>
       </div>
     </div>
 
@@ -391,19 +399,19 @@ function showApp(idx) {
       <div class="card-header h-teal"><span class="num">01</span> 신청자 기본정보</div>
       <div class="card-body">
         <div class="info-grid">
-          <div class="info-row"><span class="info-label">성명</span><span class="info-value">${a.name}</span></div>
-          <div class="info-row"><span class="info-label">생년월일 / 성별</span><span class="info-value">${fmtDate(String(a.birth_date||''))} / ${fd['성별']||'—'}</span></div>
-          <div class="info-row"><span class="info-label">휴대전화</span><span class="info-value">${a.phone}</span></div>
-          <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${fmt(fd['이메일'])}</span></div>
-          <div class="info-row" style="grid-column:span 2"><span class="info-label">주소</span><span class="info-value">${fmt(fd['주소'])} ${fd['상세주소']||''}</span></div>
-          <div class="info-row"><span class="info-label">거주형태</span><span class="info-value">${fmt(fd['거주형태'])}</span></div>
-          <div class="info-row"><span class="info-label">이사계획</span><span class="info-value">${fmt(fd['이사계획'])}</span></div>
-          <div class="info-row"><span class="info-label">가구원수</span><span class="info-value">${fmt(fd['가구원수'])}</span></div>
-          <div class="info-row"><span class="info-label">세대주여부</span><span class="info-value">${fmt(fd['세대주여부'])}</span></div>
-          <div class="info-row"><span class="info-label">부양가족</span><span class="info-value">${fmt(fd['부양가족'])}${fd['부양가족상세'] ? ' — ' + fd['부양가족상세'] : ''}</span></div>
-          <div class="info-row"><span class="info-label">고용형태</span><span class="info-value">${fmt(a.employment_type)} / ${fmt(fd['고용세부'])}</span></div>
-          <div class="info-row"><span class="info-label">직장명 / 주소</span><span class="info-value">${fmt(fd['직장명'])}${fd['직장주소'] ? ' · ' + fd['직장주소'] : ''}</span></div>
-          <div class="info-row" style="grid-column:span 2"><span class="info-label">정부지원 수혜</span><span class="info-value">${fmt(fd['정부지원수혜'])}</span></div>
+          <div class="info-row"><span class="info-label">성명</span><span class="info-value">${esc(a.name)}</span></div>
+          <div class="info-row"><span class="info-label">생년월일 / 성별</span><span class="info-value">${esc(fmtDate(String(a.birth_date||'')))} / ${esc(fd['성별'])}</span></div>
+          <div class="info-row"><span class="info-label">휴대전화</span><span class="info-value">${esc(a.phone)}</span></div>
+          <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${esc(fd['이메일'])}</span></div>
+          <div class="info-row" style="grid-column:span 2"><span class="info-label">주소</span><span class="info-value">${esc(fd['주소'])} ${fd['상세주소'] ? esc(fd['상세주소']) : ''}</span></div>
+          <div class="info-row"><span class="info-label">거주형태</span><span class="info-value">${esc(fd['거주형태'])}</span></div>
+          <div class="info-row"><span class="info-label">이사계획</span><span class="info-value">${esc(fd['이사계획'])}</span></div>
+          <div class="info-row"><span class="info-label">가구원수</span><span class="info-value">${esc(fd['가구원수'])}</span></div>
+          <div class="info-row"><span class="info-label">세대주여부</span><span class="info-value">${esc(fd['세대주여부'])}</span></div>
+          <div class="info-row"><span class="info-label">부양가족</span><span class="info-value">${esc(fd['부양가족'])}${fd['부양가족상세'] ? ' — ' + esc(fd['부양가족상세']) : ''}</span></div>
+          <div class="info-row"><span class="info-label">고용형태</span><span class="info-value">${esc(a.employment_type)} / ${esc(fd['고용세부'])}</span></div>
+          <div class="info-row"><span class="info-label">직장명 / 주소</span><span class="info-value">${esc(fd['직장명'])}${fd['직장주소'] ? ' · ' + esc(fd['직장주소']) : ''}</span></div>
+          <div class="info-row" style="grid-column:span 2"><span class="info-label">정부지원 수혜</span><span class="info-value">${esc(fd['정부지원수혜'])}</span></div>
         </div>
       </div>
     </div>
@@ -417,10 +425,10 @@ function showApp(idx) {
         ${renderDebt(debtOther, otherCols)}
         <div class="sec red" style="margin-top:14px">02-3 · 채무조정 이력</div>
         <div class="info-grid" style="margin-top:8px">
-          <div class="info-row"><span class="info-label">이력</span><span class="info-value">${fmt(fd['채무조정이력'])}</span></div>
-          <div class="info-row"><span class="info-label">유형</span><span class="info-value">${fmt(fd['채무조정유형'])}${fd['채무조정유형_기타상세'] ? ' (' + fd['채무조정유형_기타상세'] + ')' : ''}</span></div>
-          <div class="info-row"><span class="info-label">월 납입액</span><span class="info-value">${fd['채무조정월납액'] ? fd['채무조정월납액'] + '만원' : '—'}</span></div>
-          <div class="info-row"><span class="info-label">과거 상세</span><span class="info-value">${fmt(fd['채무조정과거상세'])}</span></div>
+          <div class="info-row"><span class="info-label">이력</span><span class="info-value">${esc(fd['채무조정이력'])}</span></div>
+          <div class="info-row"><span class="info-label">유형</span><span class="info-value">${esc(fd['채무조정유형'])}${fd['채무조정유형_기타상세'] ? ' (' + esc(fd['채무조정유형_기타상세']) + ')' : ''}</span></div>
+          <div class="info-row"><span class="info-label">월 납입액</span><span class="info-value">${fd['채무조정월납액'] ? esc(fd['채무조정월납액']) + '만원' : '—'}</span></div>
+          <div class="info-row"><span class="info-label">과거 상세</span><span class="info-value" id="debt-past-text"></span></div>
         </div>
       </div>
     </div>
@@ -429,7 +437,7 @@ function showApp(idx) {
       <div class="card-header h-green"><span class="num">03</span> 소득과 생활비</div>
       <div class="card-body">
         <div class="sec green">소득유형</div>
-        <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${fmt(fd['소득유형'])}</p>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${esc(fd['소득유형'])}</p>
         <div class="sec green">월 지출 (단위: 만원)</div>
         <div class="expense-grid">
           ${expEntries.map(([label,val]) => `
@@ -443,8 +451,8 @@ function showApp(idx) {
         </div>
         <div class="sec green" style="margin-top:14px">위기 대응 여건</div>
         <div class="crisis-grid">
-          <div class="crisis-item"><div class="crisis-label">💰 보유 현금·예금</div><div class="crisis-val">${fmt(fd['위기대응_현금'])}</div></div>
-          <div class="crisis-item"><div class="crisis-label">🤝 가족·지인 지원가능액</div><div class="crisis-val">${fmt(fd['위기대응_가족도움'])}</div></div>
+          <div class="crisis-item"><div class="crisis-label">💰 보유 현금·예금</div><div class="crisis-val">${esc(fd['위기대응_현금'])}</div></div>
+          <div class="crisis-item"><div class="crisis-label">🤝 가족·지인 지원가능액</div><div class="crisis-val">${esc(fd['위기대응_가족도움'])}</div></div>
         </div>
       </div>
     </div>
@@ -453,11 +461,11 @@ function showApp(idx) {
       <div class="card-header h-purple"><span class="num">04</span> 대출 신청서 — 심사 핵심</div>
       <div class="card-body">
         <div class="q-label">Q1. 부채 발생 이유 및 신청 이유</div>
-        <div class="q-box">${fmt(a.q1_background)}</div>
+        <div class="q-box" id="q1-text"></div>
         <div class="q-label" style="margin-top:14px">Q2. 대환 필요 채무 현황 및 자금 사용계획</div>
-        <div class="q-box">${fmt(a.q2_repay_plan)}</div>
+        <div class="q-box" id="q2-text"></div>
         <div class="q-label" style="margin-top:14px">Q3. 대출 상환 계획</div>
-        <div class="q-box">${fmt(a.q3_repay_plan)}</div>
+        <div class="q-box" id="q3-text"></div>
       </div>
     </div>
 
@@ -465,15 +473,20 @@ function showApp(idx) {
       <div class="card-header h-dark"><span class="num">05·06</span> 대출계획 · 금융생활</div>
       <div class="card-body">
         <div class="info-grid">
-          <div class="info-row"><span class="info-label">신청금액</span><span class="info-value">${a.loan_amount||'—'}만원</span></div>
-          <div class="info-row"><span class="info-label">자동이체 동의</span><span class="info-value">${fmt(fd['자동이체동의'])}</span></div>
-          <div class="info-row"><span class="info-label">이전 신청 경험</span><span class="info-value">${fmt(fd['이전신청경험'])}</span></div>
-          <div class="info-row"><span class="info-label">신용점수 요인 (자가인식)</span><span class="info-value">${fmt(fd['신용점수요인'])}</span></div>
-          <div class="info-row" style="grid-column:span 2"><span class="info-label">최근 금융개선 행동</span><span class="info-value">${fmt(fd['금융생활_행동'])}</span></div>
+          <div class="info-row"><span class="info-label">신청금액</span><span class="info-value">${esc(a.loan_amount)}만원</span></div>
+          <div class="info-row"><span class="info-label">자동이체 동의</span><span class="info-value">${esc(fd['자동이체동의'])}</span></div>
+          <div class="info-row"><span class="info-label">이전 신청 경험</span><span class="info-value">${esc(fd['이전신청경험'])}</span></div>
+          <div class="info-row"><span class="info-label">신용점수 요인 (자가인식)</span><span class="info-value">${esc(fd['신용점수요인'])}</span></div>
+          <div class="info-row" style="grid-column:span 2"><span class="info-label">최근 금융개선 행동</span><span class="info-value">${esc(fd['금융생활_행동'])}</span></div>
         </div>
       </div>
     </div>
   `;
+
+  document.getElementById('q1-text').textContent = a.q1_background || '—';
+  document.getElementById('q2-text').textContent = a.q2_repay_plan || '—';
+  document.getElementById('q3-text').textContent = a.q3_repay_plan || '—';
+  document.getElementById('debt-past-text').textContent = fd['채무조정과거상세'] || '—';
 }
 </script>
 </body>
