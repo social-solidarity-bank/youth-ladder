@@ -210,7 +210,47 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let ALL_APPS = [];
-let CURRENT_IDX = null;
+let CURRENT_ID = null;
+
+/** 목록용 최소 컬럼 (검색에 phone 포함) */
+const LIST_SELECT =
+  'id,receipt_number,name,birth_date,employment_type,loan_amount,submitted_at,review1_judgment,phone';
+
+/** 상세 1건 (민감 필드는 선택 시에만 로드) */
+const DETAIL_SELECT =
+  'id,receipt_number,name,phone,birth_date,employment_type,loan_amount,loan_purpose,loan_period,submitted_at,review1_judgment,' +
+  'form_data,qual_age,qual_income_150,qual_multi_debt,qual_high_rate,qual_no_overdue,qual_no_delinquency,' +
+  'q1_background,q2_repay_plan,q3_repay_plan';
+
+function showLoginUi() {
+  document.getElementById('login-screen').style.display = '';
+  document.getElementById('app-layout').classList.remove('show');
+}
+
+/** 로그인된 사용자가 admin_users 에 등록돼 있는지 확인 */
+async function ensureAdminOrBail() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return false;
+  const { data, error } = await sb
+    .from('admin_users')
+    .select('user_id')
+    .eq('user_id', session.user.id)
+    .maybeSingle();
+  if (error) {
+    console.error(error);
+    await sb.auth.signOut();
+    showLoginUi();
+    showErr('권한 확인 중 오류가 발생했습니다.');
+    return false;
+  }
+  if (!data) {
+    await sb.auth.signOut();
+    showLoginUi();
+    showErr('관리자 권한이 없습니다. 담당자에게 계정 등록을 요청하세요.');
+    return false;
+  }
+  return true;
+}
 
 // ── 로그인 ────────────────────────────────────────────
 document.addEventListener('keydown', e => {
@@ -233,6 +273,12 @@ async function doLogin() {
     btn.disabled = false; btn.textContent = '로그인';
     return;
   }
+  const ok = await ensureAdminOrBail();
+  if (!ok) {
+    btn.disabled = false;
+    btn.textContent = '로그인';
+    return;
+  }
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-layout').classList.add('show');
   loadApps();
@@ -249,19 +295,20 @@ async function doLogout() {
 }
 
 // 세션 복구
-sb.auth.getSession().then(({ data: { session } }) => {
-  if (session) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-layout').classList.add('show');
-    loadApps();
-  }
+sb.auth.getSession().then(async ({ data: { session } }) => {
+  if (!session) return;
+  const ok = await ensureAdminOrBail();
+  if (!ok) return;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-layout').classList.add('show');
+  loadApps();
 });
 
 // ── 데이터 로드 ───────────────────────────────────────
 async function loadApps() {
   const { data, error } = await sb
     .from('applications')
-    .select('*')
+    .select(LIST_SELECT)
     .order('submitted_at', { ascending: false });
 
   if (error) {
@@ -270,13 +317,18 @@ async function loadApps() {
     return;
   }
 
-  ALL_APPS = (data || []).map(r => {
-    let fd = {};
-    try { fd = typeof r.form_data === 'object' ? r.form_data : JSON.parse(r.form_data || '{}'); } catch {}
-    return { ...r, fd };
-  });
-
+  ALL_APPS = data || [];
   renderList(ALL_APPS);
+  const main = document.getElementById('main-area');
+  if (CURRENT_ID && ALL_APPS.some(x => x.id === CURRENT_ID)) showApp(CURRENT_ID);
+  else if (!CURRENT_ID) {
+    main.innerHTML = `
+      <div class="no-select">
+        <div class="icon">📋</div>
+        <p style="font-size:15px;margin-bottom:8px">신청자를 선택하세요</p>
+        <p style="font-size:12px;color:var(--gray-400)">왼쪽 목록에서 신청자를 클릭하면<br>전체 신청서 내용이 표시됩니다.</p>
+      </div>`;
+  }
 }
 
 function renderList(apps) {
@@ -286,17 +338,14 @@ function renderList(apps) {
   if (apps.length === 0) {
     list.innerHTML = '<div class="loading">검색 결과 없음</div>'; return;
   }
-  list.innerHTML = apps.map((a, i) => {
-    const origIdx = ALL_APPS.indexOf(a);
-    return `
-      <div class="app-card" onclick="showApp(${origIdx})" id="card-${origIdx}">
+  list.innerHTML = apps.map((a) => `
+      <div class="app-card" onclick="showApp('${a.id}')" id="card-${a.id}">
         <div class="app-num">${esc(a.receipt_number)}</div>
         <div class="app-name">${esc(a.name)}</div>
         <div class="app-meta">${esc(fmtDate(a.birth_date))} · ${esc(a.employment_type)} · ${esc((a.submitted_at||'').slice(0,10))}</div>
         <div style="margin-top:5px"><span class="status-badge">${esc(a.review1_judgment || '검토중')}</span></div>
       </div>
-    `;
-  }).join('');
+    `).join('');
 }
 
 function filterApps() {
@@ -337,15 +386,7 @@ function renderDebt(rows, cols) {
 }
 
 // ── 신청서 렌더링 ─────────────────────────────────────
-function showApp(idx) {
-  CURRENT_IDX = idx;
-  document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
-  const cardEl = document.getElementById('card-' + idx);
-  if (cardEl) cardEl.classList.add('active');
-
-  const a = ALL_APPS[idx];
-  const fd = a.fd || {};
-
+function buildDetailHtml(a, fd) {
   const qualItems = [
     ['연령 (만 19~39세)', a.qual_age],
     ['소득 150% 이하', a.qual_income_150],
@@ -370,7 +411,7 @@ function showApp(idx) {
   const debtBank  = parseDebt(fd['부채_금융기관'] || '');
   const debtOther = parseDebt(fd['부채_기타대출'] || '');
 
-  document.getElementById('main-area').innerHTML = `
+  return `
     <div class="btn-row">
       <button class="btn btn-print" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
       <button class="btn btn-refresh" onclick="loadApps()">🔄 새로고침</button>
@@ -482,6 +523,37 @@ function showApp(idx) {
       </div>
     </div>
   `;
+}
+
+async function showApp(id) {
+  CURRENT_ID = id;
+  document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+  const cardEl = document.getElementById('card-' + id);
+  if (cardEl) cardEl.classList.add('active');
+
+  const main = document.getElementById('main-area');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div>불러오는 중...</div>';
+
+  const { data: a, error } = await sb
+    .from('applications')
+    .select(DETAIL_SELECT)
+    .eq('id', id)
+    .single();
+
+  if (error || !a) {
+    main.innerHTML =
+      `<div class="no-select"><p style="font-size:15px;color:var(--red)">상세 조회 실패: ${esc(error?.message || '데이터 없음')}</p></div>`;
+    return;
+  }
+
+  let fd = {};
+  try {
+    fd = typeof a.form_data === 'object' && a.form_data !== null
+      ? a.form_data
+      : JSON.parse(a.form_data || '{}');
+  } catch (_) {}
+
+  main.innerHTML = buildDetailHtml(a, fd);
 
   document.getElementById('q1-text').textContent = a.q1_background || '—';
   document.getElementById('q2-text').textContent = a.q2_repay_plan || '—';
