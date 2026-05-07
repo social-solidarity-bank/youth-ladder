@@ -4943,48 +4943,59 @@
         [submitBtn, submitBtnMid].forEach(b => { if(b){ b.disabled=true; b.textContent='제출 중...'; } });
 
         try {
-          // 1. 접수번호 서버 생성
-          const { data: rn, error: rnErr } = await sb.rpc('generate_receipt_number');
-          if (rnErr) throw rnErr;
-          const receiptNum = rn;
+          const MAX_RECEIPT_RETRIES = 5;
+          let receiptNum = null;
 
-          // 2. 폼 데이터 수집
-          const data = collectData();
-          data['접수번호'] = receiptNum;
+          for (let attempt = 0; attempt < MAX_RECEIPT_RETRIES; attempt++) {
+            const { data: rn, error: rnErr } = await sb.rpc('generate_receipt_number');
+            if (rnErr) throw rnErr;
 
-          // 3. applications 삽입 — SECURITY DEFINER RPC (PostgREST 직접 INSERT 시 RLS/RETURNING 충돌 회피)
-          const payload = {
-            receipt_number:      receiptNum,
-            name:                data['성명'],
-            phone:               data['휴대전화'],
-            birth_date:          data['생년월일'],
-            employment_type:     data['고용형태'],
-            income_range:        data['소득구간'],
-            loan_amount:         parseInt((data['신청금액']||'').replace(/[^0-9]/g,'')) || 0,
-            loan_purpose:        data['대출목적'],
-            loan_period:         data['희망상환기간'],
-            qual_age:            data['자격_연령']     === 'pass',
-            qual_income_150:     data['자격_소득150%'] === 'pass',
-            qual_multi_debt:     data['자격_다중부채'] === 'pass',
-            qual_high_rate:      data['자격_고금리']   === 'pass',
-            qual_no_overdue:     data['자격_연체없음'] === 'pass',
-            qual_no_delinquency: data['자격_체납없음'] === 'pass',
-            q1_background:       data['Q1_부채발생이유'],
-            q2_repay_plan:       data['Q2_대환채무및사용계획'],
-            q3_repay_plan:       data['Q3_상환계획'],
-            consent_collect:        document.getElementById('consent-collect')?.checked || false,
-            consent_collect_id:     document.getElementById('consent-collect-id')?.checked || false,
-            consent_provide:        document.getElementById('consent-provide')?.checked || false,
-            consent_provide_id:     document.getElementById('consent-provide-id')?.checked || false,
-            consent_third_party:    document.getElementById('consent-third-party')?.checked || false,
-            consent_third_party_id: document.getElementById('consent-third-party-id')?.checked || false,
-            consent_agreed: ['consent-collect','consent-collect-id','consent-provide',
-              'consent-provide-id','consent-third-party','consent-third-party-id']
-              .every(id => document.getElementById(id)?.checked),
-            form_data:           data,
-          };
-          const { error: submitErr } = await sb.rpc('submit_application', { p_row: payload });
-          if (submitErr) throw submitErr;
+            const data = collectData();
+            data['접수번호'] = rn;
+
+            const payload = {
+              receipt_number:      rn,
+              name:                data['성명'],
+              phone:               data['휴대전화'],
+              birth_date:          data['생년월일'],
+              employment_type:     data['고용형태'],
+              income_range:        data['소득구간'],
+              loan_amount:         parseInt((data['신청금액']||'').replace(/[^0-9]/g,'')) || 0,
+              loan_purpose:        data['대출목적'],
+              loan_period:         data['희망상환기간'],
+              qual_age:            data['자격_연령']     === 'pass',
+              qual_income_150:     data['자격_소득150%'] === 'pass',
+              qual_multi_debt:     data['자격_다중부채'] === 'pass',
+              qual_high_rate:      data['자격_고금리']   === 'pass',
+              qual_no_overdue:     data['자격_연체없음'] === 'pass',
+              qual_no_delinquency: data['자격_체납없음'] === 'pass',
+              q1_background:       data['Q1_부채발생이유'],
+              q2_repay_plan:       data['Q2_대환채무및사용계획'],
+              q3_repay_plan:       data['Q3_상환계획'],
+              consent_collect:        document.getElementById('consent-collect')?.checked || false,
+              consent_collect_id:     document.getElementById('consent-collect-id')?.checked || false,
+              consent_provide:        document.getElementById('consent-provide')?.checked || false,
+              consent_provide_id:     document.getElementById('consent-provide-id')?.checked || false,
+              consent_third_party:    document.getElementById('consent-third-party')?.checked || false,
+              consent_third_party_id: document.getElementById('consent-third-party-id')?.checked || false,
+              consent_agreed: ['consent-collect','consent-collect-id','consent-provide',
+                'consent-provide-id','consent-third-party','consent-third-party-id']
+                .every(id => document.getElementById(id)?.checked),
+              form_data:           data,
+            };
+
+            const { error: submitErr } = await sb.rpc('submit_application', { p_row: payload });
+            if (!submitErr) {
+              receiptNum = rn;
+              break;
+            }
+            const em = String(submitErr.message || submitErr.details || submitErr.code || '');
+            const dup =
+              /duplicate key|23505|unique constraint|receipt_number/i.test(em);
+            if (!dup || attempt === MAX_RECEIPT_RETRIES - 1) throw submitErr;
+          }
+
+          if (!receiptNum) throw new Error('접수번호 발급 후 저장에 실패했습니다.');
 
           // 4. 완료 화면
           // [YL-A] 3단계 구조: 완료 페이지 id를 page3으로 통일
