@@ -1,19 +1,48 @@
--- [구버전] submit_application 이 RETURNS void 였던 초안. 운영 시 아래 파일을 대신 적용할 것:
---   20260508200000_submit_application_atomic_receipt.sql (접수번호 DB 원자 발급 + RETURNS text)
---
--- 공개 신청: REST INSERT 대신 RPC 로 삽입 (anon SELECT 없을 때 PostgREST RETURNING/RLS 이슈 회피)
--- 적용 후: Dashboard → Database → Functions 에서 submit_application 노출, anon EXECUTE 확인
+-- 접수번호 + 저장 원자화: 클라이언트에서 generate_receipt_number 분리 호출 시 중복·경합 제거
+-- 적용: SQL Editor 전체 실행 (기존 submit_application(jsonb) 반환 타입 변경 → DROP 후 재생성)
 
-CREATE OR REPLACE FUNCTION public.submit_application(p_row jsonb)
-RETURNS void
+CREATE TABLE IF NOT EXISTS public.application_receipt_seq (
+  day_key date PRIMARY KEY,
+  last_seq integer NOT NULL DEFAULT 0 CHECK (last_seq >= 0)
+);
+
+COMMENT ON TABLE public.application_receipt_seq IS 'Asia/Seoul 기준 일자별 접수 접미 순번. submit_application 전용.';
+
+-- 오늘 날짜 접수번호 최대 접미로 시드 (기존 행과 숫자 충돌 방지)
+INSERT INTO public.application_receipt_seq (day_key, last_seq)
+SELECT ((now() AT TIME ZONE 'Asia/Seoul'))::date,
+       COALESCE(MAX(NULLIF(trim(split_part(receipt_number, '-', 3)), '')::int), 0)
+FROM public.applications
+WHERE receipt_number ~ ('^YH-' || to_char(((now() AT TIME ZONE 'Asia/Seoul'))::date, 'YYYYMMDD') || '-\d+$')
+ON CONFLICT (day_key) DO NOTHING;
+
+DROP FUNCTION IF EXISTS public.submit_application(jsonb);
+
+CREATE FUNCTION public.submit_application(p_row jsonb)
+RETURNS text
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+  d date := ((now() AT TIME ZONE 'Asia/Seoul'))::date;
+  n int;
+  v_rn text;
+  v_fd jsonb;
 BEGIN
-  IF p_row IS NULL OR trim(COALESCE(p_row->>'receipt_number', '')) = '' THEN
-    RAISE EXCEPTION 'invalid payload: receipt_number required';
+  IF p_row IS NULL THEN
+    RAISE EXCEPTION 'invalid payload';
   END IF;
+
+  INSERT INTO public.application_receipt_seq AS s (day_key, last_seq)
+  VALUES (d, 1)
+  ON CONFLICT (day_key) DO UPDATE
+    SET last_seq = application_receipt_seq.last_seq + 1
+  RETURNING last_seq INTO n;
+
+  v_rn := 'YH-' || to_char(d, 'YYYYMMDD') || '-' || lpad(n::text, 4, '0');
+
+  v_fd := COALESCE(p_row->'form_data', '{}'::jsonb) || jsonb_build_object('접수번호', v_rn);
 
   INSERT INTO public.applications (
     receipt_number,
@@ -44,10 +73,9 @@ BEGIN
     form_data
   )
   VALUES (
-    trim(p_row->>'receipt_number'),
+    v_rn,
     COALESCE(trim(p_row->>'name'), ''),
     COALESCE(trim(p_row->>'phone'), ''),
-    -- 생년월일: 폼은 숫자 8자리(YYYYMMDD 등). 컬럼이 DATE 타입이면 아래를 to_date(...,'YYYYMMDD') 로 교체.
     CASE
       WHEN length(regexp_replace(COALESCE(p_row->>'birth_date', ''), '\D', '', 'g')) >= 8
       THEN left(regexp_replace(trim(COALESCE(p_row->>'birth_date', '')), '\D', '', 'g'), 8)
@@ -74,12 +102,14 @@ BEGIN
     COALESCE((p_row->>'consent_third_party')::boolean, false),
     COALESCE((p_row->>'consent_third_party_id')::boolean, false),
     COALESCE((p_row->>'consent_agreed')::boolean, false),
-    COALESCE(p_row->'form_data', '{}'::jsonb)
+    v_fd
   );
+
+  RETURN v_rn;
 END;
 $$;
 
-COMMENT ON FUNCTION public.submit_application(jsonb) IS '신청 폼 전용 삽입. SECURITY DEFINER 로 RLS RETURNING 충돌 없이 INSERT.';
+COMMENT ON FUNCTION public.submit_application(jsonb) IS '접수번호 발급+applications INSERT 단일 트랜잭션. 반환값이 접수번호 문자열.';
 
 GRANT EXECUTE ON FUNCTION public.submit_application(jsonb) TO anon;
 GRANT EXECUTE ON FUNCTION public.submit_application(jsonb) TO authenticated;
