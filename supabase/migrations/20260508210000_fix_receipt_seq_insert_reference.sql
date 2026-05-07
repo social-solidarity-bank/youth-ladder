@@ -1,29 +1,8 @@
--- 접수번호 + 저장 원자화: 클라이언트에서 generate_receipt_number 분리 호출 시 중복·경합 제거
--- 적용: SQL Editor 전체 실행 (기존 submit_application(jsonb) 반환 타입 변경 → DROP 후 재생성)
+-- 이미 atomic 마이그레이션을 적용한 뒤 오류(
+--   invalid reference to FROM-clause entry for table "application_receipt_seq"
+-- )가 나는 경우: UPSERT 의 AS 별칭 문제 → 함수만 교체
 
-CREATE TABLE IF NOT EXISTS public.application_receipt_seq (
-  day_key date PRIMARY KEY,
-  last_seq integer NOT NULL DEFAULT 0 CHECK (last_seq >= 0)
-);
-
-COMMENT ON TABLE public.application_receipt_seq IS 'Asia/Seoul 기준 일자별 접수 접미 순번. submit_application 전용.';
-
--- Supabase API 경고 방지: 직접 노출 시 순번 조작 가능 → RLS 켜고 정책 없음(행 거부).
--- submit_application 은 SECURITY DEFINER 로 소유자 권한으로 이 테이블에 쓴다.
-ALTER TABLE public.application_receipt_seq ENABLE ROW LEVEL SECURITY;
-
--- 오늘 날짜 접수번호 최대 접미로 시드 (기존 행과 숫자 충돌 방지)
-INSERT INTO public.application_receipt_seq (day_key, last_seq)
-SELECT ((now() AT TIME ZONE 'Asia/Seoul'))::date,
-       COALESCE(MAX(NULLIF(trim(split_part(receipt_number, '-', 3)), '')::int), 0)
-FROM public.applications
-WHERE receipt_number ~ ('^YH-' || to_char(((now() AT TIME ZONE 'Asia/Seoul'))::date, 'YYYYMMDD') || '-\d+$')
-ON CONFLICT (day_key) DO NOTHING;
-
--- 기존 submit_application(void 반환) 을 text 반환으로 교체 (의도적 DROP)
-DROP FUNCTION IF EXISTS public.submit_application(jsonb);
-
-CREATE FUNCTION public.submit_application(p_row jsonb)
+CREATE OR REPLACE FUNCTION public.submit_application(p_row jsonb)
 RETURNS text
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -39,7 +18,6 @@ BEGIN
     RAISE EXCEPTION 'invalid payload';
   END IF;
 
-  -- AS 별칭 + 테이블명 혼용 시 "invalid reference to FROM-clause entry" 발생 → 별칭 없이 작성
   INSERT INTO public.application_receipt_seq (day_key, last_seq)
   VALUES (d, 1)
   ON CONFLICT (day_key) DO UPDATE
@@ -114,8 +92,3 @@ BEGIN
   RETURN v_rn;
 END;
 $$;
-
-COMMENT ON FUNCTION public.submit_application(jsonb) IS '접수번호 발급+applications INSERT 단일 트랜잭션. 반환값이 접수번호 문자열.';
-
-GRANT EXECUTE ON FUNCTION public.submit_application(jsonb) TO anon;
-GRANT EXECUTE ON FUNCTION public.submit_application(jsonb) TO authenticated;
