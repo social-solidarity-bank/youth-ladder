@@ -103,7 +103,8 @@ curl -sS -w "\nHTTP:%{http_code}\n" -X POST \
 ```
 
 **INSERT 스모크 (실제 삽입이 되므로 스테이징 권장)**  
-정책이 `WITH CHECK (true)` 이면 anon INSERT 허용. 컬럼·NOT NULL 제약에 맞는 최소 JSON 을 사용한다.
+정책이 `WITH CHECK (true)` 이면 anon INSERT 허용. 컬럼·NOT NULL 제약에 맞는 최소 JSON 을 사용한다.  
+PostgREST 에서 `Prefer: return=representation`(삽입 행 반환)을 쓰면, 반환 행을 읽기 위해 **SELECT RLS**까지 통과해야 해서 anon 에서는 `new row violates row-level security policy` 가 날 수 있다. 이때 헤더를 **`Prefer: return=minimal`** 로 두거나, `supabase-js` 에서 `insert(..., { returning: 'minimal' })` 를 사용한다 (`index.html` 반영).
 
 ---
 
@@ -120,4 +121,12 @@ curl -sS -w "\nHTTP:%{http_code}\n" -X POST \
 - 현재는 컬럼과 JSON 양쪽에 유사 정보가 많아, RLS 실패 시에도 노출 단면이 넓어질 수 있다.
 - 권장 방향: 심사에 필요한 필드 정규화, 고민밀 서술·주소 등은 별도 테이블 + 관리자 전용 RPC/view.
 - **RLS 긴급 조치와 독립**으로 스펙·마이그레이션 일정을 잡는 것이 안전하다.
+
+---
+
+## 8. 트러블슈팅: 공개 신청 제출 시 RLS 오류
+
+- 증상: `new row violates row-level security policy for table "applications"` (또는 유사 메시지).
+- 원인: INSERT 직후 **삽입된 행을 응답 본문으로 돌려주는 동작**이 SELECT 정책을 타는데, anon 은 SELECT 가 막혀 있음.
+- 조치: 신청 클라이언트에서 INSERT 시 **`returning: 'minimal'`** (또는 REST 의 `Prefer: return=minimal`). 접수번호는 `generate_receipt_number` RPC 결과를 그대로 쓰면 됨.
 
