@@ -4899,33 +4899,8 @@
 
       // ── 중간 제출 ─────────────────────────────────────────
       function submitMid() {
-        // [YL-req2] Q1·Q2 필수 검증 — 신규 ID (f-q1-background, f-q2-plan)
-        const q1 = document.getElementById('f-q1-background');
-        const q2 = document.getElementById('f-q2-plan');
-        if (!q1?.value?.trim()) {
-          const err = document.getElementById('err-background');
-          if (err) err.textContent = 'Q1 부채 발생 이유를 입력해 주세요.';
-          q1?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-        if (!q2?.value?.trim()) {
-          const err = document.getElementById('err-plan');
-          if (err) err.textContent = 'Q2 대환 필요 채무 현황을 입력해 주세요.';
-          q2?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-        if (!document.getElementById('f-q3-repay-plan')?.value?.trim()) {
-          const err = document.getElementById('err-q3-repay');
-          if (err) { err.textContent = 'Q3 대출 상환 계획을 입력해 주세요.'; err.classList.add('show'); }
-          document.getElementById('f-q3-repay-plan')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
-        }
-        const cb = document.getElementById("final-consent-mid");
-        if (!cb || !cb.checked) {
-          alert("동의 체크를 해 주세요.");
-          return;
-        }
-        submitComplete();
+        // 폐지된 중간 제출 경로가 남아 있어도 최종 제출과 같은 필수 검증을 거치게 한다.
+        submitForm();
       }
 
       // ── 최종 제출 ─────────────────────────────────────────

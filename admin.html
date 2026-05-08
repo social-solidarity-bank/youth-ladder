@@ -231,6 +231,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let ALL_APPS = [];
 let CURRENT_ID = null;
+let CURRENT_DETAIL = null;
 
 /** 목록용 최소 컬럼 (검색에 phone 포함) */
 const LIST_SELECT =
@@ -402,6 +403,13 @@ function parseRows(raw, rowSep) {
   if (!raw) return [];
   return raw.trim().split(rowSep).map(l => l.split('|').map(p => p.trim())).filter(r => r.some(p => p));
 }
+function parseFormData(raw) {
+  try {
+    return typeof raw === 'object' && raw !== null ? raw : JSON.parse(raw || '{}');
+  } catch (_) {
+    return {};
+  }
+}
 function renderDebt(rows, cols) {
   if (!rows || rows.length === 0) return '<p style="color:var(--gray-400);font-size:12px;padding:6px 0">입력 없음</p>';
   const hs = cols.map(c => `<th>${c}</th>`).join('');
@@ -481,9 +489,8 @@ async function copyTextToClipboard(text) {
   return ok;
 }
 async function copyKcbRrn() {
-  if (CURRENT_IDX == null) return;
-  const a = ALL_APPS[CURRENT_IDX];
-  const rrn = getKcbRrn(a, a.fd || {});
+  if (!CURRENT_DETAIL) return;
+  const rrn = getKcbRrn(CURRENT_DETAIL, CURRENT_DETAIL.fd || {});
   const note = document.getElementById('kcb-copy-note');
   if (!rrn.complete) {
     if (note) note.textContent = '뒷자리가 없어 복사할 수 없습니다.';
@@ -525,11 +532,31 @@ function confirmSensitiveExport(label) {
   }
   return confirm(`${label} 파일에는 개인정보와 심사 민감정보가 포함될 수 있습니다.\n권한 있는 담당자에게만 전달하고, 사용 후 보관 위치를 제한해 주세요.\n\n내보내시겠습니까?`);
 }
+async function getExportApps() {
+  const ids = ALL_APPS.map(a => a.id).filter(Boolean);
+  if (!ids.length) return [];
+
+  const { data, error } = await sb
+    .from('applications')
+    .select(DETAIL_SELECT)
+    .in('id', ids)
+    .order('submitted_at', { ascending: false });
+
+  if (error) throw error;
+  return (data || []).map(a => ({ ...a, fd: parseFormData(a.form_data) }));
+}
 // 담당자가 KCB 조회 대상자를 빠르게 추릴 수 있도록 핵심 정보만 CSV로 만든다.
-function exportKcbCsv() {
+async function exportKcbCsv() {
   if (!confirmSensitiveExport('KCB 조회용 CSV')) return;
   const headers = ['접수번호','성명','휴대전화','생년월일','주민등록번호_앞자리','주민등록번호_뒷자리','주민등록번호_전체','주민번호상태','신청금액_만원','접수일','현재상태'];
-  const rows = ALL_APPS.map(a => {
+  let apps = [];
+  try {
+    apps = await getExportApps();
+  } catch (error) {
+    alert('CSV 데이터를 불러오지 못했습니다.\n(' + (error.message || error) + ')');
+    return;
+  }
+  const rows = apps.map(a => {
     const rrn = getRrnParts(a, a.fd || {});
     return {
       '접수번호': a.receipt_number || '',
@@ -548,15 +575,22 @@ function exportKcbCsv() {
   downloadCsv(`희망사다리_KCB조회용_${fileStamp()}.csv`, headers, rows);
 }
 // Supabase에 저장된 form_data 원문까지 담당자가 대조할 수 있도록 전체 CSV를 만든다.
-function exportRawCsv() {
+async function exportRawCsv() {
   if (!confirmSensitiveExport('전체 접수 원문 CSV')) return;
   const baseHeaders = [
     '접수번호','성명','휴대전화','생년월일','주민등록번호_앞자리','주민등록번호_뒷자리','주민등록번호_전체','주민번호상태',
     '고용형태','소득구간','신청금액_만원','대출목적','희망상환기간','접수일','현재상태'
   ];
-  const formKeys = Array.from(new Set(ALL_APPS.flatMap(a => Object.keys(a.fd || {})))).sort((a, b) => a.localeCompare(b, 'ko'));
+  let apps = [];
+  try {
+    apps = await getExportApps();
+  } catch (error) {
+    alert('CSV 데이터를 불러오지 못했습니다.\n(' + (error.message || error) + ')');
+    return;
+  }
+  const formKeys = Array.from(new Set(apps.flatMap(a => Object.keys(a.fd || {})))).sort((a, b) => a.localeCompare(b, 'ko'));
   const headers = [...baseHeaders, ...formKeys.filter(k => !baseHeaders.includes(k))];
-  const rows = ALL_APPS.map(a => {
+  const rows = apps.map(a => {
     const fd = a.fd || {};
     const rrn = getRrnParts(a, fd);
     return {
@@ -765,12 +799,8 @@ async function showApp(id) {
     return;
   }
 
-  let fd = {};
-  try {
-    fd = typeof a.form_data === 'object' && a.form_data !== null
-      ? a.form_data
-      : JSON.parse(a.form_data || '{}');
-  } catch (_) {}
+  const fd = parseFormData(a.form_data);
+  CURRENT_DETAIL = { ...a, fd };
 
   main.innerHTML = buildDetailHtml(a, fd);
 
