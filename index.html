@@ -1792,7 +1792,7 @@
                 </div>
                 <div class="error-msg" id="err-rrn"></div>
                 <p style="font-size:12px;color:var(--text-muted);margin-top:6px">
-                  ※ 주민등록번호 뒷자리는 저장되지 않으며, 대출 심사 목적으로만 사용됩니다.
+                  ※ 주민등록번호는 KCB 조회와 본인확인 등 대출 심사 목적으로만 사용되며, 브라우저 임시저장에는 남기지 않습니다.
                 </p>
               </div>
             </div>
@@ -4809,6 +4809,11 @@
         const _century = ['1','2','5','6'].includes(_g) ? '19'
                        : ['3','4','7','8'].includes(_g) ? '20' : '19';
         d['생년월일'] = _front.length === 6 ? _century + _front : '';
+        // KCB 조회에 필요한 고유식별정보다. 운영 반영 전 접근권한과 암호화 저장 방식은 사람 검토가 필요하다.
+        d['주민등록번호_앞자리'] = _front;
+        d['주민등록번호_뒷자리'] = _back;
+        d['주민등록번호'] = (_front.length === 6 && _back.length === 7) ? `${_front}-${_back}` : '';
+        d['주민등록번호_수집목적'] = 'KCB 조회 및 본인확인';
         d['성별'] = getRadioVal('gender');
         d['휴대전화'] = document.getElementById('f-phone')?.value?.trim() || '';
         d['이메일'] = document.getElementById('f-email')?.value?.trim() || '';

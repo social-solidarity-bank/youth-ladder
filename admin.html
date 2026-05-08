@@ -54,6 +54,10 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 .search-wrap { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); }
 .search-input { width: 100%; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 12px; font-family: inherit; outline: none; }
 .search-input:focus { border-color: var(--teal); }
+.export-actions { display: grid; gap: 6px; margin-top: 10px; }
+.export-btn { width: 100%; padding: 8px 10px; border: 1px solid var(--gray-300); border-radius: 6px; background: #fff; color: var(--teal-dark); font-size: 12px; font-weight: 700; font-family: inherit; cursor: pointer; }
+.export-btn:hover { background: var(--teal-light); border-color: var(--teal); }
+.export-note { margin-top: 6px; color: var(--gray-500); font-size: 10px; line-height: 1.5; }
 
 .app-card { padding: 14px 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background 0.15s; }
 .app-card:hover { background: var(--gray-50); }
@@ -94,6 +98,10 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 .info-row { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; border-bottom: 1px solid var(--gray-100); }
 .info-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: 0.04em; text-transform: uppercase; }
 .info-value { font-size: 13px; color: var(--gray-900); font-weight: 500; }
+.mono-value { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: 0.04em; font-weight: 700; }
+.inline-copy { margin-left: 8px; padding: 3px 8px; border: 1px solid var(--gray-300); border-radius: 6px; background: #fff; color: var(--teal-dark); font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; }
+.inline-copy:disabled { color: var(--gray-400); background: var(--gray-100); cursor: not-allowed; }
+.copy-note { margin-left: 6px; color: var(--green); font-size: 11px; font-weight: 700; }
 
 .expense-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-top: 8px; }
 .exp-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 6px; padding: 8px; text-align: center; }
@@ -119,6 +127,13 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 
 .warn-box { background: var(--amber-light); border: 1.5px solid #f5d06a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--amber); margin-bottom: 14px; display: flex; gap: 8px; }
 
+.raw-data-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.raw-data-card summary { padding: 12px 18px; font-size: 13px; font-weight: 700; color: var(--teal-dark); cursor: pointer; background: var(--teal-light); }
+.raw-data-body { padding: 12px 18px 18px; max-height: 420px; overflow: auto; }
+.raw-data-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.raw-data-table th { background: var(--gray-50); color: var(--gray-500); font-size: 10px; font-weight: 700; padding: 6px 7px; border: 1px solid var(--border); text-align: left; width: 160px; }
+.raw-data-table td { padding: 6px 7px; border: 1px solid var(--border); color: var(--gray-700); white-space: pre-wrap; }
+
 .btn-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
 .btn { padding: 8px 18px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; }
 .btn-print { background: var(--teal); color: #fff; }
@@ -131,7 +146,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media print {
-  .sidebar, .btn-row, .search-wrap { display: none !important; }
+  .sidebar, .btn-row, .search-wrap, .sensitive-print-hide { display: none !important; }
   .content { padding: 0; }
   .main-area { padding: 0; max-width: 100%; }
   body { background: #fff; }
@@ -185,6 +200,11 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
     </div>
     <div class="search-wrap">
       <input class="search-input" type="text" id="search-input" placeholder="이름·접수번호 검색..." oninput="filterApps()" />
+      <div class="export-actions sensitive-print-hide">
+        <button class="export-btn" onclick="exportKcbCsv()">KCB 조회용 CSV</button>
+        <button class="export-btn" onclick="exportRawCsv()">전체 접수 원문 CSV</button>
+      </div>
+      <div class="export-note sensitive-print-hide">주민등록번호가 포함될 수 있으니 담당자에게만 전달하세요.</div>
     </div>
     <div id="app-list">
       <div class="loading"><div class="spinner"></div>불러오는 중...</div>
@@ -378,11 +398,187 @@ function parseDebt(raw) {
   if (!raw) return [];
   return raw.trim().split('\n').map(l => l.split('|').map(p => p.trim())).filter(r => r.some(p => p));
 }
+function parseRows(raw, rowSep) {
+  if (!raw) return [];
+  return raw.trim().split(rowSep).map(l => l.split('|').map(p => p.trim())).filter(r => r.some(p => p));
+}
 function renderDebt(rows, cols) {
   if (!rows || rows.length === 0) return '<p style="color:var(--gray-400);font-size:12px;padding:6px 0">입력 없음</p>';
   const hs = cols.map(c => `<th>${c}</th>`).join('');
   const bs = rows.map(r => `<tr>${cols.map((_,i) => `<td>${esc(r[i])}</td>`).join('')}</tr>`).join('');
   return `<table class="debt-table"><thead><tr>${hs}</tr></thead><tbody>${bs}</tbody></table>`;
+}
+function renderRawData(fd) {
+  const rows = Object.entries(fd || {})
+    .filter(([key]) => !key.includes('주민등록번호'))
+    .sort(([a], [b]) => a.localeCompare(b, 'ko'));
+  if (!rows.length) return '';
+  return `
+    <details class="raw-data-card sensitive-print-hide">
+      <summary>접수 원문 데이터 확인</summary>
+      <div class="raw-data-body">
+        <table class="raw-data-table">
+          <tbody>
+            ${rows.map(([key, value]) => `<tr><th>${esc(key)}</th><td>${esc(value)}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  `;
+}
+// KCB 조회에 필요한 번호만 별도 위치에 표시하고, 인쇄물에는 남기지 않는다.
+function getKcbRrn(a, fd) {
+  const storedFull = String(fd['주민등록번호'] || fd['주민등록번호_전체'] || '').trim();
+  if (/^\d{6}-?\d{7}$/.test(storedFull)) {
+    return { value: storedFull.includes('-') ? storedFull : storedFull.slice(0,6) + '-' + storedFull.slice(6), complete: true };
+  }
+
+  const frontFromBirth = String(a.birth_date || '').replace(/\D/g, '').slice(2, 8);
+  const front = String(fd['주민등록번호_앞자리'] || frontFromBirth || '').trim();
+  const back = String(fd['주민등록번호_뒷자리'] || '').trim();
+  if (/^\d{6}$/.test(front) && /^\d{7}$/.test(back)) {
+    return { value: `${front}-${back}`, complete: true };
+  }
+  if (/^\d{6}$/.test(front)) {
+    return { value: `${front}-뒷자리 미저장`, complete: false };
+  }
+  return { value: '미저장', complete: false };
+}
+function getRrnParts(a, fd) {
+  const rrn = getKcbRrn(a, fd);
+  const front = String(fd['주민등록번호_앞자리'] || '').trim();
+  const back = String(fd['주민등록번호_뒷자리'] || '').trim();
+  if (rrn.complete) {
+    const compact = rrn.value.replace(/\D/g, '');
+    return {
+      front: front || compact.slice(0, 6),
+      back: back || compact.slice(6, 13),
+      full: `${compact.slice(0, 6)}-${compact.slice(6, 13)}`,
+      status: '전체 저장됨',
+    };
+  }
+  return {
+    front: front || String(a.birth_date || '').replace(/\D/g, '').slice(2, 8),
+    back: back,
+    full: '',
+    status: rrn.value,
+  };
+}
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  const ok = document.execCommand('copy');
+  ta.remove();
+  return ok;
+}
+async function copyKcbRrn() {
+  if (CURRENT_IDX == null) return;
+  const a = ALL_APPS[CURRENT_IDX];
+  const rrn = getKcbRrn(a, a.fd || {});
+  const note = document.getElementById('kcb-copy-note');
+  if (!rrn.complete) {
+    if (note) note.textContent = '뒷자리가 없어 복사할 수 없습니다.';
+    return;
+  }
+  try {
+    await copyTextToClipboard(rrn.value);
+    if (note) note.textContent = '복사됨';
+  } catch {
+    if (note) note.textContent = '복사 실패';
+  }
+}
+function csvCell(value) {
+  const text = value == null ? '' : (typeof value === 'object' ? JSON.stringify(value) : String(value));
+  return `"${text.replace(/"/g, '""')}"`;
+}
+function downloadCsv(filename, headers, rows) {
+  const csv = '\ufeff' + [
+    headers.map(csvCell).join(','),
+    ...rows.map(row => headers.map(h => csvCell(row[h])).join(','))
+  ].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function fileStamp() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+}
+function confirmSensitiveExport(label) {
+  if (!ALL_APPS.length) {
+    alert('내보낼 신청서가 없습니다.');
+    return false;
+  }
+  return confirm(`${label} 파일에는 개인정보와 심사 민감정보가 포함될 수 있습니다.\n권한 있는 담당자에게만 전달하고, 사용 후 보관 위치를 제한해 주세요.\n\n내보내시겠습니까?`);
+}
+// 담당자가 KCB 조회 대상자를 빠르게 추릴 수 있도록 핵심 정보만 CSV로 만든다.
+function exportKcbCsv() {
+  if (!confirmSensitiveExport('KCB 조회용 CSV')) return;
+  const headers = ['접수번호','성명','휴대전화','생년월일','주민등록번호_앞자리','주민등록번호_뒷자리','주민등록번호_전체','주민번호상태','신청금액_만원','접수일','현재상태'];
+  const rows = ALL_APPS.map(a => {
+    const rrn = getRrnParts(a, a.fd || {});
+    return {
+      '접수번호': a.receipt_number || '',
+      '성명': a.name || a.fd?.['성명'] || '',
+      '휴대전화': a.phone || a.fd?.['휴대전화'] || '',
+      '생년월일': a.birth_date || a.fd?.['생년월일'] || '',
+      '주민등록번호_앞자리': rrn.front,
+      '주민등록번호_뒷자리': rrn.back,
+      '주민등록번호_전체': rrn.full,
+      '주민번호상태': rrn.status,
+      '신청금액_만원': a.loan_amount || '',
+      '접수일': (a.submitted_at || '').slice(0, 10),
+      '현재상태': a.review1_judgment || a.final_judgment || '검토중',
+    };
+  });
+  downloadCsv(`희망사다리_KCB조회용_${fileStamp()}.csv`, headers, rows);
+}
+// Supabase에 저장된 form_data 원문까지 담당자가 대조할 수 있도록 전체 CSV를 만든다.
+function exportRawCsv() {
+  if (!confirmSensitiveExport('전체 접수 원문 CSV')) return;
+  const baseHeaders = [
+    '접수번호','성명','휴대전화','생년월일','주민등록번호_앞자리','주민등록번호_뒷자리','주민등록번호_전체','주민번호상태',
+    '고용형태','소득구간','신청금액_만원','대출목적','희망상환기간','접수일','현재상태'
+  ];
+  const formKeys = Array.from(new Set(ALL_APPS.flatMap(a => Object.keys(a.fd || {})))).sort((a, b) => a.localeCompare(b, 'ko'));
+  const headers = [...baseHeaders, ...formKeys.filter(k => !baseHeaders.includes(k))];
+  const rows = ALL_APPS.map(a => {
+    const fd = a.fd || {};
+    const rrn = getRrnParts(a, fd);
+    return {
+      ...fd,
+      '접수번호': a.receipt_number || fd['접수번호'] || '',
+      '성명': a.name || fd['성명'] || '',
+      '휴대전화': a.phone || fd['휴대전화'] || '',
+      '생년월일': a.birth_date || fd['생년월일'] || '',
+      '주민등록번호_앞자리': rrn.front,
+      '주민등록번호_뒷자리': rrn.back,
+      '주민등록번호_전체': rrn.full,
+      '주민번호상태': rrn.status,
+      '고용형태': a.employment_type || fd['고용형태'] || '',
+      '소득구간': a.income_range || fd['소득구간'] || '',
+      '신청금액_만원': a.loan_amount || '',
+      '대출목적': a.loan_purpose || fd['대출목적'] || '',
+      '희망상환기간': a.loan_period || fd['희망상환기간'] || '',
+      '접수일': (a.submitted_at || '').slice(0, 10) || fd['신청일'] || '',
+      '현재상태': a.review1_judgment || a.final_judgment || '검토중',
+    };
+  });
+  downloadCsv(`희망사다리_전체접수원문_${fileStamp()}.csv`, headers, rows);
 }
 
 // ── 신청서 렌더링 ─────────────────────────────────────
@@ -407,9 +603,14 @@ function buildDetailHtml(a, fd) {
 
   const bankCols  = ['유형','상품','기관명','약정(만)','잔액(만)','월상환(만)','금리','담보','시작','만료'];
   const otherCols = ['대출처','기관명','약정(만)','잔액(만)','월상환(만)','금리','시작','만료'];
+  const incomeCols = ['직장·사업체','시작','종료','업무','고용형태'];
+  const familyCols = ['성명','관계','연령','동거','특이사항'];
 
   const debtBank  = parseDebt(fd['부채_금융기관'] || '');
   const debtOther = parseDebt(fd['부채_기타대출'] || '');
+  const incomeRows = parseDebt(fd['소득이력'] || '');
+  const familyRows = parseRows(fd['가족동거사항'] || '', ' / ');
+  const rrn = getKcbRrn(a, fd);
 
   return `
     <div class="btn-row">
@@ -442,6 +643,7 @@ function buildDetailHtml(a, fd) {
         <div class="info-grid">
           <div class="info-row"><span class="info-label">성명</span><span class="info-value">${esc(a.name)}</span></div>
           <div class="info-row"><span class="info-label">생년월일 / 성별</span><span class="info-value">${esc(fmtDate(String(a.birth_date||'')))} / ${esc(fd['성별'])}</span></div>
+          <div class="info-row sensitive-print-hide" style="grid-column:span 2"><span class="info-label">주민등록번호 (KCB 조회용)</span><span class="info-value"><span class="mono-value">${esc(rrn.value)}</span><button class="inline-copy" onclick="copyKcbRrn()" ${rrn.complete ? '' : 'disabled'}>복사</button><span class="copy-note" id="kcb-copy-note"></span></span></div>
           <div class="info-row"><span class="info-label">휴대전화</span><span class="info-value">${esc(a.phone)}</span></div>
           <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${esc(fd['이메일'])}</span></div>
           <div class="info-row" style="grid-column:span 2"><span class="info-label">주소</span><span class="info-value">${esc(fd['주소'])} ${fd['상세주소'] ? esc(fd['상세주소']) : ''}</span></div>
@@ -454,6 +656,10 @@ function buildDetailHtml(a, fd) {
           <div class="info-row"><span class="info-label">직장명 / 주소</span><span class="info-value">${esc(fd['직장명'])}${fd['직장주소'] ? ' · ' + esc(fd['직장주소']) : ''}</span></div>
           <div class="info-row" style="grid-column:span 2"><span class="info-label">정부지원 수혜</span><span class="info-value">${esc(fd['정부지원수혜'])}</span></div>
         </div>
+        ${familyRows.length ? `
+          <div class="sec" style="margin-top:16px">가족 및 동거인 현황</div>
+          ${renderDebt(familyRows, familyCols)}
+        ` : ''}
       </div>
     </div>
 
@@ -464,7 +670,9 @@ function buildDetailHtml(a, fd) {
         ${renderDebt(debtBank, bankCols)}
         <div class="sec red" style="margin-top:14px">02-2 · 기타 대출</div>
         ${renderDebt(debtOther, otherCols)}
-        <div class="sec red" style="margin-top:14px">02-3 · 채무조정 이력</div>
+        <div class="sec red" style="margin-top:14px">02-3 · 대환 대상</div>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:8px">${esc(fd['대환대상'])}</p>
+        <div class="sec red" style="margin-top:14px">02-4 · 채무조정 이력</div>
         <div class="info-grid" style="margin-top:8px">
           <div class="info-row"><span class="info-label">이력</span><span class="info-value">${esc(fd['채무조정이력'])}</span></div>
           <div class="info-row"><span class="info-label">유형</span><span class="info-value">${esc(fd['채무조정유형'])}${fd['채무조정유형_기타상세'] ? ' (' + esc(fd['채무조정유형_기타상세']) + ')' : ''}</span></div>
@@ -479,6 +687,8 @@ function buildDetailHtml(a, fd) {
       <div class="card-body">
         <div class="sec green">소득유형</div>
         <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${esc(fd['소득유형'])}</p>
+        <div class="sec green">소득이력</div>
+        ${renderDebt(incomeRows, incomeCols)}
         <div class="sec green">월 지출 (단위: 만원)</div>
         <div class="expense-grid">
           ${expEntries.map(([label,val]) => `
@@ -494,6 +704,7 @@ function buildDetailHtml(a, fd) {
         <div class="crisis-grid">
           <div class="crisis-item"><div class="crisis-label">💰 보유 현금·예금</div><div class="crisis-val">${esc(fd['위기대응_현금'])}</div></div>
           <div class="crisis-item"><div class="crisis-label">🤝 가족·지인 지원가능액</div><div class="crisis-val">${esc(fd['위기대응_가족도움'])}</div></div>
+          <div class="crisis-item"><div class="crisis-label">처분 가능 자산</div><div class="crisis-val">${esc(fd['위기대응_처분자산'])}</div></div>
         </div>
       </div>
     </div>
@@ -515,13 +726,21 @@ function buildDetailHtml(a, fd) {
       <div class="card-body">
         <div class="info-grid">
           <div class="info-row"><span class="info-label">신청금액</span><span class="info-value">${esc(a.loan_amount)}만원</span></div>
+          <div class="info-row"><span class="info-label">희망 상환기간</span><span class="info-value">${esc(fd['희망상환기간'])}</span></div>
+          <div class="info-row"><span class="info-label">대출 목적</span><span class="info-value">${esc(fd['대출목적'])}</span></div>
           <div class="info-row"><span class="info-label">자동이체 동의</span><span class="info-value">${esc(fd['자동이체동의'])}</span></div>
+          <div class="info-row"><span class="info-label">금융생활 자동이체</span><span class="info-value">${esc(fd['금융생활_자동이체'])}</span></div>
+          <div class="info-row"><span class="info-label">공과금 연체</span><span class="info-value">${esc(fd['금융생활_공과금연체'])}</span></div>
+          <div class="info-row"><span class="info-label">고정지출 변화</span><span class="info-value">${esc(fd['금융생활_고정지출변화'])}</span></div>
+          <div class="info-row"><span class="info-label">지원제도 인지경로</span><span class="info-value">${esc(fd['지원제도인지'])}</span></div>
           <div class="info-row"><span class="info-label">이전 신청 경험</span><span class="info-value">${esc(fd['이전신청경험'])}</span></div>
           <div class="info-row"><span class="info-label">신용점수 요인 (자가인식)</span><span class="info-value">${esc(fd['신용점수요인'])}</span></div>
           <div class="info-row" style="grid-column:span 2"><span class="info-label">최근 금융개선 행동</span><span class="info-value">${esc(fd['금융생활_행동'])}</span></div>
         </div>
       </div>
     </div>
+
+    ${renderRawData(fd)}
   `;
 }
 
@@ -555,9 +774,9 @@ async function showApp(id) {
 
   main.innerHTML = buildDetailHtml(a, fd);
 
-  document.getElementById('q1-text').textContent = a.q1_background || '—';
-  document.getElementById('q2-text').textContent = a.q2_repay_plan || '—';
-  document.getElementById('q3-text').textContent = a.q3_repay_plan || '—';
+  document.getElementById('q1-text').textContent = a.q1_background || fd['Q1_부채발생이유'] || '—';
+  document.getElementById('q2-text').textContent = a.q2_repay_plan || fd['Q2_대환채무및사용계획'] || '—';
+  document.getElementById('q3-text').textContent = a.q3_repay_plan || fd['Q3_상환계획'] || '—';
   document.getElementById('debt-past-text').textContent = fd['채무조정과거상세'] || '—';
 }
 </script>
