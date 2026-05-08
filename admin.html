@@ -380,14 +380,22 @@ function filterApps() {
 }
 
 // ── 헬퍼 ─────────────────────────────────────────────
+function hasValue(v) {
+  return v !== undefined && v !== null && String(v).trim() !== '';
+}
 function esc(v) {
-  if (!v) return '—';
+  if (!hasValue(v)) return '—';
   return String(v)
     .replace(/&/g,'&amp;')
     .replace(/</g,'&lt;')
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
+}
+function optionalInfoRow(label, value, style) {
+  if (!hasValue(value)) return '';
+  const styleAttr = style ? ` style="${style}"` : '';
+  return `<div class="info-row"${styleAttr}><span class="info-label">${esc(label)}</span><span class="info-value">${esc(value)}</span></div>`;
 }
 function fmtDate(d) {
   if (!d) return '—';
@@ -419,6 +427,7 @@ function renderDebt(rows, cols) {
 function renderRawData(fd) {
   const rows = Object.entries(fd || {})
     .filter(([key]) => !key.includes('주민등록번호'))
+    .filter(([, value]) => hasValue(value))
     .sort(([a], [b]) => a.localeCompare(b, 'ko'));
   if (!rows.length) return '';
   return `
@@ -579,7 +588,7 @@ async function exportRawCsv() {
   if (!confirmSensitiveExport('전체 접수 원문 CSV')) return;
   const baseHeaders = [
     '접수번호','성명','휴대전화','생년월일','주민등록번호_앞자리','주민등록번호_뒷자리','주민등록번호_전체','주민번호상태',
-    '고용형태','소득구간','신청금액_만원','대출목적','희망상환기간','접수일','현재상태'
+    '고용형태','소득구간','신청금액_만원','접수일','현재상태'
   ];
   let apps = [];
   try {
@@ -588,8 +597,14 @@ async function exportRawCsv() {
     alert('CSV 데이터를 불러오지 못했습니다.\n(' + (error.message || error) + ')');
     return;
   }
-  const formKeys = Array.from(new Set(apps.flatMap(a => Object.keys(a.fd || {})))).sort((a, b) => a.localeCompare(b, 'ko'));
-  const headers = [...baseHeaders, ...formKeys.filter(k => !baseHeaders.includes(k))];
+  const optionalBaseHeaders = [
+    apps.some(a => hasValue(a.loan_purpose) || hasValue(a.fd?.['대출목적'])) ? '대출목적' : null,
+    apps.some(a => hasValue(a.loan_period) || hasValue(a.fd?.['희망상환기간'])) ? '희망상환기간' : null,
+  ].filter(Boolean);
+  const formKeys = Array.from(new Set(apps.flatMap(a => Object.keys(a.fd || {}))))
+    .filter(k => apps.some(a => hasValue(a.fd?.[k])))
+    .sort((a, b) => a.localeCompare(b, 'ko'));
+  const headers = [...baseHeaders, ...optionalBaseHeaders, ...formKeys.filter(k => !baseHeaders.includes(k) && !optionalBaseHeaders.includes(k))];
   const rows = apps.map(a => {
     const fd = a.fd || {};
     const rrn = getRrnParts(a, fd);
@@ -682,6 +697,7 @@ function buildDetailHtml(a, fd) {
           <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${esc(fd['이메일'])}</span></div>
           <div class="info-row" style="grid-column:span 2"><span class="info-label">주소</span><span class="info-value">${esc(fd['주소'])} ${fd['상세주소'] ? esc(fd['상세주소']) : ''}</span></div>
           <div class="info-row"><span class="info-label">거주형태</span><span class="info-value">${esc(fd['거주형태'])}</span></div>
+          ${optionalInfoRow('거주비용 상세', fd['거주비용상세'])}
           <div class="info-row"><span class="info-label">이사계획</span><span class="info-value">${esc(fd['이사계획'])}</span></div>
           <div class="info-row"><span class="info-label">가구원수</span><span class="info-value">${esc(fd['가구원수'])}</span></div>
           <div class="info-row"><span class="info-label">세대주여부</span><span class="info-value">${esc(fd['세대주여부'])}</span></div>
@@ -689,6 +705,7 @@ function buildDetailHtml(a, fd) {
           <div class="info-row"><span class="info-label">고용형태</span><span class="info-value">${esc(a.employment_type)} / ${esc(fd['고용세부'])}</span></div>
           <div class="info-row"><span class="info-label">직장명 / 주소</span><span class="info-value">${esc(fd['직장명'])}${fd['직장주소'] ? ' · ' + esc(fd['직장주소']) : ''}</span></div>
           <div class="info-row" style="grid-column:span 2"><span class="info-label">정부지원 수혜</span><span class="info-value">${esc(fd['정부지원수혜'])}</span></div>
+          ${optionalInfoRow('정부지원 월금액 상세', fd['정부지원수혜_월금액상세'], 'grid-column:span 2')}
         </div>
         ${familyRows.length ? `
           <div class="sec" style="margin-top:16px">가족 및 동거인 현황</div>
@@ -710,6 +727,9 @@ function buildDetailHtml(a, fd) {
         <div class="info-grid" style="margin-top:8px">
           <div class="info-row"><span class="info-label">이력</span><span class="info-value">${esc(fd['채무조정이력'])}</span></div>
           <div class="info-row"><span class="info-label">유형</span><span class="info-value">${esc(fd['채무조정유형'])}${fd['채무조정유형_기타상세'] ? ' (' + esc(fd['채무조정유형_기타상세']) + ')' : ''}</span></div>
+          ${optionalInfoRow('총 납입 회차', fd['채무조정총회차'] ? fd['채무조정총회차'] + '회' : '')}
+          ${optionalInfoRow('납입 완료 회차', fd['채무조정납입완료회차'] ? fd['채무조정납입완료회차'] + '회' : '')}
+          ${optionalInfoRow('성실상환도', fd['채무조정성실상환도'])}
           <div class="info-row"><span class="info-label">월 납입액</span><span class="info-value">${fd['채무조정월납액'] ? esc(fd['채무조정월납액']) + '만원' : '—'}</span></div>
           <div class="info-row"><span class="info-label">과거 상세</span><span class="info-value" id="debt-past-text"></span></div>
         </div>
@@ -721,8 +741,10 @@ function buildDetailHtml(a, fd) {
       <div class="card-body">
         <div class="sec green">소득유형</div>
         <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${esc(fd['소득유형'])}</p>
-        <div class="sec green">소득이력</div>
-        ${renderDebt(incomeRows, incomeCols)}
+        ${incomeRows.length ? `
+          <div class="sec green">소득이력</div>
+          ${renderDebt(incomeRows, incomeCols)}
+        ` : ''}
         <div class="sec green">월 지출 (단위: 만원)</div>
         <div class="expense-grid">
           ${expEntries.map(([label,val]) => `
@@ -738,8 +760,12 @@ function buildDetailHtml(a, fd) {
         <div class="crisis-grid">
           <div class="crisis-item"><div class="crisis-label">💰 보유 현금·예금</div><div class="crisis-val">${esc(fd['위기대응_현금'])}</div></div>
           <div class="crisis-item"><div class="crisis-label">🤝 가족·지인 지원가능액</div><div class="crisis-val">${esc(fd['위기대응_가족도움'])}</div></div>
-          <div class="crisis-item"><div class="crisis-label">처분 가능 자산</div><div class="crisis-val">${esc(fd['위기대응_처분자산'])}</div></div>
+          ${hasValue(fd['위기대응_처분자산']) ? `<div class="crisis-item"><div class="crisis-label">처분 가능 자산</div><div class="crisis-val">${esc(fd['위기대응_처분자산'])}</div></div>` : ''}
         </div>
+        ${hasValue(fd['위기대응_대처계획']) ? `
+          <div class="sec green" style="margin-top:14px">위기 상황 대처 계획</div>
+          <div class="q-box">${esc(fd['위기대응_대처계획'])}</div>
+        ` : ''}
       </div>
     </div>
 
@@ -760,16 +786,16 @@ function buildDetailHtml(a, fd) {
       <div class="card-body">
         <div class="info-grid">
           <div class="info-row"><span class="info-label">신청금액</span><span class="info-value">${esc(a.loan_amount)}만원</span></div>
-          <div class="info-row"><span class="info-label">희망 상환기간</span><span class="info-value">${esc(fd['희망상환기간'])}</span></div>
-          <div class="info-row"><span class="info-label">대출 목적</span><span class="info-value">${esc(fd['대출목적'])}</span></div>
+          ${optionalInfoRow('희망 상환기간', a.loan_period || fd['희망상환기간'])}
+          ${optionalInfoRow('대출 목적', a.loan_purpose || fd['대출목적'])}
           <div class="info-row"><span class="info-label">자동이체 동의</span><span class="info-value">${esc(fd['자동이체동의'])}</span></div>
-          <div class="info-row"><span class="info-label">금융생활 자동이체</span><span class="info-value">${esc(fd['금융생활_자동이체'])}</span></div>
-          <div class="info-row"><span class="info-label">공과금 연체</span><span class="info-value">${esc(fd['금융생활_공과금연체'])}</span></div>
-          <div class="info-row"><span class="info-label">고정지출 변화</span><span class="info-value">${esc(fd['금융생활_고정지출변화'])}</span></div>
-          <div class="info-row"><span class="info-label">지원제도 인지경로</span><span class="info-value">${esc(fd['지원제도인지'])}</span></div>
-          <div class="info-row"><span class="info-label">이전 신청 경험</span><span class="info-value">${esc(fd['이전신청경험'])}</span></div>
-          <div class="info-row"><span class="info-label">신용점수 요인 (자가인식)</span><span class="info-value">${esc(fd['신용점수요인'])}</span></div>
-          <div class="info-row" style="grid-column:span 2"><span class="info-label">최근 금융개선 행동</span><span class="info-value">${esc(fd['금융생활_행동'])}</span></div>
+          ${optionalInfoRow('금융생활 자동이체', fd['금융생활_자동이체'])}
+          ${optionalInfoRow('공과금 연체', fd['금융생활_공과금연체'])}
+          ${optionalInfoRow('고정지출 변화', fd['금융생활_고정지출변화'])}
+          ${optionalInfoRow('지원제도 인지경로', fd['지원제도인지'])}
+          ${optionalInfoRow('이전 신청 경험', fd['이전신청경험'])}
+          ${optionalInfoRow('신용점수 요인 (자가인식)', fd['신용점수요인'])}
+          ${optionalInfoRow('최근 금융개선 행동', fd['금융생활_행동'], 'grid-column:span 2')}
         </div>
       </div>
     </div>

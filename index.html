@@ -3262,7 +3262,7 @@
                     <option>300만 원 이상</option>
                   </select>
                 </div>
-                <!-- [YL-req1] 처분·해지 가능한 자산 블록 삭제 (collectData의 위기대응_처분자산 키는 유지) -->
+                <!-- [YL-req1] 처분·해지 가능한 자산 블록 삭제 (저장·관리자 표시에서도 제외) -->
               </div>
             </div>
             <div class="form-row">
@@ -3436,9 +3436,9 @@
                 </span>
               </label>
             </div>
-            <!-- [YL-req1] 희망 상환기간 블록 삭제 (collectData의 희망상환기간 키는 유지) -->
+            <!-- [YL-req1] 희망 상환기간 블록 삭제 (저장·관리자 표시에서도 제외) -->
 
-            <!-- [YL-req1] 05-2 사용 목적 섹션 전체 삭제 (collectData의 대출목적 키는 유지) -->
+            <!-- [YL-req1] 05-2 사용 목적 섹션 전체 삭제 (저장·관리자 표시에서도 제외) -->
 
             <!-- [YL-req1] 05-3 상환 계획 섹션 전체 삭제 (autodebit-agree는 [YL-req2]로 05-1 하단에 복구) -->
           </div>
@@ -3909,28 +3909,35 @@
       }
 
       // ── 정부지원 토글 ────────────────────────────────────────
+      function getGovSupportButtons() {
+        return Array.from(document.querySelectorAll(".check-btn"))
+          .filter((b) => (b.getAttribute("onclick") || "").includes("toggleGovSupport"));
+      }
+
       function toggleGovSupport(lbl, amtId, isNone) {
         if (isNone) {
-          document.querySelectorAll(".check-btn").forEach((b) => {
+          getGovSupportButtons().forEach((b) => {
             if (b !== lbl) b.classList.remove("selected");
           });
           document.getElementById("gov-amounts").innerHTML = "";
           lbl.classList.toggle("selected");
+          lbl.closest(".form-row")?.querySelectorAll(".yl-runtime-error").forEach((el) => el.remove());
           return;
         }
-        document.querySelectorAll(".check-btn").forEach((b) => {
+        getGovSupportButtons().forEach((b) => {
           if (b.textContent.trim() === "해당없음")
             b.classList.remove("selected");
         });
         lbl.classList.toggle("selected");
+        lbl.closest(".form-row")?.querySelectorAll(".yl-runtime-error").forEach((el) => el.remove());
         updateGovAmounts();
       }
 
       function updateGovAmounts() {
         const wrap = document.getElementById("gov-amounts");
-        const selected = [
-          ...document.querySelectorAll(".check-btn.selected"),
-        ].map((b) => b.textContent.trim());
+        const selected = getGovSupportButtons()
+          .filter((b) => b.classList.contains("selected"))
+          .map((b) => b.textContent.trim());
         const govTypes = selected.filter((t) => t !== "해당없음");
         const existing = {};
         wrap.querySelectorAll("[data-gov]").forEach((el) => {
@@ -4081,7 +4088,7 @@
           const age = cells[2].value;
           const live = cells[3].value;
           const note = cells[4].value.trim();
-          if (name || rel || age) {
+          if (name || rel || age || live || note) {
             result.push([name, rel, age, live, note].join('|'));
           }
         });
@@ -4106,21 +4113,6 @@
     <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
     <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
     <td><button onclick="removeNonbankRow(this)" style="background:none;border:none;color:#CC4444;cursor:pointer;font-size:18px;padding:0 4px">×</button></td>`;
-        tbody.appendChild(tr);
-      }
-
-      function addEmployRow() {
-        const tbody = document.getElementById("employ-tbody");
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-    <td><input class="form-input" type="text" placeholder="직장·사업체명" style="width:100%"></td>
-    <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
-    <td><input class="form-input" type="month" style="width:100%;font-size:12px"></td>
-    <td><input class="form-input" type="text" placeholder="예) 배달, 요양보호" style="width:100%"></td>
-    <td><select class="form-select" style="width:100%;font-size:12px;padding:6px 4px">
-      <option value="">선택</option><option>정규직</option><option>계약직</option><option>일용직·아르바이트</option><option>자영업·사업주</option><option>프리랜서·특수고용</option><option>플랫폼 노동 (배달·대리)</option><option>기타</option>
-    </select></td>
-    <td><button onclick="removeRow(this)" style="background:none;border:none;color:#CC4444;cursor:pointer;font-size:18px;padding:0 4px">×</button></td>`;
         tbody.appendChild(tr);
       }
 
@@ -4246,18 +4238,13 @@
         };
         const debt =
           sumMonthly("bank-tbody") +
-          sumMonthly("nonbank-tbody") +
-          sumMonthly("personal-tbody");
+          sumMonthly("nonbank-tbody");
 
         const incIds = [
           "inc-work",
           "inc-biz",
           "inc-gov",
           "inc-etc",
-          "f-inc-work",
-          "f-inc-biz",
-          "f-inc-gov",
-          "f-inc-etc",
         ];
         let income = 0;
         incIds.forEach((id) => {
@@ -4339,7 +4326,7 @@
 
       // [YL-3] DSR 트리거: 부채 테이블 & 소득 입력 변경 시 자동 재계산
       document.addEventListener("DOMContentLoaded", () => {
-        ["bank-tbody", "nonbank-tbody", "personal-tbody"].forEach((id) => {
+        ["bank-tbody", "nonbank-tbody"].forEach((id) => {
           const t = document.getElementById(id);
           if (t) t.addEventListener("input", calcDSR);
         });
@@ -4348,10 +4335,6 @@
           "inc-biz",
           "inc-gov",
           "inc-etc",
-          "f-inc-work",
-          "f-inc-biz",
-          "f-inc-gov",
-          "f-inc-etc",
         ].forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.addEventListener("input", calcDSR);
@@ -4621,6 +4604,73 @@
         el.value = String(n);
       }
 
+      function showRuntimeError(anchor, message) {
+        if (!anchor) return;
+        anchor.querySelectorAll(".yl-runtime-error").forEach((el) => el.remove());
+        const msg = document.createElement("div");
+        msg.className = "error-msg show yl-runtime-error";
+        msg.textContent = message;
+        anchor.appendChild(msg);
+      }
+
+      function validateSelectRequired(id, message) {
+        const el = document.getElementById(id);
+        if (el?.value) {
+          el.classList.remove("error");
+          el.closest(".form-row, .buffer-item")?.querySelectorAll(".yl-runtime-error").forEach((msg) => msg.remove());
+          return true;
+        }
+        el?.classList.add("error");
+        showRuntimeError(el?.closest(".form-row") || el?.closest(".buffer-item"), message);
+        return false;
+      }
+
+      function validateGovSupportSelection() {
+        const buttons = getGovSupportButtons();
+        const selected = buttons.some((b) => b.classList.contains("selected"));
+        const row = buttons[0]?.closest(".form-row");
+        if (selected) {
+          row?.querySelectorAll(".yl-runtime-error").forEach((msg) => msg.remove());
+          return true;
+        }
+        showRuntimeError(row, "정부 지원 수혜 여부를 선택해 주세요. 해당 없으면 '해당없음'을 선택해 주세요.");
+        return false;
+      }
+
+      function validateGovSupportAmounts() {
+        const rows = Array.from(document.querySelectorAll(".gov-amount-row[data-gov]"));
+        let ok = true;
+        rows.forEach((row) => {
+          const input = row.querySelector("input");
+          if (!input?.value?.trim()) {
+            input?.classList.add("error");
+            ok = false;
+          } else {
+            input.classList.remove("error");
+          }
+        });
+        const anchor = document.getElementById("gov-amounts")?.closest(".form-row");
+        if (!ok) showRuntimeError(anchor, "선택한 정부 지원 항목의 월 금액을 입력해 주세요. 금액이 없으면 0을 입력해 주세요.");
+        return ok;
+      }
+
+      function validateResidenceCostDetails() {
+        const wrap = document.getElementById("residence-cost-wrap");
+        if (!wrap || wrap.style.display === "none" || !wrap.innerHTML.trim()) return true;
+        const inputs = Array.from(wrap.querySelectorAll("input"));
+        let ok = true;
+        inputs.forEach((input) => {
+          if (!input.value.trim()) {
+            input.classList.add("error");
+            ok = false;
+          } else {
+            input.classList.remove("error");
+          }
+        });
+        if (!ok) showRuntimeError(wrap.closest(".form-row"), "거주비용 정보를 입력해 주세요. 해당 금액이 없으면 0을 입력해 주세요.");
+        return ok;
+      }
+
       function validateStep1() {
         let ok = true;
         if (!validateRequired(document.getElementById("f-name"), "err-name"))
@@ -4632,7 +4682,24 @@
         if (!validateRequired(document.getElementById("f-address"), "err-address"))
           ok = false;
         if (!validateRadioGroup('residence', '거주 형태를 선택해 주세요.')) ok = false;
+        if (!validateResidenceCostDetails()) ok = false;
+        if (!validateRadioGroup('move-plan', '이사 계획 여부를 선택해 주세요.')) ok = false;
         if (!validateRadioGroup('hh', '가구원 수를 선택해 주세요.')) ok = false;
+        if (!validateRadioGroup('householder', '세대주 여부를 선택해 주세요.')) ok = false;
+        if (!validateRadioGroup('dependent', '부양가족 여부를 선택해 주세요.')) ok = false;
+        if (getRadioVal('dependent') === '있음') {
+          const depDetail = document.getElementById("f-dep-detail");
+          if (!depDetail?.value?.trim()) {
+            depDetail?.classList.add("error");
+            showRuntimeError(depDetail?.closest(".form-row"), "부양가족이 있으면 관계와 나이를 간략히 입력해 주세요.");
+            ok = false;
+          } else {
+            depDetail.classList.remove("error");
+            depDetail.closest(".form-row")?.querySelectorAll(".yl-runtime-error").forEach((msg) => msg.remove());
+          }
+        }
+        if (!validateGovSupportSelection()) ok = false;
+        if (!validateGovSupportAmounts()) ok = false;
         // 고용형태 검증
         const employType = getRadioVal('employ-type');
         const errEl = document.getElementById('err-employer');
@@ -4642,8 +4709,12 @@
         } else {
           if (employType === '직장인') {
             const nm = document.getElementById('f-employer-salaried');
+            const subtype = document.getElementById('f-employ-subtype');
             if (!nm?.value?.trim()) {
               if (errEl) { errEl.textContent = '직장명을 입력해 주세요.'; errEl.classList.add('show'); }
+              ok = false;
+            } else if (!subtype?.value) {
+              if (errEl) { errEl.textContent = '고용형태를 선택해 주세요.'; errEl.classList.add('show'); }
               ok = false;
             } else if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
           } else if (employType === '자영업·프리랜서') {
@@ -4664,6 +4735,11 @@
               if (errEl) { errEl.textContent = '학교명을 입력해 주세요.'; errEl.classList.add('show'); }
               ok = false;
             } else if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+          } else if (employType === '무직') {
+            if (!getRadioVal('unemploy-reason')) {
+              if (errEl) { errEl.textContent = '무직 사유를 선택해 주세요.'; errEl.classList.add('show'); }
+              ok = false;
+            } else if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
           } else {
             if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
           }
@@ -4680,12 +4756,7 @@
         if (getRadioVal(name)) return true;
         const input = document.querySelector(`input[name="${name}"]`);
         const row = input?.closest(".form-row");
-        if (row && !row.querySelector(".yl-runtime-error")) {
-          const msg = document.createElement("div");
-          msg.className = "error-msg show yl-runtime-error";
-          msg.textContent = message;
-          row.appendChild(msg);
-        }
+        showRuntimeError(row, message);
         return false;
       }
 
@@ -4707,6 +4778,9 @@
           }
           ok = false;
         }
+
+        if (!validateSelectRequired('buf-cash', '보유 현금·예금 규모를 선택해 주세요.')) ok = false;
+        if (!validateSelectRequired('buf-family', '가족·지인 도움 가능 금액을 선택해 주세요.')) ok = false;
 
         [
           ['f-q1-background', 'err-background', 'Q1 부채 발생 이유를 입력해 주세요.'],
@@ -4758,10 +4832,43 @@
       }
       // 정부지원수혜 수집
       function collectGovSupport() {
-        const selected = Array.from(document.querySelectorAll('.check-btn.selected'))
-          .filter(b => (b.getAttribute('onclick') || '').includes('toggleGovSupport') && !b.textContent.includes('해당없음'))
+        const selected = getGovSupportButtons()
+          .filter(b => b.classList.contains('selected') && !b.textContent.includes('해당없음'))
           .map(b => b.textContent.trim());
         return selected.length ? selected.join(', ') : '해당없음';
+      }
+      function collectGovSupportDetails() {
+        return Array.from(document.querySelectorAll('.gov-amount-row[data-gov]'))
+          .map(row => {
+            const type = row.dataset.gov || '';
+            const amount = row.querySelector('input')?.value?.trim() || '';
+            return type && amount ? `${type}|${amount}만원/월` : '';
+          })
+          .filter(Boolean)
+          .join(' / ');
+      }
+      function collectResidenceCost() {
+        const wrap = document.getElementById('residence-cost-wrap');
+        if (!wrap || wrap.style.display === 'none') return '';
+        return Array.from(wrap.querySelectorAll('input'))
+          .map(inp => {
+            const label = inp.parentElement?.parentElement?.querySelector('label')?.textContent?.trim() || '금액';
+            const value = inp.value?.trim() || '';
+            return value ? `${label} ${value}만원` : '';
+          })
+          .filter(Boolean)
+          .join(' / ');
+      }
+      function deriveIncomeRange() {
+        if (eligState.eq3 === 'pass') return '기준 중위소득 150% 이하';
+        if (eligState.eq3 === 'fail') return '기준 중위소득 150% 초과';
+        return '';
+      }
+      function calcDebtAdjustmentRate() {
+        const total = parseInt(document.getElementById('total-round')?.value || '0', 10);
+        const done = parseInt(document.getElementById('done-round')?.value || '0', 10);
+        if (!total || !done) return '';
+        return `${done}/${total}회 (${Math.round((done / total) * 100)}%)`;
       }
       // 소득유형 도출
       function deriveIncomeType() {
@@ -4821,6 +4928,7 @@
         d['주소'] = document.getElementById('f-address')?.value?.trim() || '';
         d['상세주소'] = document.getElementById('f-address-detail')?.value?.trim() || '';
         d['거주형태'] = getRadioVal('residence');
+        d['거주비용상세'] = collectResidenceCost();
         d['이사계획'] = getRadioVal('move-plan');
         d['가구원수'] = getRadioVal('hh');
         d['세대주여부'] = getRadioVal('householder');
@@ -4844,8 +4952,7 @@
         d['직장주소'] = document.getElementById('f-employer-addr')?.value?.trim() || '';
         // 재무현황
         d['소득유형'] = deriveIncomeType();
-        d['소득이력'] = collectTable('employ-tbody');
-        d['소득구간'] = getRadioVal('income');
+        d['소득구간'] = deriveIncomeRange();
         // 지출 — GAS 헤더명과 일치하는 한국어 키
         const expMap = {
           'exp-rent':'주거', 'exp-food':'식비', 'exp-transit':'교통',
@@ -4857,7 +4964,6 @@
         });
         d['부채_금융기관'] = collectTable('bank-tbody');
         d['부채_기타대출'] = collectTable('nonbank-tbody');
-        d['부채_지인차용'] = collectTable('personal-tbody');
         // [YL-4] 대환 대상 수집
         {
           const { items, total } = computeRefinSummary();
@@ -4870,20 +4976,22 @@
         d['채무조정유형'] = getRadioVal('adj-type');
         // [YL-5] 채무조정유형이 "기타"일 때 직접입력값 함께 저장
         d['채무조정유형_기타상세'] = document.getElementById('f-adj-type-etc')?.value?.trim() || '';
+        d['채무조정총회차'] = document.getElementById('total-round')?.value?.trim() || '';
+        d['채무조정납입완료회차'] = document.getElementById('done-round')?.value?.trim() || '';
+        d['채무조정성실상환도'] = calcDebtAdjustmentRate();
         d['채무조정월납액'] = document.getElementById('f-adj-monthly')?.value?.trim() || '';
         d['채무조정과거상세'] = document.getElementById('f-adj-past-detail')?.value?.trim() || '';
         d['위기대응_현금'] = document.getElementById('buf-cash')?.value || '';
         d['위기대응_가족도움'] = document.getElementById('buf-family')?.value || '';
-        d['위기대응_처분자산'] = document.getElementById('buf-asset')?.value || '';
+        d['위기대응_대처계획'] = document.getElementById('f-crisis')?.value?.trim() || '';
         // 신청배경·대출계획
         d['정부지원수혜'] = collectGovSupport();
+        d['정부지원수혜_월금액상세'] = collectGovSupportDetails();
         // [YL-req2] Q1~Q4 키를 Q1/Q2 2개로 교체 (Q3_*, Q4_* 키 제거)
         d['Q1_부채발생이유'] = document.getElementById('f-q1-background')?.value.trim() || '';
         d['Q2_대환채무및사용계획'] = document.getElementById('f-q2-plan')?.value.trim() || '';
         d['Q3_상환계획'] = document.getElementById('f-q3-repay-plan')?.value.trim() || '';
         d['신청금액'] = (document.getElementById('f-amount')?.value || '') + '만 원';
-        d['희망상환기간'] = getRadioVal('period');
-        d['대출목적'] = getRadioVal('loan-purpose');
         d['자동이체동의'] = document.getElementById('autodebit-agree')?.checked ? '동의' : '미동의';
         // 금융생활·성향
         d['금융생활_자동이체'] = getRadioVal('autotransfer');
@@ -4932,8 +5040,8 @@
             employment_type:     data['고용형태'],
             income_range:        data['소득구간'],
             loan_amount:         parseInt((data['신청금액']||'').replace(/[^0-9]/g,'')) || 0,
-            loan_purpose:        data['대출목적'],
-            loan_period:         data['희망상환기간'],
+            loan_purpose:        null,
+            loan_period:         null,
             qual_age:            data['자격_연령']     === 'pass',
             qual_income_150:     data['자격_소득150%'] === 'pass',
             qual_multi_debt:     data['자격_다중부채'] === 'pass',
