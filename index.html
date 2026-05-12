@@ -1005,7 +1005,8 @@
 
       /* ── 유효성 검사 ──────────────────────────── */
       .form-input.error,
-      .form-textarea.error {
+      .form-textarea.error,
+      .income-input-wrap input.error {
         border-color: #c0392b !important;
         box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
       }
@@ -2792,7 +2793,8 @@
                       type="number"
                       placeholder="0"
                       id="inc-work"
-                      oninput="updateCalc()"
+                      min="0"
+                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2808,7 +2810,8 @@
                       type="number"
                       placeholder="0"
                       id="inc-biz"
-                      oninput="updateCalc()"
+                      min="0"
+                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2831,7 +2834,8 @@
                       type="number"
                       placeholder="0"
                       id="inc-gov"
-                      oninput="updateCalc()"
+                      min="0"
+                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2851,7 +2855,8 @@
                       type="number"
                       placeholder="0"
                       id="inc-etc"
-                      oninput="updateCalc()"
+                      min="0"
+                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2887,6 +2892,9 @@
                   id="income-total-display"
                   >— 만 원</span
                 >
+              </div>
+              <div class="error-msg" id="err-income-total">
+                월 소득을 한 항목 이상 입력해 주세요.
               </div>
             </div>
 
@@ -3967,6 +3975,7 @@
         const govEl = document.getElementById("inc-gov");
         if (govEl) {
           govEl.value = total > 0 ? total : "";
+          validateMonthlyIncome({ silent: true });
           updateCalc();
         }
       }
@@ -4604,6 +4613,43 @@
         el.value = String(n);
       }
 
+      function getMonthlyIncomeInputs() {
+        return ["inc-work", "inc-biz", "inc-gov", "inc-etc"]
+          .map((id) => document.getElementById(id))
+          .filter(Boolean);
+      }
+
+      // 03-1 월소득은 네 항목 중 하나 이상 1만원 이상 입력되어야 제출할 수 있다.
+      function validateMonthlyIncome(options = {}) {
+        const silent = !!options.silent;
+        const inputs = getMonthlyIncomeInputs();
+        const total = inputs.reduce((sum, el) => {
+          const value = parseInt(el.value || "0", 10);
+          return sum + (Number.isFinite(value) ? value : 0);
+        }, 0);
+        const err = document.getElementById("err-income-total");
+
+        if (total > 0) {
+          inputs.forEach((el) => el.classList.remove("error"));
+          err?.classList.remove("show");
+          return true;
+        }
+
+        if (!silent) {
+          inputs.forEach((el) => el.classList.add("error"));
+          if (err) {
+            err.textContent = "월 소득을 한 항목 이상 입력해 주세요.";
+            err.classList.add("show");
+          } else {
+            showRuntimeError(
+              document.getElementById("inc-work")?.closest(".form-row"),
+              "월 소득을 한 항목 이상 입력해 주세요.",
+            );
+          }
+        }
+        return false;
+      }
+
       function showRuntimeError(anchor, message) {
         if (!anchor) return;
         anchor.querySelectorAll(".yl-runtime-error").forEach((el) => el.remove());
@@ -4766,18 +4812,7 @@
         let ok = validateStep1();
         if (!validateRadioGroup('debt-adj', '채무조정 이력을 선택해 주세요.')) ok = false;
 
-        const incomeTotal = ['inc-work','inc-biz','inc-gov','inc-etc']
-          .reduce((sum, id) => sum + (parseInt(document.getElementById(id)?.value || '0', 10) || 0), 0);
-        if (incomeTotal <= 0) {
-          const anchor = document.getElementById('inc-work')?.closest(".form-row");
-          if (anchor && !anchor.querySelector(".yl-runtime-error")) {
-            const msg = document.createElement("div");
-            msg.className = "error-msg show yl-runtime-error";
-            msg.textContent = "월 소득을 한 항목 이상 입력해 주세요.";
-            anchor.appendChild(msg);
-          }
-          ok = false;
-        }
+        if (!validateMonthlyIncome()) ok = false;
 
         if (!validateSelectRequired('buf-cash', '보유 현금·예금 규모를 선택해 주세요.')) ok = false;
         if (!validateSelectRequired('buf-family', '가족·지인 도움 가능 금액을 선택해 주세요.')) ok = false;
@@ -5020,10 +5055,19 @@
           return;
         }
         if (!validateApplicationBeforeSubmit()) return;
-        submitComplete();
+        submitComplete({ alreadyValidated: true });
       }
 
-      async function submitComplete() {
+      async function submitComplete(options = {}) {
+        if (!options.alreadyValidated) {
+          if (!allConsentsChecked()) {
+            alert("모든 동의 항목을 확인하고 동의해 주세요.");
+            goStep(1);
+            return;
+          }
+          if (!validateApplicationBeforeSubmit()) return;
+        }
+
         const submitBtn = document.getElementById('submit-btn');
         const submitBtnMid = document.querySelector('.mid-submit-card .btn-primary');
 
