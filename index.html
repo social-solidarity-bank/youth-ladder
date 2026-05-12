@@ -5053,6 +5053,25 @@
         if (etcVal > 0) parts.push('기타소득');
         return parts.join(', ') || '—';
       }
+      // 월 소득 항목별 금액과 합계를 관리자 검토용으로 저장한다.
+      function collectIncomeAmounts() {
+        const read = (id) => document.getElementById(id)?.value?.trim() || '0';
+        const items = {
+          '소득_근로': read('inc-work'),
+          '소득_사업': read('inc-biz'),
+          '소득_정부지원': read('inc-gov'),
+          '소득_기타': read('inc-etc'),
+        };
+        const total = Object.values(items).reduce((sum, value) => {
+          const n = parseInt(value || '0', 10);
+          return sum + (Number.isFinite(n) ? n : 0);
+        }, 0);
+        return {
+          ...items,
+          '소득_근로_고용형태': document.getElementById('inc-work-type')?.value || '',
+          '소득_합계': String(total),
+        };
+      }
       function collectTable(tbodyId) {
         const tb = document.getElementById(tbodyId);
         if (!tb) return '';
@@ -5122,6 +5141,7 @@
         // 재무현황
         d['소득유형'] = deriveIncomeType();
         d['소득구간'] = deriveIncomeRange();
+        Object.assign(d, collectIncomeAmounts());
         // 지출 — GAS 헤더명과 일치하는 한국어 키
         const expMap = {
           'exp-rent':'주거', 'exp-food':'식비', 'exp-transit':'교통',
@@ -5131,6 +5151,15 @@
         Object.entries(expMap).forEach(([id, label]) => {
           d[`지출_${label}`] = document.getElementById(id)?.value || '0';
         });
+        {
+          const incomeTotal = parseInt(d['소득_합계'] || '0', 10) || 0;
+          const expenseTotal = Object.keys(expMap).reduce((sum, id) => {
+            const n = parseInt(document.getElementById(id)?.value || '0', 10);
+            return sum + (Number.isFinite(n) ? n : 0);
+          }, 0);
+          d['지출_합계'] = String(expenseTotal);
+          d['순가처분소득'] = String(incomeTotal - expenseTotal);
+        }
         d['부채_금융기관'] = collectTable('bank-tbody');
         d['부채_기타대출'] = collectTable('nonbank-tbody');
         // [YL-4] 대환 대상 수집
