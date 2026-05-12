@@ -112,6 +112,18 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 .debt-table th { background: var(--gray-50); color: var(--gray-500); font-size: 10px; font-weight: 700; padding: 6px 7px; border: 1px solid var(--border); text-align: center; white-space: nowrap; }
 .debt-table td { padding: 6px 7px; border: 1px solid var(--border); color: var(--gray-700); }
 .debt-table tr:nth-child(even) td { background: var(--gray-50); }
+.debt-table tfoot td { background: #fff7f7; border-top: 2px solid #fca5a5; color: var(--red); font-weight: 800; text-align: right; white-space: nowrap; }
+.debt-table tfoot .debt-total-label { color: var(--gray-700); text-align: right; }
+
+.debt-summary-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0 0 14px; }
+.debt-summary-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; }
+.debt-summary-card.total { background: #fff7f7; border-color: #fca5a5; }
+.debt-summary-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.debt-summary-title { color: var(--gray-700); font-size: 11px; font-weight: 800; }
+.debt-summary-count { color: var(--gray-500); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.debt-summary-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+.debt-summary-label { color: var(--gray-500); font-size: 10px; margin-bottom: 2px; }
+.debt-summary-value { color: var(--red); font-size: 13px; font-weight: 800; white-space: nowrap; }
 
 .q-box { background: var(--gray-50); border: 1px solid var(--gray-200); border-left: 4px solid var(--purple); border-radius: 6px; padding: 14px 16px; margin-bottom: 12px; white-space: pre-wrap; line-height: 1.85; font-size: 13px; color: var(--gray-900); }
 .q-label { font-size: 11px; font-weight: 700; color: var(--purple); margin-bottom: 8px; }
@@ -156,6 +168,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
   .sidebar { width: 100%; height: auto; position: relative; }
   .qual-grid { grid-template-columns: repeat(2,1fr); }
   .expense-grid { grid-template-columns: repeat(3,1fr); }
+  .debt-summary-grid { grid-template-columns: 1fr; }
   .info-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -418,11 +431,71 @@ function parseFormData(raw) {
     return {};
   }
 }
-function renderDebt(rows, cols) {
+// 대출표 합계는 저장값을 바꾸지 않고, 관리자 화면에서만 계산해 보여준다.
+function parseDebtMoney(value) {
+  const text = String(value ?? '').replace(/,/g, '').trim();
+  const match = text.match(/-?\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : 0;
+}
+function formatDebtMoney(value) {
+  const n = Number(value) || 0;
+  return n.toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '만원';
+}
+function calcDebtTotals(rows, indexes) {
+  return indexes.reduce((acc, idx) => {
+    acc[idx] = (rows || []).reduce((sum, row) => sum + parseDebtMoney(row[idx]), 0);
+    return acc;
+  }, {});
+}
+function renderDebtSummary(bankRows, otherRows) {
+  const bankTotals = calcDebtTotals(bankRows, [3,4,5]);
+  const otherTotals = calcDebtTotals(otherRows, [2,3,4]);
+  const items = [
+    { title: '금융기관 대출', count: bankRows.length, contract: bankTotals[3], balance: bankTotals[4], monthly: bankTotals[5] },
+    { title: '기타 대출', count: otherRows.length, contract: otherTotals[2], balance: otherTotals[3], monthly: otherTotals[4] },
+    {
+      title: '전체 부채',
+      count: bankRows.length + otherRows.length,
+      contract: bankTotals[3] + otherTotals[2],
+      balance: bankTotals[4] + otherTotals[3],
+      monthly: bankTotals[5] + otherTotals[4],
+      total: true,
+    },
+  ];
+  return `<div class="debt-summary-grid">
+    ${items.map(item => `
+      <div class="debt-summary-card ${item.total ? 'total' : ''}">
+        <div class="debt-summary-head">
+          <div class="debt-summary-title">${esc(item.title)}</div>
+          <div class="debt-summary-count">${item.count}건</div>
+        </div>
+        <div class="debt-summary-metrics">
+          <div><div class="debt-summary-label">약정</div><div class="debt-summary-value">${formatDebtMoney(item.contract)}</div></div>
+          <div><div class="debt-summary-label">잔액</div><div class="debt-summary-value">${formatDebtMoney(item.balance)}</div></div>
+          <div><div class="debt-summary-label">월상환</div><div class="debt-summary-value">${formatDebtMoney(item.monthly)}</div></div>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+function renderDebt(rows, cols, totalIndexes, totalLabel) {
   if (!rows || rows.length === 0) return '<p style="color:var(--gray-400);font-size:12px;padding:6px 0">입력 없음</p>';
   const hs = cols.map(c => `<th>${c}</th>`).join('');
   const bs = rows.map(r => `<tr>${cols.map((_,i) => `<td>${esc(r[i])}</td>`).join('')}</tr>`).join('');
-  return `<table class="debt-table"><thead><tr>${hs}</tr></thead><tbody>${bs}</tbody></table>`;
+  let foot = '';
+  if (Array.isArray(totalIndexes) && totalIndexes.length) {
+    const totals = calcDebtTotals(rows, totalIndexes);
+    const firstTotalIndex = Math.min(...totalIndexes);
+    const totalCells = [];
+    if (firstTotalIndex > 0) {
+      totalCells.push(`<td class="debt-total-label" colspan="${firstTotalIndex}">${esc(totalLabel || '합계')}</td>`);
+    }
+    for (let i = firstTotalIndex; i < cols.length; i += 1) {
+      totalCells.push(`<td>${totalIndexes.includes(i) ? formatDebtMoney(totals[i]) : ''}</td>`);
+    }
+    foot = `<tfoot><tr>${totalCells.join('')}</tr></tfoot>`;
+  }
+  return `<table class="debt-table"><thead><tr>${hs}</tr></thead><tbody>${bs}</tbody>${foot}</table>`;
 }
 function renderRawData(fd) {
   const rows = Object.entries(fd || {})
@@ -717,10 +790,11 @@ function buildDetailHtml(a, fd) {
     <div class="card">
       <div class="card-header h-red"><span class="num">02</span> 현재 부채 상황</div>
       <div class="card-body">
+        ${renderDebtSummary(debtBank, debtOther)}
         <div class="sec red">02-1 · 금융기관 대출</div>
-        ${renderDebt(debtBank, bankCols)}
+        ${renderDebt(debtBank, bankCols, [3,4,5], '금융기관 합계')}
         <div class="sec red" style="margin-top:14px">02-2 · 기타 대출</div>
-        ${renderDebt(debtOther, otherCols)}
+        ${renderDebt(debtOther, otherCols, [2,3,4], '기타 대출 합계')}
         <div class="sec red" style="margin-top:14px">02-3 · 대환 대상</div>
         <p style="font-size:13px;color:var(--gray-700);margin-bottom:8px">${esc(fd['대환대상'])}</p>
         <div class="sec red" style="margin-top:14px">02-4 · 채무조정 이력</div>
