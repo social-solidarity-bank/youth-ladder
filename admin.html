@@ -107,6 +107,14 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 .exp-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 6px; padding: 8px; text-align: center; }
 .exp-label { font-size: 10px; color: var(--gray-500); margin-bottom: 3px; }
 .exp-val { font-size: 14px; font-weight: 700; color: var(--teal); }
+.cashflow-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin: 0 0 14px; }
+.cashflow-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; }
+.cashflow-card.net.positive { background: var(--green-light); border-color: #b7e2d1; }
+.cashflow-card.net.negative { background: var(--red-light); border-color: #fecaca; }
+.cashflow-label { color: var(--gray-500); font-size: 10px; font-weight: 700; margin-bottom: 3px; }
+.cashflow-value { color: var(--gray-900); font-size: 16px; font-weight: 800; white-space: nowrap; }
+.cashflow-note { color: var(--gray-500); font-size: 10px; margin-top: 2px; }
+.missing-note { background: var(--amber-light); border: 1px solid #f5d06a; border-radius: 6px; color: var(--amber); font-size: 12px; padding: 8px 10px; margin-bottom: 12px; }
 
 .debt-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
 .debt-table th { background: var(--gray-50); color: var(--gray-500); font-size: 10px; font-weight: 700; padding: 6px 7px; border: 1px solid var(--border); text-align: center; white-space: nowrap; }
@@ -168,6 +176,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
   .sidebar { width: 100%; height: auto; position: relative; }
   .qual-grid { grid-template-columns: repeat(2,1fr); }
   .expense-grid { grid-template-columns: repeat(3,1fr); }
+  .cashflow-summary { grid-template-columns: repeat(2,1fr); }
   .debt-summary-grid { grid-template-columns: 1fr; }
   .info-grid { grid-template-columns: 1fr; }
 }
@@ -441,6 +450,23 @@ function formatDebtMoney(value) {
   const n = Number(value) || 0;
   return n.toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '만원';
 }
+function formatManwon(value) {
+  if (!hasValue(value)) return '—';
+  const n = parseDebtMoney(value);
+  return n.toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '만원';
+}
+function sumMoneyEntries(entries) {
+  return entries.reduce((sum, [, value]) => sum + parseDebtMoney(value), 0);
+}
+function renderAmountGrid(entries) {
+  return `<div class="expense-grid">
+    ${entries.map(([label, val]) => `
+      <div class="exp-item">
+        <div class="exp-label">${esc(label)}</div>
+        <div class="exp-val">${formatManwon(val)}</div>
+      </div>`).join('')}
+  </div>`;
+}
 function calcDebtTotals(rows, indexes) {
   return indexes.reduce((acc, idx) => {
     acc[idx] = (rows || []).reduce((sum, row) => sum + parseDebtMoney(row[idx]), 0);
@@ -590,7 +616,7 @@ function csvCell(value) {
   return `"${text.replace(/"/g, '""')}"`;
 }
 function downloadCsv(filename, headers, rows) {
-  const csv = '\ufeff' + [
+  const csv = '﻿' + [
     headers.map(csvCell).join(','),
     ...rows.map(row => headers.map(h => csvCell(row[h])).join(','))
   ].join('\n');
@@ -721,7 +747,22 @@ function buildDetailHtml(a, fd) {
     ['보험', fd['지출_보험']], ['대출상환', fd['지출_대출상환']],
     ['저축', fd['지출_저축']], ['기타', fd['지출_기타']],
   ];
-  const totalExp = expEntries.reduce((s,[,v]) => s + (parseInt(v)||0), 0);
+  const incomeEntries = [
+    ['근로소득', fd['소득_근로']],
+    ['사업소득', fd['소득_사업']],
+    ['정부지원금', fd['소득_정부지원']],
+    ['기타소득', fd['소득_기타']],
+  ];
+  const hasIncomeAmounts = hasValue(fd['소득_합계']) || incomeEntries.some(([, v]) => hasValue(v));
+  const totalIncome = hasIncomeAmounts
+    ? (hasValue(fd['소득_합계']) ? parseDebtMoney(fd['소득_합계']) : sumMoneyEntries(incomeEntries))
+    : null;
+  const totalExp = hasValue(fd['지출_합계']) ? parseDebtMoney(fd['지출_합계']) : sumMoneyEntries(expEntries);
+  const netIncome = hasIncomeAmounts
+    ? (hasValue(fd['순가처분소득']) ? parseDebtMoney(fd['순가처분소득']) : totalIncome - totalExp)
+    : null;
+  const monthlyDebtPayment = parseDebtMoney(fd['지출_대출상환']);
+  const dsr = totalIncome > 0 ? (monthlyDebtPayment / totalIncome) * 100 : null;
 
   const bankCols  = ['유형','상품','기관명','약정(만)','잔액(만)','월상환(만)','금리','담보','시작','만료'];
   const otherCols = ['대출처','기관명','약정(만)','잔액(만)','월상환(만)','금리','시작','만료'];
@@ -813,22 +854,44 @@ function buildDetailHtml(a, fd) {
     <div class="card">
       <div class="card-header h-green"><span class="num">03</span> 소득과 생활비</div>
       <div class="card-body">
+        ${hasIncomeAmounts ? `
+          <div class="cashflow-summary">
+            <div class="cashflow-card">
+              <div class="cashflow-label">월 소득 합계</div>
+              <div class="cashflow-value">${formatManwon(totalIncome)}</div>
+              <div class="cashflow-note">세후 실수령액 기준</div>
+            </div>
+            <div class="cashflow-card">
+              <div class="cashflow-label">월 지출 합계</div>
+              <div class="cashflow-value">${formatManwon(totalExp)}</div>
+              <div class="cashflow-note">대출상환 포함</div>
+            </div>
+            <div class="cashflow-card net ${netIncome >= 0 ? 'positive' : 'negative'}">
+              <div class="cashflow-label">순가처분소득</div>
+              <div class="cashflow-value">${formatManwon(netIncome)}</div>
+              <div class="cashflow-note">소득 - 지출</div>
+            </div>
+            <div class="cashflow-card">
+              <div class="cashflow-label">DSR 추정</div>
+              <div class="cashflow-value">${dsr == null ? '—' : dsr.toFixed(1) + '%'}</div>
+              <div class="cashflow-note">월상환 / 월소득</div>
+            </div>
+          </div>
+        ` : `
+          <div class="missing-note">이 접수건은 월 소득 금액 저장 항목이 추가되기 전에 접수되어 소득 금액이 저장되어 있지 않습니다. 소득유형만 확인할 수 있습니다.</div>
+        `}
         <div class="sec green">소득유형</div>
-        <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${esc(fd['소득유형'])}</p>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:12px">${esc(fd['소득유형'])}${fd['소득_근로_고용형태'] ? ' · ' + esc(fd['소득_근로_고용형태']) : ''}</p>
+        <div class="sec green">월 소득 (단위: 만원)</div>
+        ${hasIncomeAmounts ? renderAmountGrid(incomeEntries) : '<p style="color:var(--gray-400);font-size:12px;padding:6px 0">소득 금액 미저장</p>'}
         ${incomeRows.length ? `
           <div class="sec green">소득이력</div>
           ${renderDebt(incomeRows, incomeCols)}
         ` : ''}
         <div class="sec green">월 지출 (단위: 만원)</div>
-        <div class="expense-grid">
-          ${expEntries.map(([label,val]) => `
-            <div class="exp-item">
-              <div class="exp-label">${label}</div>
-              <div class="exp-val">${parseInt(val)||0}만</div>
-            </div>`).join('')}
-        </div>
+        ${renderAmountGrid(expEntries)}
         <div style="text-align:right;margin-top:8px;font-size:12px;color:var(--gray-500)">
-          지출 합계: <strong style="color:var(--teal)">${totalExp}만원</strong>
+          지출 합계: <strong style="color:var(--teal)">${formatManwon(totalExp)}</strong>
         </div>
         <div class="sec green" style="margin-top:14px">위기 대응 여건</div>
         <div class="crisis-grid">
