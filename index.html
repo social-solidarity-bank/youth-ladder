@@ -2300,6 +2300,9 @@
                         class="form-input"
                         type="number"
                         placeholder="0"
+                        data-unit="manwon"
+                        data-unit-warning-threshold="100000"
+                        oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })"
                         style="text-align: right"
                       />
                     </td>
@@ -2308,6 +2311,9 @@
                         class="form-input"
                         type="number"
                         placeholder="0"
+                        data-unit="manwon"
+                        data-unit-warning-threshold="100000"
+                        oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })"
                         style="text-align: right"
                       />
                     </td>
@@ -2317,7 +2323,9 @@
                         type="number"
                         placeholder="0"
                         id="bank-monthly-0"
-                        oninput="syncBankTotal()"
+                        data-unit="manwon"
+                        data-unit-warning-threshold="10000"
+                        oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncBankTotal()"
                         style="text-align: right"
                       />
                     </td>
@@ -2450,8 +2458,10 @@
                           class="form-input"
                           type="number"
                           placeholder="0"
+                          data-unit="manwon"
+                          data-unit-warning-threshold="100000"
                           style="width: 100%; text-align: right"
-                          oninput="syncLoanTableTotal()"
+                          oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncLoanTableTotal()"
                         /><span
                           style="
                             font-size: 11px;
@@ -2468,8 +2478,10 @@
                           class="form-input"
                           type="number"
                           placeholder="0"
+                          data-unit="manwon"
+                          data-unit-warning-threshold="100000"
                           style="width: 100%; text-align: right"
-                          oninput="syncLoanTableTotal()"
+                          oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncLoanTableTotal()"
                         /><span
                           style="
                             font-size: 11px;
@@ -2486,8 +2498,10 @@
                           class="form-input"
                           type="number"
                           placeholder="0"
+                          data-unit="manwon"
+                          data-unit-warning-threshold="10000"
                           style="width: 100%; text-align: right"
-                          oninput="syncLoanTableTotal()"
+                          oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncLoanTableTotal()"
                         /><span
                           style="
                             font-size: 11px;
@@ -2708,9 +2722,12 @@
                   <label class="form-label">월 납입액 (만원)</label>
                   <input
                     class="form-input"
-                    type="text"
+                    type="number"
                     id="f-adj-monthly"
                     placeholder="월 ___만 원"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })"
                   />
                 </div>
               </div>
@@ -2745,7 +2762,8 @@
               <span>ℹ️</span>
               <span style="flex:1"
                 >소득이 발생하는 항목별로 월 금액을 입력해 주세요. 해당 없는
-                항목은 0 또는 공란으로 두시면 됩니다.</span
+                항목은 0 또는 공란으로 두시면 됩니다.<br>
+                모든 금액은 <strong>만원 단위</strong>입니다. 예: 2,500,000원은 250으로 입력해 주세요.</span
               >
               <span style="background:var(--primary-pale);color:var(--primary);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap"
                 >📅 선정 후 담당자 안내 시 제출</span
@@ -2794,7 +2812,9 @@
                       placeholder="0"
                       id="inc-work"
                       min="0"
-                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
+                      data-unit="manwon"
+                      data-unit-warning-threshold="10000"
+                      oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2811,7 +2831,9 @@
                       placeholder="0"
                       id="inc-biz"
                       min="0"
-                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
+                      data-unit="manwon"
+                      data-unit-warning-threshold="10000"
+                      oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2835,7 +2857,9 @@
                       placeholder="0"
                       id="inc-gov"
                       min="0"
-                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
+                      data-unit="manwon"
+                      data-unit-warning-threshold="10000"
+                      oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2856,7 +2880,9 @@
                       placeholder="0"
                       id="inc-etc"
                       min="0"
-                      oninput="validateNumLimit(this);validateMonthlyIncome({ silent: true });updateCalc()"
+                      data-unit="manwon"
+                      data-unit-warning-threshold="10000"
+                      oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });validateMonthlyIncome({ silent: true });updateCalc()"
                     />
                     <span class="income-unit">만 원</span>
                   </div>
@@ -2936,7 +2962,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-rent"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2961,7 +2989,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-food"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2978,7 +3008,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-transit"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -2992,7 +3024,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-comm"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3018,7 +3052,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-medical"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3035,7 +3071,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-edu"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3063,7 +3101,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-insure"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3087,6 +3127,8 @@
                       type="number"
                       placeholder="0"
                       id="exp-loan"
+                      data-unit="manwon"
+                      data-unit-warning-threshold="10000"
                       oninput="updateCalc()"
                       style="background: #f5f5f5"
                       readonly
@@ -3110,7 +3152,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-saving"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3144,7 +3188,9 @@
                     type="number"
                     placeholder="0"
                     id="exp-etc"
-                    oninput="validateNumLimit(this);updateCalc()"
+                    data-unit="manwon"
+                    data-unit-warning-threshold="10000"
+                    oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });updateCalc()"
                   /><span class="income-unit">만 원</span>
                 </div>
               </div>
@@ -3421,6 +3467,8 @@
                   style="max-width: 180px"
                   min="0"
                   max="500"
+                  data-unit="manwon"
+                  data-unit-warning-threshold="10000"
                   oninput="validateAmount(this)"
                 />
                 <span
@@ -3958,7 +4006,7 @@
             const val = existing[type] || "";
             return `<div class="gov-amount-row" data-gov="${type}" style="display:flex;align-items:center;gap:10px;background:var(--primary-pale);border:1px solid #BDD8DC;border-radius:var(--radius-sm);padding:10px 14px">
       <label style="font-size:13px;font-weight:600;color:var(--primary);min-width:160px;flex-shrink:0">${type}</label>
-      <input class="form-input" type="number" placeholder="0" value="${val}" id="${id}" oninput="syncGovIncome()" style="width:100px;text-align:right">
+      <input class="form-input" type="number" placeholder="0" value="${val}" id="${id}" data-unit="manwon" data-unit-warning-threshold="10000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncGovIncome()" style="width:100px;text-align:right">
       <span style="font-size:13px;color:var(--text-muted)">만 원 / 월</span>
     </div>`;
           })
@@ -3989,23 +4037,23 @@
           html = `<div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:10px">${type === "임대주택" ? "임대주택" : "전세"} 비용 정보</div>
     <div class="grid2">
       <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">보증금</label>
-        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="100000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
       <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">${type === "임대주택" ? "월 임대료" : "월 전세이자·관리비"}</label>
-        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="10000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
     </div>`;
           wrap.style.display = "block";
         } else if (type === "월세") {
           html = `<div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:10px">월세 비용 정보</div>
     <div class="grid2">
       <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">보증금</label>
-        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="100000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
       <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px">월 세</label>
-        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
+        <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="10000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원</span></div></div>
     </div>`;
           wrap.style.display = "block";
         } else if (type === "고시원") {
           html = `<div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px">월 납입액</div>
-    <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" style="width:120px;text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원 / 월</span></div>`;
+    <div style="display:flex;align-items:center;gap:6px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="10000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="width:120px;text-align:right"><span style="font-size:13px;color:var(--text-muted)">만 원 / 월</span></div>`;
           wrap.style.display = "block";
         } else {
           wrap.style.display = "none";
@@ -4044,9 +4092,9 @@
     <td><select class="form-select" style="font-size:12px;padding:6px 4px"><option value="">선택</option><option>은행</option><option>저축은행</option><option>카드사</option><option>캐피탈</option><option>보험사</option><option>기타</option></select></td>
     <td><select class="form-select" style="font-size:12px;padding:6px 4px"><option value="">선택</option><option>일반신용대출</option><option>주택담보대출</option><option>카드론</option><option>차량구입대출</option><option>기타</option></select></td><!-- [YL-req1] 햇살론 option 삭제 -->
     <td><input class="form-input" type="text" placeholder="기관명"></td>
-    <td><input class="form-input" type="number" placeholder="0" style="text-align:right"></td>
-    <td><input class="form-input" type="number" placeholder="0" style="text-align:right"></td>
-    <td><input class="form-input" type="number" placeholder="0" oninput="syncBankTotal()" style="text-align:right"></td>
+    <td><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="100000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="text-align:right"></td>
+    <td><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="100000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true })" style="text-align:right"></td>
+    <td><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="10000" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncBankTotal()" style="text-align:right"></td>
     <!-- [YL-fix2] 금리 입력 → 구간 드롭다운 -->
     <td><select class="form-select" style="min-width:100px;font-size:12px;padding:6px 4px"><option value="">선택</option><option>무이자</option><option>5% 미만</option><option>5~10%</option><option>10~15%</option><option>15~20%</option><option>20% 이상</option></select></td>
     <td><select class="form-select" style="font-size:12px;padding:6px 4px"><option value="">선택</option><option>없음</option><option>부동산</option><option>차량</option><option>기타</option></select></td>
@@ -4113,9 +4161,9 @@
       <option value="">선택</option><option>대부업체</option><option>학자금(장학재단)</option><option>서민금융진흥원</option><option>신용회복위원회</option><option>신용보증재단</option><option>공단·지역농협 등</option><option>가족 및 지인</option><option>기타</option><!-- [YL-req1] -->
     </select></td>
     <td><input class="form-input" type="text" placeholder="기관명" style="width:100%"></td>
-    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" style="width:100%;text-align:right" oninput="syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
-    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" style="width:100%;text-align:right" oninput="syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
-    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" style="width:100%;text-align:right" oninput="syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
+    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="100000" style="width:100%;text-align:right" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
+    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="100000" style="width:100%;text-align:right" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
+    <td><div style="display:flex;align-items:center;gap:3px"><input class="form-input" type="number" placeholder="0" data-unit="manwon" data-unit-warning-threshold="10000" style="width:100%;text-align:right" oninput="validateNumLimit(this);validateManwonUnitInput(this,{ silent: true });syncLoanTableTotal()"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">만</span></div></td>
     <td><select class="form-select" style="width:100%;font-size:12px;padding:6px 4px">
       <option value="">선택</option><option>무이자</option><option>5% 미만</option><option>5~10%</option><option>10~15%</option><option>15~20%</option><option>20% 이상</option>
     </select></td>
@@ -4585,6 +4633,15 @@
           }
           return false;
         }
+        if (val >= 10000) {
+          el.classList.add("error");
+          if (msg) {
+            const converted = Math.round(val / 10000);
+            msg.textContent = `금액은 만원 단위입니다. 원 단위라면 ${converted.toLocaleString("ko-KR")}으로 입력해 주세요.`;
+            msg.classList.add("show");
+          }
+          return false;
+        }
         if (val > 500) {
           el.classList.add("error");
           if (msg) {
@@ -4598,10 +4655,9 @@
         return true;
       }
 
-      // [YL-B] 생활비·금액 입력 범위 정규화 (만원 단위, 음수·비정상치 차단)
+      // [YL-B] 생활비·금액 입력 정규화 (만원 단위, 음수 차단)
       function validateNumLimit(el, max) {
         if (!el) return;
-        const cap = typeof max === "number" ? max : 99999;
         let v = (el.value || "").replace(/[^0-9]/g, "");
         if (v === "") {
           el.value = "";
@@ -4609,8 +4665,82 @@
         }
         let n = parseInt(v, 10);
         if (isNaN(n) || n < 0) n = 0;
-        if (n > cap) n = cap;
+        if (typeof max === "number" && n > max) n = max;
         el.value = String(n);
+      }
+
+      // 만원 단위 오입력 의심 기준을 입력칸별로 읽는다.
+      function getManwonThreshold(el) {
+        const threshold = parseInt(el?.dataset?.unitWarningThreshold || "", 10);
+        return Number.isFinite(threshold) && threshold > 0 ? threshold : 10000;
+      }
+
+      // 경고 메시지를 붙일 가장 가까운 화면 영역을 찾는다.
+      function getManwonAnchor(el) {
+        return (
+          el?.closest(".form-row") ||
+          el?.closest(".card-body") ||
+          el?.parentElement ||
+          document.body
+        );
+      }
+
+      // 만원 단위 경고 상태를 지우되, 필수 소득 오류는 유지한다.
+      function clearManwonUnitInput(el) {
+        if (!el) return;
+        el.classList.remove("unit-error");
+        getManwonAnchor(el)
+          ?.querySelectorAll(".yl-unit-warning")
+          .forEach((msg) => msg.remove());
+        if (!el.classList.contains("income-required-error")) {
+          el.classList.remove("error");
+        }
+      }
+
+      // 원 단위로 보이는 값을 만원 단위 예시 문구로 바꿔 안내한다.
+      function manwonUnitMessage(value) {
+        const converted = Math.round(value / 10000);
+        return `금액은 만원 단위입니다. 원 단위로 입력하신 경우 ${converted.toLocaleString("ko-KR")}으로 입력해 주세요. 예: 2,500,000원 → 250`;
+      }
+
+      // 해당 입력칸 근처에 만원 단위 경고 메시지를 표시한다.
+      function showManwonUnitWarning(el, message) {
+        const anchor = getManwonAnchor(el);
+        if (!anchor || anchor.querySelector(".yl-unit-warning")) return;
+        const msg = document.createElement("div");
+        msg.className = "error-msg show yl-unit-warning";
+        msg.textContent = message;
+        anchor.appendChild(msg);
+      }
+
+      // 만원 단위로 보기 어려운 큰 숫자를 제출 전에 차단한다.
+      function validateManwonUnitInput(el, options = {}) {
+        if (!el || el.dataset.unit !== "manwon") return true;
+        const value = parseInt(el.value || "0", 10);
+        if (!value || value < getManwonThreshold(el)) {
+          clearManwonUnitInput(el);
+          return true;
+        }
+
+        el.classList.add("error", "unit-error");
+        if (!options.silent) showManwonUnitWarning(el, manwonUnitMessage(value));
+        return false;
+      }
+
+      // 신청서 전체의 만원 단위 금액 입력칸을 한 번에 점검한다.
+      function validateManwonUnitFields() {
+        document.querySelectorAll(".yl-unit-warning").forEach((el) => el.remove());
+        let ok = true;
+        let first = null;
+        document.querySelectorAll('input[data-unit="manwon"]').forEach((el) => {
+          if (el.disabled || !el.value) return;
+          if (!validateManwonUnitInput(el)) {
+            ok = false;
+            if (!first) first = el;
+          }
+        });
+        if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+        return ok;
       }
 
       function getMonthlyIncomeInputs() {
@@ -4630,13 +4760,16 @@
         const err = document.getElementById("err-income-total");
 
         if (total > 0) {
-          inputs.forEach((el) => el.classList.remove("error"));
+          inputs.forEach((el) => {
+            el.classList.remove("income-required-error");
+            if (!el.classList.contains("unit-error")) el.classList.remove("error");
+          });
           err?.classList.remove("show");
           return true;
         }
 
         if (!silent) {
-          inputs.forEach((el) => el.classList.add("error"));
+          inputs.forEach((el) => el.classList.add("error", "income-required-error"));
           if (err) {
             err.textContent = "월 소득을 한 항목 이상 입력해 주세요.";
             err.classList.add("show");
@@ -4813,6 +4946,7 @@
         if (!validateRadioGroup('debt-adj', '채무조정 이력을 선택해 주세요.')) ok = false;
 
         if (!validateMonthlyIncome()) ok = false;
+        if (!validateManwonUnitFields()) ok = false;
 
         if (!validateSelectRequired('buf-cash', '보유 현금·예금 규모를 선택해 주세요.')) ok = false;
         if (!validateSelectRequired('buf-family', '가족·지인 도움 가능 금액을 선택해 주세요.')) ok = false;
