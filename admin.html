@@ -455,6 +455,40 @@ function formatManwon(value) {
   const n = parseDebtMoney(value);
   return n.toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '만원';
 }
+function parseMonthValue(value) {
+  const match = String(value || '').match(/^(\d{4})-(\d{2})$/);
+  if (!match) return null;
+  const year = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+  if (!year || month < 1 || month > 12) return null;
+  return { year, month };
+}
+function formatMonthKo(value) {
+  const parsed = parseMonthValue(value);
+  return parsed ? `${parsed.year}. ${String(parsed.month).padStart(2, '0')}.` : value;
+}
+function countInclusiveMonths(startValue, endValue) {
+  const start = parseMonthValue(startValue);
+  const end = parseMonthValue(endValue);
+  if (!start || !end) return 0;
+  const months = (end.year - start.year) * 12 + (end.month - start.month) + 1;
+  return months > 0 ? months : 0;
+}
+function currentMonthValue() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+}
+function getDebtAdjustmentPeriodInfo(fd) {
+  const start = fd['채무조정상환시작월'] || fd['채무조정시작월'] || '';
+  const savedMonths = parseInt(fd['채무조정상환기간개월'] || '', 10);
+  const fallbackEnd = fd['채무조정최근납입월'] || currentMonthValue();
+  const months = Number.isFinite(savedMonths) && savedMonths > 0
+    ? savedMonths
+    : countInclusiveMonths(start, fallbackEnd);
+  return { start, months, label: months ? `${months}개월` : '' };
+}
 function sumMoneyEntries(entries) {
   return entries.reduce((sum, [, value]) => sum + parseDebtMoney(value), 0);
 }
@@ -774,6 +808,7 @@ function buildDetailHtml(a, fd) {
   const incomeRows = parseDebt(fd['소득이력'] || '');
   const familyRows = parseRows(fd['가족동거사항'] || '', ' / ');
   const rrn = getKcbRrn(a, fd);
+  const debtAdjustmentPeriod = getDebtAdjustmentPeriodInfo(fd);
 
   return `
     <div class="btn-row">
@@ -842,11 +877,9 @@ function buildDetailHtml(a, fd) {
         <div class="info-grid" style="margin-top:8px">
           <div class="info-row"><span class="info-label">이력</span><span class="info-value">${esc(fd['채무조정이력'])}</span></div>
           <div class="info-row"><span class="info-label">유형</span><span class="info-value">${esc(fd['채무조정유형'])}${fd['채무조정유형_기타상세'] ? ' (' + esc(fd['채무조정유형_기타상세']) + ')' : ''}</span></div>
-          ${optionalInfoRow('총 납입 회차', fd['채무조정총회차'] ? fd['채무조정총회차'] + '회' : '')}
-          ${optionalInfoRow('납입 완료 회차', fd['채무조정납입완료회차'] ? fd['채무조정납입완료회차'] + '회' : '')}
-          ${optionalInfoRow('성실상환도', fd['채무조정성실상환도'])}
+          ${optionalInfoRow('상환시작월', debtAdjustmentPeriod.start ? formatMonthKo(debtAdjustmentPeriod.start) : '')}
+          ${optionalInfoRow('상환기간', debtAdjustmentPeriod.label)}
           <div class="info-row"><span class="info-label">월 납입액</span><span class="info-value">${fd['채무조정월납액'] ? esc(fd['채무조정월납액']) + '만원' : '—'}</span></div>
-          <div class="info-row"><span class="info-label">과거 상세</span><span class="info-value" id="debt-past-text"></span></div>
         </div>
       </div>
     </div>
@@ -970,7 +1003,6 @@ async function showApp(id) {
   document.getElementById('q1-text').textContent = a.q1_background || fd['Q1_부채발생이유'] || '—';
   document.getElementById('q2-text').textContent = a.q2_repay_plan || fd['Q2_대환채무및사용계획'] || '—';
   document.getElementById('q3-text').textContent = a.q3_repay_plan || fd['Q3_상환계획'] || '—';
-  document.getElementById('debt-past-text').textContent = fd['채무조정과거상세'] || '—';
 }
 </script>
 </body>

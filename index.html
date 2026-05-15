@@ -2681,42 +2681,30 @@
                 </div>
                 <div class="grid2" style="margin-bottom: 10px">
                   <div>
-                    <label class="form-label">총 납입 회차 (n회)</label>
+                    <label class="form-label">상환 시작월</label>
                     <input
                       class="form-input"
-                      type="number"
-                      placeholder="예) 128"
-                      id="total-round"
-                    />
-                  </div>
-                  <div>
-                    <label class="form-label"
-                      >현재까지 납입 완료 회차 (m회)</label
-                    >
-                    <input
-                      class="form-input"
-                      type="number"
-                      placeholder="예) 64"
-                      id="done-round"
-                      oninput="calcRepayRate()"
+                      type="month"
+                      id="adj-start-month"
+                      onchange="calcDebtAdjustmentPeriod()"
                     />
                   </div>
                 </div>
                 <div
-                  id="repay-rate-display"
+                  id="adj-period-display"
                   style="
                     display: none;
-                    background: var(--success-light);
-                    border: 1px solid #a8d5b8;
+                    background: var(--primary-pale);
+                    border: 1px solid #9cced4;
                     border-radius: var(--radius-sm);
                     padding: 10px 14px;
                     font-size: 13px;
-                    color: var(--success);
+                    color: var(--primary);
                     font-weight: 600;
                     margin-bottom: 10px;
                   "
                 >
-                  성실상환도: <span id="repay-rate-val">—</span>% 납입 완료
+                  상환기간: <span id="adj-period-val">—</span>
                 </div>
                 <div class="form-row" style="margin-bottom: 0">
                   <label class="form-label">월 납입액 (만원)</label>
@@ -4064,23 +4052,52 @@
         wrap.classList.add("show");
       }
 
-      // ── 채무조정 성실상환도 계산 ───────────────────────────
-      function calcRepayRate() {
-        const total = parseInt(
-          document.getElementById("total-round")?.value || 0,
-        );
-        const done = parseInt(
-          document.getElementById("done-round")?.value || 0,
-        );
-        const disp = document.getElementById("repay-rate-display");
-        const val = document.getElementById("repay-rate-val");
-        if (total > 0 && done > 0) {
-          const rate = Math.round((done / total) * 100);
-          val.textContent = rate;
-          disp.style.display = "block";
-        } else {
+      // ── 채무조정 상환기간 계산 ───────────────────────────
+      function parseMonthValue(value) {
+        const match = String(value || "").match(/^(\d{4})-(\d{2})$/);
+        if (!match) return null;
+        const year = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10);
+        if (!year || month < 1 || month > 12) return null;
+        return { year, month };
+      }
+
+      function currentMonthValue() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        return `${year}-${month}`;
+      }
+
+      function countInclusiveMonths(startValue, endValue) {
+        const start = parseMonthValue(startValue);
+        const end = parseMonthValue(endValue);
+        if (!start || !end) return 0;
+        const months = (end.year - start.year) * 12 + (end.month - start.month) + 1;
+        return months > 0 ? months : 0;
+      }
+
+      function getDebtAdjustmentPeriod() {
+        const start = document.getElementById("adj-start-month")?.value || "";
+        const months = countInclusiveMonths(start, currentMonthValue());
+        return {
+          start,
+          months,
+          label: months ? `${months}개월` : "",
+        };
+      }
+
+      function calcDebtAdjustmentPeriod() {
+        const period = getDebtAdjustmentPeriod();
+        const disp = document.getElementById("adj-period-display");
+        const val = document.getElementById("adj-period-val");
+        if (!disp || !val) return;
+        if (!period.label) {
           disp.style.display = "none";
+          return;
         }
+        val.textContent = period.label;
+        disp.style.display = "block";
       }
 
       // ── 부채 테이블 행 추가/삭제 ───────────────────────────
@@ -4939,11 +4956,40 @@
         return false;
       }
 
+      // 채무조정 진행 중이면 심사에 필요한 최소 항목을 반드시 받는다.
+      function validateDebtAdjustmentCurrentDetails() {
+        if (getRadioVal('debt-adj') !== '현재진행중') return true;
+
+        let ok = true;
+        if (!validateRadioGroup('adj-type', '채무조정 유형을 선택해 주세요.')) ok = false;
+
+        const startMonth = document.getElementById('adj-start-month');
+        if (!startMonth?.value) {
+          startMonth?.classList.add('error');
+          showRuntimeError(startMonth?.closest('.form-row') || document.getElementById('debt-adj-now'), '상환 시작월을 선택해 주세요.');
+          ok = false;
+        } else {
+          startMonth.classList.remove('error');
+        }
+
+        const monthly = document.getElementById('f-adj-monthly');
+        if (!monthly?.value?.trim()) {
+          monthly?.classList.add('error');
+          showRuntimeError(monthly?.closest('.form-row') || document.getElementById('debt-adj-now'), '월 납입액을 입력해 주세요. 해당 금액이 없으면 0을 입력해 주세요.');
+          ok = false;
+        } else {
+          monthly.classList.remove('error');
+        }
+
+        return ok;
+      }
+
       // 제출 직전 숫자·서술형 핵심 항목을 검증해 빈 신청서 접수를 막는다.
       function validateApplicationBeforeSubmit() {
         document.querySelectorAll(".yl-runtime-error").forEach((el) => el.remove());
         let ok = validateStep1();
         if (!validateRadioGroup('debt-adj', '채무조정 이력을 선택해 주세요.')) ok = false;
+        if (!validateDebtAdjustmentCurrentDetails()) ok = false;
 
         if (!validateMonthlyIncome()) ok = false;
         if (!validateManwonUnitFields()) ok = false;
@@ -5032,12 +5078,6 @@
         if (eligState.eq3 === 'pass') return '기준 중위소득 150% 이하';
         if (eligState.eq3 === 'fail') return '기준 중위소득 150% 초과';
         return '';
-      }
-      function calcDebtAdjustmentRate() {
-        const total = parseInt(document.getElementById('total-round')?.value || '0', 10);
-        const done = parseInt(document.getElementById('done-round')?.value || '0', 10);
-        if (!total || !done) return '';
-        return `${done}/${total}회 (${Math.round((done / total) * 100)}%)`;
       }
       // 소득유형 도출
       function deriveIncomeType() {
@@ -5174,9 +5214,11 @@
         d['채무조정유형'] = getRadioVal('adj-type');
         // [YL-5] 채무조정유형이 "기타"일 때 직접입력값 함께 저장
         d['채무조정유형_기타상세'] = document.getElementById('f-adj-type-etc')?.value?.trim() || '';
-        d['채무조정총회차'] = document.getElementById('total-round')?.value?.trim() || '';
-        d['채무조정납입완료회차'] = document.getElementById('done-round')?.value?.trim() || '';
-        d['채무조정성실상환도'] = calcDebtAdjustmentRate();
+        {
+          const period = getDebtAdjustmentPeriod();
+          d['채무조정상환시작월'] = period.start;
+          d['채무조정상환기간개월'] = period.months ? String(period.months) : '';
+        }
         d['채무조정월납액'] = document.getElementById('f-adj-monthly')?.value?.trim() || '';
         d['채무조정과거상세'] = document.getElementById('f-adj-past-detail')?.value?.trim() || '';
         d['위기대응_현금'] = document.getElementById('buf-cash')?.value || '';
