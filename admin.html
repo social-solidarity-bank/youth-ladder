@@ -129,9 +129,10 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
 .debt-summary-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .debt-summary-title { color: var(--gray-700); font-size: 11px; font-weight: 800; }
 .debt-summary-count { color: var(--gray-500); font-size: 10px; font-weight: 700; white-space: nowrap; }
-.debt-summary-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+.debt-summary-metrics { display: grid; grid-template-columns: 1fr; gap: 5px; }
+.debt-summary-metric { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; }
 .debt-summary-label { color: var(--gray-500); font-size: 10px; margin-bottom: 2px; }
-.debt-summary-value { color: var(--red); font-size: 13px; font-weight: 800; white-space: nowrap; }
+.debt-summary-value { color: var(--red); font-size: 13px; font-weight: 800; white-space: nowrap; text-align: right; }
 
 .q-box { background: var(--gray-50); border: 1px solid var(--gray-200); border-left: 4px solid var(--purple); border-radius: 6px; padding: 14px 16px; margin-bottom: 12px; white-space: pre-wrap; line-height: 1.85; font-size: 13px; color: var(--gray-900); }
 .q-label { font-size: 11px; font-weight: 700; color: var(--purple); margin-bottom: 8px; }
@@ -177,7 +178,6 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #f4f6f8; color: var(
   .qual-grid { grid-template-columns: repeat(2,1fr); }
   .expense-grid { grid-template-columns: repeat(3,1fr); }
   .cashflow-summary { grid-template-columns: repeat(2,1fr); }
-  .debt-summary-grid { grid-template-columns: 1fr; }
   .info-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -530,9 +530,9 @@ function renderDebtSummary(bankRows, otherRows) {
           <div class="debt-summary-count">${item.count}건</div>
         </div>
         <div class="debt-summary-metrics">
-          <div><div class="debt-summary-label">약정</div><div class="debt-summary-value">${formatDebtMoney(item.contract)}</div></div>
-          <div><div class="debt-summary-label">잔액</div><div class="debt-summary-value">${formatDebtMoney(item.balance)}</div></div>
-          <div><div class="debt-summary-label">월상환</div><div class="debt-summary-value">${formatDebtMoney(item.monthly)}</div></div>
+          <div class="debt-summary-metric"><div class="debt-summary-label">약정</div><div class="debt-summary-value">${formatDebtMoney(item.contract)}</div></div>
+          <div class="debt-summary-metric"><div class="debt-summary-label">잔액</div><div class="debt-summary-value">${formatDebtMoney(item.balance)}</div></div>
+          <div class="debt-summary-metric"><div class="debt-summary-label">월상환</div><div class="debt-summary-value">${formatDebtMoney(item.monthly)}</div></div>
         </div>
       </div>
     `).join('')}
